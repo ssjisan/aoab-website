@@ -12,7 +12,6 @@ const main = [
   {
     id: 3,
     title: "Educations & Training",
-    link: "/educations&training",
     submenu: [
       {
         id: 1,
