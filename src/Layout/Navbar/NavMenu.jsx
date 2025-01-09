@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -9,19 +10,29 @@ import {
 import PropTypes from "prop-types";
 import { main } from "./NavConfig";
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
-import { Menu, Plus } from "../../assets/Icons";
+import { Menu, Plus, RightArrow } from "../../assets/Icons";
 import MenuDrawer from "./MenuDrawer";
 import Logo from "../../assets/Logo";
+
 export default function NavMenu({ isScrolled }) {
   const { pathname } = useLocation();
   const forBelow1100 = useMediaQuery("(max-width:1100px)");
+  const [open, setOpen] = useState(false);
+  const [hoveredMenu, setHoveredMenu] = useState(null); // Immediate hover state
+  const [delayedHoveredMenu, setDelayedHoveredMenu] = useState(null); // Delayed hover state
 
-  // Configure Style Start
+  const toggleDrawer = () => setOpen(true);
+  const handleDrawerClose = () => setOpen(false);
+
+  const goToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const linkStyle = {
     textDecoration: "none",
     color: "#031E21",
   };
+
   const NavSx = {
     backgroundColor: isScrolled ? "#fff" : "transparent",
     padding: isScrolled ? "8px 24px" : "16px 24px",
@@ -36,147 +47,220 @@ export default function NavMenu({ isScrolled }) {
     padding: "8px 16px",
   };
 
-  // Configure Style End
-
-  const goToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+  const handleMouseEnter = (id) => {
+    setHoveredMenu(id);
+    setTimeout(() => setDelayedHoveredMenu(id), 300); // 300ms delay for open
   };
 
-  const [open, setOpen] = useState(false);
-
-  const toggleDrawer = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleMouseLeave = () => {
+    setHoveredMenu(null);
+    setTimeout(() => setDelayedHoveredMenu(null), 300); // 300ms delay for close
   };
 
   return (
-    <Stack
-      sx={NavSx}
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      flexDirection="row"
-    >
-      <Box>
-        <Link
-          to="/"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          <Box
-            sx={{
-              width: isScrolled ? "160px" : "180px",
-              transition: "width 0.5s ease-in-out, height 0.5s ease-in-out",
-            }}
-          >
-            <Logo
-              colorOne={
-                pathname === "/" ? (isScrolled ? "#003258" : "#fff") : "#003258"
-              }
-              colorTwo={
-                pathname === "/" ? (isScrolled ? "#91B512" : "#fff") : "#91B512"
+    <>
+      <Stack
+        sx={NavSx}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        flexDirection="row"
+      >
+        <Box>
+          <Link to="/" onClick={goToTop}>
+            <Box
+              sx={{
+                width: isScrolled ? "160px" : "180px",
+                transition: "width 0.5s ease-in-out, height 0.5s ease-in-out",
+              }}
+            >
+              <Logo
+                colorOne={
+                  pathname === "/"
+                    ? isScrolled
+                      ? "#003258"
+                      : "#fff"
+                    : "#003258"
+                }
+                colorTwo={
+                  pathname === "/"
+                    ? isScrolled
+                      ? "#91B512"
+                      : "#fff"
+                    : "#91B512"
+                }
+              />
+            </Box>
+          </Link>
+        </Box>
+
+        {forBelow1100 ? (
+          <IconButton onClick={toggleDrawer}>
+            <Menu
+              color={
+                pathname === "/" ? (isScrolled ? "#0D0A25" : "#fff") : "#0D0A25"
               }
             />
-          </Box>
-        </Link>
-      </Box>
-      {forBelow1100 ? (
-        <IconButton onClick={toggleDrawer}>
-          <Menu
-            color={
-              pathname === "/" ? (isScrolled ? "#0D0A25" : "#fff") : "#0D0A25"
-            }
-          />
-        </IconButton>
-      ) : (
-        <Stack gap="16px" flexDirection="row">
-          {main.map((data) => {
-             const hasSubmenu = data.submenu && data.submenu.length > 0;
-            return (
-              <Stack key={data.id} onClick={goToTop}>
-                <Link to={data.link} style={linkStyle}>
-                  <Stack
-                    flexDirection="row"
-                    alignItems="center"
-                    gap="8px"
-                    sx={{
-                      ...MenuButtonSx,
-                      backgroundColor:
-                        pathname === "/" && data.link === pathname
-                          ? isScrolled
-                            ? "rgba(0, 50, 88, 0.16)"
-                            : "rgba(255, 255, 255, 0.16)"
-                          : data.link === pathname
-                          ? "rgba(0, 50, 88, 0.16)"
-                          : "transparent",
-                    }}
-                  >
-                    <Typography
+          </IconButton>
+        ) : (
+          <Stack gap="16px" flexDirection="row">
+            {main.map((data) => {
+              const hasSubmenu = data.submenu && data.submenu.length > 0;
+
+              return (
+                <Stack
+                  key={data.id}
+                  onMouseEnter={() => handleMouseEnter(data.id)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={goToTop}
+                >
+                  <Link to={data.link || "#"} style={linkStyle}>
+                    <Stack
+                      flexDirection="row"
+                      alignItems="center"
+                      gap="8px"
                       sx={{
-                        lineHeight: "20px",
-                        color:
-                          pathname === "/"
+                        ...MenuButtonSx,
+                        backgroundColor:
+                          pathname === "/" && data.link === pathname
                             ? isScrolled
-                              ? pathname === data.link
-                                ? "#003258"
-                                : "#000"
-                              : "#FFF"
-                            : pathname === data.link
-                            ? "#003258"
-                            : "#000",
+                              ? "rgba(0, 50, 88, 0.16)"
+                              : "rgba(255, 255, 255, 0.16)"
+                            : data.link === pathname
+                            ? "rgba(0, 50, 88, 0.16)"
+                            : "transparent",
                       }}
-                      variant="subtitle2"
                     >
-                      {data.title}
-                    </Typography>
-                    {
-                      hasSubmenu && <Plus size="16px" color={
-                        pathname === "/"
-                          ? isScrolled
-                            ? pathname === data.link
+                      <Typography
+                        sx={{
+                          lineHeight: "20px",
+                          color:
+                            pathname === "/"
+                              ? isScrolled
+                                ? pathname === data.link
+                                  ? "#003258"
+                                  : "#000"
+                                : "#FFF"
+                              : pathname === data.link
+                              ? "#003258"
+                              : "#000",
+                        }}
+                        variant="subtitle2"
+                      >
+                        {data.title}
+                      </Typography>
+                      {hasSubmenu && (
+                        <Plus
+                          size="16px"
+                          color={
+                            pathname === "/"
+                              ? isScrolled
+                                ? pathname === data.link
+                                  ? "#003258"
+                                  : "#000"
+                                : "#FFF"
+                              : pathname === data.link
                               ? "#003258"
                               : "#000"
-                            : "#FFF"
-                          : pathname === data.link
-                          ? "#003258"
-                          : "#000"}/>
-                    }
-                  </Stack>
-                </Link>
-              </Stack>
-            );
-          })}
-        </Stack>
-      )}
-      {!forBelow1100 && (
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor:
-              pathname === "/"
-                ? isScrolled
-                  ? "#003258" // Scrolled state for homepage
-                  : "rgba(255, 255, 255, 1)" // Default homepage background
-                : "#003258", // Default background for other pages
-            color: pathname === "/" && !isScrolled ? "#003258" : "#fff", // Text color
-            borderRadius: "8px",
-            padding: "8px 16px",
-            textTransform: "none",
-          }}
-        >
-          Login
-        </Button>
-      )}
-      <MenuDrawer
-        open={open}
-        toggleDrawer={toggleDrawer}
-        handleDrawerClose={handleDrawerClose}
-      />
-    </Stack>
+                          }
+                        />
+                      )}
+                    </Stack>
+                  </Link>
+                  {hasSubmenu && delayedHoveredMenu === data.id && (
+                    <Stack
+                      gap="32px"
+                      sx={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        backgroundColor: "#fff",
+                        p: "24px 64px",
+                        zIndex: 10,
+                        width: "100%",
+                        opacity: delayedHoveredMenu === data.id ? 1 : 0,
+                        visibility:
+                          delayedHoveredMenu === data.id ? "visible" : "hidden",
+                        transition: "opacity 0.3s ease, visibility 0.3s ease",
+                      }}
+                    >
+                      <Typography variant="h4">{data.title}</Typography>
+                      <Stack flexDirection="row" gap="24px">
+                        {data.submenu.map((submenu, i) => (
+                          <Stack
+                            key={i}
+                            sx={{
+                              p: "16px",
+                              width: "312px",
+                              borderRadius: "12px",
+                              border: "1px solid #F2F2F2",
+                              textDecoration: "none",
+                              transition: "border-color 0.3s ease",
+                              "&:hover": {
+                                background: "rgba(0, 50, 88, 0.08)",
+                              },
+                            }}
+                            gap="16px"
+                            component="a"
+                            href={submenu.link}
+                            rel="noopener noreferrer"
+                          >
+                            <Stack
+                              flexDirection="row"
+                              justifyContent="space-between"
+                            >
+                              <Typography color="text.primary">
+                                {submenu.title}
+                              </Typography>
+                              <RightArrow size="16px" />
+                            </Stack>
+                            <Typography color="text.secondary">
+                              {submenu.subtitle}
+                            </Typography>
+                          </Stack>
+                        ))}
+                      </Stack>
+                    </Stack>
+                  )}
+                </Stack>
+              );
+            })}
+          </Stack>
+        )}
+
+        {!forBelow1100 && (
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor:
+                pathname === "/"
+                  ? isScrolled
+                    ? "#003258"
+                    : "rgba(255, 255, 255, 1)"
+                  : "#003258",
+              color: pathname === "/" && !isScrolled ? "#003258" : "#fff",
+              borderRadius: "8px",
+              padding: "8px 16px",
+              textTransform: "none",
+              "&:hover":
+                pathname === "/" && !isScrolled
+                  ? { backgroundColor: "#FFF" }
+                  : null,
+            }}
+            component="a"
+            href="/login"
+            rel="noopener noreferrer"
+          >
+            Login
+          </Button>
+        )}
+        <MenuDrawer
+          open={open}
+          toggleDrawer={toggleDrawer}
+          handleDrawerClose={handleDrawerClose}
+        />
+      </Stack>
+    </>
   );
 }
 

@@ -15,13 +15,15 @@ const main = [
     submenu: [
       {
         id: 1,
-        title: "AOA - Global",
+        title: "AO Alliance - Global",
         link: "https://events.ao-alliance.org/",
+        subtitle:"Discover international training opportunities."
       },
       {
         id: 2,
-        title: "AOA - Bangladesh",
+        title: "AO Alliance - Bangladesh",
         link: "/educations&training/aoa-bangladesh",
+        subtitle:"Explore local learning opportunities"
       },
     ],
   },
@@ -40,11 +42,11 @@ const main = [
     title: "Videos",
     link: "/videos",
   },
-  {
-    id: 7,
-    title: "Contact",
-    link: "/contact",
-  },
+  // {
+  //   id: 7,
+  //   title: "Contact",
+  //   link: "/contact",
+  // },
 ];
 
 export { main };

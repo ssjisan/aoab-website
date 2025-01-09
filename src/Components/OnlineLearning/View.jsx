@@ -1,4 +1,4 @@
-import { Stack, Typography, Button, TextField } from "@mui/material";
+import { Stack, Typography, Button, TextField, Skeleton } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -11,6 +11,7 @@ export default function View() {
   const [currentSearch, setCurrentSearch] = useState(""); // Holds the active search query
   const limit = 5; // Number of videos per page
   const [skip, setSkip] = useState(0); // Number of videos to skip for pagination
+  const [dataLoaded, setDataLoaded] = useState(false); // Tracks if initial data has been loaded
 
   // Load initial data on component mount
   useEffect(() => {
@@ -51,6 +52,7 @@ export default function View() {
 
       // Update hasMore flag
       setHasMore(data.hasMore);
+      setDataLoaded(true); // Mark data as loaded
     } catch (err) {
       toast.error("Error loading videos"); // Show error toast
     } finally {
@@ -81,83 +83,94 @@ export default function View() {
 
   return (
     <Stack gap="24px" alignItems="center">
-      {/* Search bar */}
-      <Stack
-        gap="16px"
-        flexDirection="row"
-        sx={{ width: "100%" }}
-        alignItems="center"
-      >
-        <TextField
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)} // Update search query
-          placeholder="Search by name"
+      {/* Show search bar only after data has been loaded */}
+      {dataLoaded && (
+        <Stack
+          gap="16px"
+          flexDirection="row"
           sx={{ width: "100%" }}
-          size="medium"
-        />
-        <Button variant="contained" size="large" onClick={handleSearch}>
-          Search
-        </Button>
-      </Stack>
+          alignItems="center"
+        >
+          <TextField
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+            placeholder="Search by name"
+            sx={{ width: "100%" }}
+            size="medium"
+          />
+          <Button variant="contained" size="large" onClick={handleSearch}>
+            Search
+          </Button>
+        </Stack>
+      )}
 
       {/* Journals list */}
       <Stack gap={"24px"} sx={{ width: "100%" }}>
-        {onlineLearning.length === 0 ? (
-          // Display message if no results found
-          <Typography variant="h6" color="text.secondary">
-            No results found for "{searchQuery}"
-          </Typography>
-        ) : (
-          onlineLearning.map((row, i) => (
-            <Stack
-              sx={{
-                p: "8px 16px",
-                backgroundColor: "#EFF1F5",
-                borderRadius: "12px",
-              }}
-              gap="16px"
-              flexDirection="row"
-              alignItems="center"
-              key={i}
-            >
-              <Typography
+        {!dataLoaded
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <Skeleton
+                key={index}
+                variant="rectangular"
+                height={120}
+                sx={{ borderRadius: "12px" }}
+              />
+            ))
+          : onlineLearning.length === 0 ? (
+            // Display message if no results found
+            <Typography variant="h6" color="text.secondary">
+              No results found for &quot;{searchQuery}&quot;
+            </Typography>
+          ) : (
+            onlineLearning.map((row, i) => (
+              <Stack
                 sx={{
-                  fontSize: "64px !important",
-                  fontWeight: 700,
-                  opacity: 0.15,
+                  p: "8px 16px",
+                  backgroundColor: "#EFF1F5",
+                  borderRadius: "12px",
                 }}
+                gap="16px"
+                flexDirection="row"
+                alignItems="center"
+                key={i}
               >
-                {i + 1}
-              </Typography>
-              <Stack sx={{ width: "100%", pl: "16px" }}>
-                <Typography variant="h4" color="text.primary">
-                  {highlightText(row.title)} {/* Highlight the title */}
+                <Typography
+                  sx={{
+                    fontSize: "64px !important",
+                    fontWeight: 700,
+                    opacity: 0.15,
+                  }}
+                >
+                  {i + 1}
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  {new Date(row.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </Typography>
+                <Stack sx={{ width: "100%", pl: "16px" }}>
+                  <Typography variant="h4" color="text.primary">
+                    {highlightText(row.title)} {/* Highlight the title */}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {new Date(row.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </Typography>
+                </Stack>
+                <Button
+                  variant="soft"
+                  sx={{ width: "180px" }}
+                  component="a" // This makes the Button behave as a link
+                  href={row.link} // Link from the database
+                  target="_blank" // Open the link in a new tab
+                  rel="noopener noreferrer" // Security feature when opening external links
+                >
+                  Read More
+                </Button>
               </Stack>
-              <Button
-                variant="soft"
-                sx={{ width: "180px" }}
-                component="a" // This makes the Button behave as a link
-                href={row.link} // Link from the database
-                target="_blank" // Open the link in a new tab
-                rel="noopener noreferrer" // Security feature when opening external links
-              >
-                Read More
-              </Button>
-            </Stack>
-          ))
-        )}
+            ))
+          )}
       </Stack>
 
       {/* Load More button */}
-      {hasMore && (
+      {hasMore && dataLoaded && (
         <Button
           onClick={() => loadOnlineLearning(false)}
           variant="contained"
