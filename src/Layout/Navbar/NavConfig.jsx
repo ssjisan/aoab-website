@@ -17,20 +17,33 @@ const main = [
         id: 1,
         title: "AO Alliance - Global",
         link: "https://events.ao-alliance.org/",
-        subtitle:"Discover international training opportunities."
+        subtitle: "Discover international training opportunities.",
       },
       {
         id: 2,
         title: "AO Alliance - Bangladesh",
         link: "/educations&training/aoa-bangladesh",
-        subtitle:"Explore local learning opportunities"
+        subtitle: "Explore local learning opportunities",
       },
     ],
   },
   {
     id: 4,
-    title: "Clinical Research",
-    link: "/clinical-research",
+    title: "Links & Forms",
+    submenu: [
+      {
+        id: 1,
+        title: "Links",
+        link: "/links&forms/links",
+        subtitle: "Discover all important links",
+      },
+      {
+        id: 2,
+        title: "Forms",
+        link: "/links&forms/forms",
+        subtitle: "Explore all essential forms",
+      },
+    ],
   },
   {
     id: 5,
@@ -42,11 +55,6 @@ const main = [
     title: "Videos",
     link: "/videos",
   },
-  // {
-  //   id: 7,
-  //   title: "Contact",
-  //   link: "/contact",
-  // },
 ];
 
 export { main };
