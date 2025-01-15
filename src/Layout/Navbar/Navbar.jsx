@@ -209,6 +209,7 @@ export default function Navbar() {
                               gap="16px"
                               component="a"
                               href={submenu.link}
+                              target="_blank"
                               rel="noopener noreferrer"
                             >
                               <Stack

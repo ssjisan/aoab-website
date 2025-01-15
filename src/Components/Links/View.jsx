@@ -2,7 +2,6 @@ import { Stack, Typography, Button, TextField, Skeleton } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 export default function View() {
   const [onlineLearning, setOnlineLearning] = useState([]); // Stores the videos
@@ -13,7 +12,7 @@ export default function View() {
   const limit = 5; // Number of videos per page
   const [skip, setSkip] = useState(0); // Number of videos to skip for pagination
   const [dataLoaded, setDataLoaded] = useState(false); // Tracks if initial data has been loaded
-
+  
   // Load initial data on component mount
   useEffect(() => {
     loadOnlineLearning(true); // Initial load
@@ -31,7 +30,7 @@ export default function View() {
 
       // Fetch data from the server
       const { data } = await axios.get(
-        `${process.env.REACT_APP_SERVER_API}/search-resources`,
+        `${process.env.REACT_APP_SERVER_API}/search-links`,
         {
           params: {
             searchQuery: query, // Use the provided query
@@ -43,9 +42,9 @@ export default function View() {
 
       // Handle response data
       if (initial) {
-        setOnlineLearning(data.resources); // Reset data for initial load
+        setOnlineLearning(data.links); // Reset data for initial load
       } else {
-        setOnlineLearning((prev) => [...prev, ...data.resources]); // Append new data
+        setOnlineLearning((prev) => [...prev, ...data.links]); // Append new data
       }
 
       // Update skip for the next fetch
@@ -60,6 +59,7 @@ export default function View() {
       setLoading(false); // Reset loading state
     }
   };
+console.log(onlineLearning);
 
   const handleSearch = () => {
     setSkip(0); // Reset skip

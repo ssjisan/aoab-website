@@ -15,7 +15,7 @@ export default function Matrix() {
         <SectionContent
           chip="Impact"
           title="Important highlights we achieved"
-          subTitle="Our team provides personalized care. From cleanings to advanced cosmetic procedures. Contact us!"
+          subTitle=""
         />
         <Grid container spacing={3}>
           {cardData.map((card, index) => (

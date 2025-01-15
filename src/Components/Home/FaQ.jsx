@@ -35,7 +35,7 @@ export default function FaQ() {
                 }}
               >
                 <AccordionSummary
-                  expandIcon={<RightArrow />}
+                  expandIcon={<RightArrow size="20px" color="#111827" />}
                   aria-controls="panel1-content"
                   id={data.id}
                 >

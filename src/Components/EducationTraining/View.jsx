@@ -11,7 +11,13 @@ export default function View() {
     await loadRunningEvents(false); // Load the next batch of events
     setLoadingMore(false);
   };
-
+  const handlePreview = (id) => {
+    // Open the URL in a new tab and scroll to the top
+    const newTab = window.open(`/course_event/${id}`, "_blank");
+    if (newTab) {
+      newTab.scrollTo(0, 0); // Ensure the new tab scrolls to the top
+    }
+  };
   return (
     <Stack gap="48px" alignItems="center">
       <Grid container spacing={3} justifyContent="center">
@@ -51,7 +57,7 @@ export default function View() {
                     {start} - {end}
                   </Typography>
                 </Stack>
-                <Button variant="soft">View Details</Button>
+                <Button variant="soft" onClick={() => handlePreview(data._id)}>View Details</Button>
               </Stack>
             </Grid>
           );

@@ -11,7 +11,7 @@ const main = [
   },
   {
     id: 3,
-    title: "Educations & Training",
+    title: "Courses & Events",
     submenu: [
       {
         id: 1,

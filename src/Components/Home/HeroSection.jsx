@@ -33,7 +33,7 @@ export default function HeroSection() {
               color: "#fff",
             }}
           >
-            Healing more than broken bones
+            Improve care of the injured in Bangladesh
           </Typography>
           <Typography
             variant="h4"
@@ -44,9 +44,8 @@ export default function HeroSection() {
               fontWeight: "300 !important",
             }}
           >
-            Help us reduce human suffering, disability, and poverty as we work
-            to improve care of the injured in low- and middle-income countries
-            in Sub-Saharan Africa and Asia
+            Improve care of the injured, after this omit rest of the line and
+            add in Bangladesh
           </Typography>
         </Box>
       </Container>

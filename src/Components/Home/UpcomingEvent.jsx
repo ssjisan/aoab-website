@@ -18,6 +18,13 @@ export default function UpcomingEvent() {
   const forBelow767 = useMediaQuery("(max-width:767px)");
   const { monthlyEvents } = useContext(DataContext);
 
+  const handlePreview = (id) => {
+    // Open the URL in a new tab and scroll to the top
+    const newTab = window.open(`/course_event/${id}`, "_blank");
+    if (newTab) {
+      newTab.scrollTo(0, 0); // Ensure the new tab scrolls to the top
+    }
+  };
   return (
     <Container
       sx={{
@@ -83,7 +90,11 @@ export default function UpcomingEvent() {
                       Date: {start} to {end}
                     </Typography>
                   </Stack>
-                  <Button variant="contained" sx={{ width: "fit-content" }}>
+                  <Button
+                    variant="contained"
+                    sx={{ width: "fit-content" }}
+                    onClick={() => handlePreview(data._id)}
+                  >
                     View Details
                   </Button>
                 </Stack>
@@ -95,7 +106,12 @@ export default function UpcomingEvent() {
         // If monthlyEvents is loading or empty, show the skeleton
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={5} lg={5}>
-            <Skeleton variant="rectangular" width="100%" height="280px" />
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              height="280px"
+              sx={{ borderRadius: "12px" }}
+            />
           </Grid>
           <Grid item xs={12} sm={12} md={7} lg={7}>
             <Stack
@@ -111,9 +127,7 @@ export default function UpcomingEvent() {
                 <Skeleton variant="text" width="80%" height={40} />
                 <Skeleton variant="text" width="60%" height={30} />
               </Stack>
-              <Button variant="contained" sx={{ width: "fit-content" }}>
-                <Skeleton width="100px" />
-              </Button>
+              <Skeleton width="100px" />
             </Stack>
           </Grid>
         </Grid>
