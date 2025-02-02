@@ -55,6 +55,11 @@ const main = [
     title: "Videos",
     link: "/videos",
   },
+  {
+    id: 7,
+    title: "Gallery",
+    link: "/gallery",
+  },
 ];
 
 export { main };

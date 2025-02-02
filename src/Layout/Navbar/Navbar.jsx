@@ -201,9 +201,9 @@ export default function Navbar() {
                                 border: "1px solid #F2F2F2",
                                 textDecoration: "none",
                                 transition: "border-color 0.3s ease",
-                                background: "#FFF",
+                                background: "#003258",
                                 "&:hover": {
-                                  background: "rgba(0, 50, 88, 0.08)",
+                                  border: "1px solid #fff",
                                 },
                               }}
                               gap="16px"
@@ -216,12 +216,12 @@ export default function Navbar() {
                                 flexDirection="row"
                                 justifyContent="space-between"
                               >
-                                <Typography color="text.primary">
+                                <Typography sx={{color:"#fff"}}>
                                   {submenu.title}
                                 </Typography>
-                                <RightArrow size="16px" />
+                                <RightArrow size="16px" color="#FFF"/>
                               </Stack>
-                              <Typography color="text.secondary">
+                              <Typography sx={{color:"#fff"}}>
                                 {submenu.subtitle}
                               </Typography>
                             </Stack>

@@ -8,7 +8,7 @@ export default function AboutUs() {
         <SectionContent
           chip="About Us"
           title="Driving knowledge development and transfer in trauma and orthopedic care."
-          subTitle="The AO Alliance is a nonprofit dedicated to improving fracture care by reducing suffering, disability, and poverty through sustainable programs."
+          subTitle="The AO Alliance is a non profit organisation dedicated to improving fracture care by reducing suffering, disability, and poverty through sustainable programs."
         />
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={6} lg={6}>

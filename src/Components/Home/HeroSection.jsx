@@ -44,8 +44,8 @@ export default function HeroSection() {
               fontWeight: "300 !important",
             }}
           >
-            Improve care of the injured, after this omit rest of the line and
-            add in Bangladesh
+            Help us to reduce human suffering, disability and poverty as we work
+            to improve care of the injured in Bangladesh
           </Typography>
         </Box>
       </Container>

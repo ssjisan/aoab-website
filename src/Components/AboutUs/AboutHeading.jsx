@@ -38,7 +38,7 @@ export default function AboutHeading() {
                 </Typography>
               </Stack>
               <Typography variant="h6" color="text.secondary">
-                We are a nonprofit development organization dedicated to
+                We are a non profit organization dedicated to
                 strengthening care of the injured in over 30 low- and
                 middle-income countries.
               </Typography>
