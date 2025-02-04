@@ -25,6 +25,7 @@ export default function UpcomingEvent() {
       newTab.scrollTo(0, 0); // Ensure the new tab scrolls to the top
     }
   };
+
   return (
     <Container
       sx={{
@@ -51,13 +52,19 @@ export default function UpcomingEvent() {
             day: "numeric",
           });
           return (
-            <Grid container spacing={3} key={data._id}>
-              <Grid item xs={12} sm={12} md={5} lg={5}>
+            <Grid
+              container
+              spacing={3}
+              key={data._id}
+              sx={{ alignItems: "stretch" }} // Ensures both columns have equal height
+            >
+              <Grid item xs={12} sm={12} md={5} lg={5} sx={{ display: "flex" }}>
                 <Box
                   sx={{
                     borderRadius: "12px",
                     overflow: "hidden",
-                    height: "100%",
+                    width: "100%",
+                    height: "100%", // Ensures it matches the content height
                   }}
                 >
                   <img
@@ -65,21 +72,23 @@ export default function UpcomingEvent() {
                     alt="About Us"
                     style={{
                       objectFit: "cover",
-                      height: "100%",
                       width: "100%",
+                      height: "100%",
                     }}
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={12} md={7} lg={7}>
+              <Grid item xs={12} sm={12} md={7} lg={7} sx={{ display: "flex" }}>
                 <Stack
                   sx={{
                     p: "24px",
                     background: "rgba(0, 50, 88, 0.08)",
-                    height: "280px",
                     borderRadius: "12px",
+                    width: "100%",
+                    height: "100%", // Ensures it matches the image height
                   }}
                   justifyContent="space-between"
+                  gap="24px"
                 >
                   <Stack gap="16px">
                     <Stack gap="8px">
@@ -104,22 +113,23 @@ export default function UpcomingEvent() {
         })
       ) : (
         // If monthlyEvents is loading or empty, show the skeleton
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} md={5} lg={5}>
+        <Grid container spacing={3} sx={{ alignItems: "stretch" }}>
+          <Grid item xs={12} sm={12} md={5} lg={5} sx={{ display: "flex" }}>
             <Skeleton
               variant="rectangular"
               width="100%"
-              height="280px"
-              sx={{ borderRadius: "12px" }}
+              height="100%"
+              sx={{ borderRadius: "12px", flexGrow: 1 }}
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={7} lg={7}>
+          <Grid item xs={12} sm={12} md={7} lg={7} sx={{ display: "flex" }}>
             <Stack
               sx={{
                 p: "24px",
                 background: "rgba(0, 50, 88, 0.08)",
-                height: "280px",
                 borderRadius: "12px",
+                width: "100%",
+                height: "100%",
               }}
               justifyContent="space-between"
             >

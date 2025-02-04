@@ -1,4 +1,11 @@
-import { Box, Button, IconButton, Stack, Typography, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import MenuDrawer from "./MenuDrawer";
@@ -47,7 +54,7 @@ export default function Navbar() {
     <Box sx={NavSx}>
       <Stack
         sx={{
-          p: forBelow1100? "16px" :"0px 16px 0px 16px",
+          p: forBelow1100 ? "16px" : "0px 16px 0px 16px",
           backgroundColor: isScrolled ? "#fff" : "transparent",
           transition: "all 0.5s ease-in-out",
           borderBottom: isScrolled && "1px solid rgba(145,142,175,0.32)",
@@ -62,7 +69,7 @@ export default function Navbar() {
             transition: "all 0.3s ease-in-out",
           }}
           component="a"
-                  href="/"
+          href="/"
         >
           <Logo
             colorOne={
@@ -216,12 +223,12 @@ export default function Navbar() {
                                 flexDirection="row"
                                 justifyContent="space-between"
                               >
-                                <Typography sx={{color:"#fff"}}>
+                                <Typography sx={{ color: "#fff" }}>
                                   {submenu.title}
                                 </Typography>
-                                <RightArrow size="16px" color="#FFF"/>
+                                <RightArrow size="16px" color="#FFF" />
                               </Stack>
-                              <Typography sx={{color:"#fff"}}>
+                              <Typography sx={{ color: "#fff" }}>
                                 {submenu.subtitle}
                               </Typography>
                             </Stack>

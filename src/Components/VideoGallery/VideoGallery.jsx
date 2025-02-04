@@ -17,7 +17,7 @@ export default function VideoGallery() {
         <SectionContent
           chip="Videos"
           title="Driving knowledge development and transfer in trauma and orthopedic care."
-          subTitle="The AO Alliance is a nonprofit dedicated to improving fracture care in over 30 LMICs across Sub-Saharan Africa and Asia, reducing suffering, disability, and poverty through sustainable programs."
+          subTitle="Watch n learn both operative and non operative techniques by looking at videos of this section."
         />
         <VideoCardDeck />
       </Container>

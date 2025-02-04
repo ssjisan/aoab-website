@@ -17,7 +17,7 @@ export default function PhotoGallery() {
         <SectionContent
           chip="Gallery"
           title="Driving knowledge development and transfer in trauma and orthopedic care."
-          subTitle="The AO Alliance is a non profit dedicated to improving fracture care in over 30 LMICs across Sub-Saharan Africa and Asia, reducing suffering, disability, and poverty through sustainable programs."
+          subTitle="Glimpses  of different events of AOA Bangladesh. Learning knowledge with attitude."
         />
         <ImageCardDeck />
       </Container>

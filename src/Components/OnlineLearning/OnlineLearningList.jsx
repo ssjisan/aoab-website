@@ -18,7 +18,7 @@ export default function OnlineLearningList() {
         <SectionContent
           chip="Online Learning"
           title="Driving knowledge development and transfer in trauma and orthopedic care."
-          subTitle="The AO Alliance is a nonprofit dedicated to improving fracture care in over 30 LMICs across Sub-Saharan Africa and Asia, reducing suffering, disability, and poverty through sustainable programs."
+          subTitle="You will find link of all orthopedic journal here in this section"
         />
         <Box>
           <View />

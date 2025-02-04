@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -9,9 +10,15 @@ import {
 } from "@mui/material";
 import SectionContent from "../Common/SectionContent";
 import { RightArrow } from "../../assets/Icons";
-import { main } from "../../Assets/FaQFake";
+import { main } from "../../Assets/FaQ";
 
 export default function FaQ() {
+  const [expanded, setExpanded] = useState(null);
+
+  const handleAccordionChange = (panelId) => {
+    setExpanded((prev) => (prev === panelId ? null : panelId));
+  };
+
   return (
     <Container sx={{ pt: "64px", pb: "64px" }}>
       <Stack gap="48px">
@@ -25,7 +32,8 @@ export default function FaQ() {
             return (
               <Accordion
                 key={data.id}
-                square={"false"}
+                expanded={expanded === data.id} // Control expansion
+                onChange={() => handleAccordionChange(data.id)} // Handle clicks
                 sx={{
                   marginTop: "24px",
                   borderBottom: "1px solid rgba(145, 142, 175, 0.40)",
@@ -36,13 +44,25 @@ export default function FaQ() {
               >
                 <AccordionSummary
                   expandIcon={<RightArrow size="20px" color="#111827" />}
-                  aria-controls="panel1-content"
-                  id={data.id}
+                  aria-controls="panel-content"
+                  id={`panel-${data.id}`}
                 >
                   <Typography variant="h5">{data.question}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography color="text.secondary">{data.answer}</Typography>
+                  {Array.isArray(data.answer) ? (
+                    <ul style={{ paddingLeft: "16px", margin: "0" }}>
+                      {data.answer.map((ans, index) => (
+                        <li key={index}>
+                          <Typography color="text.secondary">{ans}</Typography>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <Typography color="text.secondary">
+                      {data.answer}
+                    </Typography>
+                  )}
                 </AccordionDetails>
               </Accordion>
             );
