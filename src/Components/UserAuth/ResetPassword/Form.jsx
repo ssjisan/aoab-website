@@ -21,9 +21,12 @@ export default function Form() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false); // For handling loading state
   const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,69 +88,76 @@ export default function Form() {
         component="form"
         onSubmit={handleSubmit} // Bind handleSubmit to form submission
       >
-        <Stack justifyContent="center" sx={{ textAlign: "center" }}>
+        <Stack justifyContent="center" sx={{ textAlign: "center" }} gap="8px">
           <Typography variant="h3">Reset Password</Typography>
           <Typography color="text.secondary" variant="h6">
             Please enter your new password.
           </Typography>
         </Stack>
         <Stack sx={{ width: "100%" }} gap="24px">
-          <Typography sx={{ fontWeight: "600" }}>New Password *</Typography>
           <Stack gap="8px">
-            <FormControl sx={{ width: "100%" }} variant="outlined" size="small">
-              <OutlinedInput
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={
-                        showPassword
-                          ? "hide the password"
-                          : "display the password"
-                      }
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <EyeOff color="#918EAF" size="20px" />
-                      ) : (
-                        <EyeOn color="#918EAF" size="20px" />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            <Typography
-              sx={{ fontSize: "13px !important" }}
-              color="text.secondary"
-            >
-              The password must be at least 8 characters long and include at
-              least 1 letter and 1 number.
-            </Typography>
+            <Typography sx={{ fontWeight: "600" }}>New Password *</Typography>
+            <Stack gap="8px">
+              <FormControl
+                sx={{ width: "100%" }}
+                variant="outlined"
+                size="small"
+              >
+                <OutlinedInput
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showPassword
+                            ? "hide the password"
+                            : "display the password"
+                        }
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <EyeOff color="#918EAF" size="20px" />
+                        ) : (
+                          <EyeOn color="#918EAF" size="20px" />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
+              <Typography
+                sx={{ fontSize: "13px !important" }}
+                color="text.secondary"
+              >
+                The password must be at least 8 characters long and include at
+                least 1 letter and 1 number.
+              </Typography>
+            </Stack>
           </Stack>
-
-          <Typography sx={{ fontWeight: "600" }}>Confirm Password *</Typography>
           <Stack gap="8px">
+            <Typography sx={{ fontWeight: "600" }}>
+              Confirm Password *
+            </Typography>
             <FormControl sx={{ width: "100%" }} variant="outlined" size="small">
               <OutlinedInput
-                type={showPassword ? "text" : "password"}
+                type={showConfirmPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
                       aria-label={
-                        showPassword
+                        showConfirmPassword
                           ? "hide the password"
                           : "display the password"
                       }
-                      onClick={handleClickShowPassword}
+                      onClick={handleClickShowConfirmPassword}
                       edge="end"
                     >
-                      {showPassword ? (
+                      {showConfirmPassword ? (
                         <EyeOff color="#918EAF" size="20px" />
                       ) : (
                         <EyeOn color="#918EAF" size="20px" />
@@ -158,20 +168,18 @@ export default function Form() {
               />
             </FormControl>
           </Stack>
-          <Stack gap="8px">
-            <Button
-              variant="contained"
-              type="submit"
-              startIcon={
-                loading && (
-                  <CircularProgress size={24} sx={{ color: "#ffffff" }} />
-                )
-              }
-              disabled={loading}
-            >
-              {loading ? "Resetting..." : "Reset Password"}
-            </Button>
-          </Stack>
+          <Button
+            variant="contained"
+            type="submit"
+            startIcon={
+              loading && (
+                <CircularProgress size={24} sx={{ color: "#ffffff" }} />
+              )
+            }
+            disabled={loading}
+          >
+            {loading ? "Resting..." : "Reset Password"}
+          </Button>
         </Stack>
       </Stack>
     </Container>

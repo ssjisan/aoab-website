@@ -1,6 +1,9 @@
 import Navbar from "../../Layout/Navbar/Navbar";
 import { Container, Grid, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
+import BasicInfo from "../../Components/StudentProfile/Profile/BasicInfo";
+import ProfileCard from "../../Components/StudentProfile/Profile/ProfileCard";
+import AOACourses from "../../Components/StudentProfile/Profile/AOACourses";
 
 export default function Profile() {
   return (
@@ -23,7 +26,11 @@ export default function Profile() {
             Keep your profile updated with all accurate information.
           </Typography>
         </Stack>
-        Info
+        <Stack gap="24px">
+          <ProfileCard />
+          <BasicInfo />
+          <AOACourses />
+        </Stack>
       </Container>
     </div>
   );

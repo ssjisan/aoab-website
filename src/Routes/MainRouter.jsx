@@ -20,6 +20,7 @@ import Profile from "../Pages/StudentProfile/Profile";
 import Certificates from "../Pages/StudentProfile/Certificates";
 import EnrollmentHistory from "../Pages/StudentProfile/EnrollmentHistory";
 import Password from "../Pages/StudentProfile/password";
+import Registration from "../Pages/UserAuth/Registration";
 
 export default function MainRoute() {
   return (
@@ -58,20 +59,19 @@ export default function MainRoute() {
           path="/educations&training/aoa-bangladesh"
           element={<EducationTraining />}
         />
-
         <Route path="/course_event/:id" element={<EventDetails />} />
         <Route path="/links&forms/forms" element={<Forms />} />
         <Route path="/links&forms/links" element={<Links />} />
         <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/verify-otp" element={<OTPVerify />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify-otp" element={<OTPVerify />} />
         <Route
           path="/verify-for-reset"
           element={<OTPVerifyForRestPassword />}
         />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/create-account" element={<ForgotPassword />} />
         <Route path="" element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/password" element={<Password />} />

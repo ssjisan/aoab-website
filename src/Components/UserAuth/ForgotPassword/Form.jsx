@@ -28,7 +28,7 @@ export default function ForgotPasswordForm() {
         </Stack>
         <Stack sx={{ width: "100%" }} gap="24px">
           <Stack gap="8px">
-            <Typography>Email *</Typography>
+          <Typography sx={{fontWeight:"600"}}>Email *</Typography>
             <TextField
               variant="outlined"
               size="small"

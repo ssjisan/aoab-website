@@ -15,49 +15,47 @@ import { EyeOff, EyeOn } from "../../../assets/Icons";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { DataContext } from "../../../DataProcessing/DataProcessing";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export default function Form() {
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const handleShowPassword = () => setShowPassword((show) => !show);
+  const handleShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
+
+  const [name, setName] = useState("");
+  const [bmdcNo, setBmdcNo] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { setAuth } = useContext(DataContext);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [registrationLoading, setRegistrationLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location?.state?.from || "/";
 
-  const handleLogin = async (e) => {
+  const handleRegistration = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
+    setRegistrationLoading(true);
+  
     try {
-      const { data } = await axios.post("/student-login", { email, password });
-
+      const { data } = await axios.post("/registration", {
+        name,
+        bmdcNo,
+        email,
+        contactNumber,
+        password,
+        confirmPassword,
+      });
+  
       if (data?.error) {
-        setLoading(false);
+        setRegistrationLoading(false);
         toast.error(data.error || "An error occurred. Please try again.");
       } else {
-        localStorage.setItem("auth", JSON.stringify(data));
-        setAuth((prevAuth) => ({
-          ...prevAuth,
-          token: data.token,
-          user: data.user,
-        }));
-
-        setLoading(false);
-        toast.success("Login Successful");
-
-        // Redirect to the previous page or default home
-        navigate(from, { replace: true });
-
-        setEmail("");
-        setPassword("");
+        toast.success(data.message);
+        navigate("/verify-otp", { state: { email } });
       }
     } catch (err) {
-      setLoading(false);
+      setRegistrationLoading(false);
       if (err.response && err.response.data) {
         toast.error(
           err.response.data.error || "An error occurred. Please try again."
@@ -67,6 +65,8 @@ export default function Form() {
       }
     }
   };
+  
+  
 
   return (
     <Container sx={{ display: "flex", justifyContent: "center" }}>
@@ -78,17 +78,37 @@ export default function Form() {
           pb: "48px",
         }}
         alignItems="center"
-        gap="48px"
+        gap="24px"
         component="form"
-        onSubmit={handleLogin}
+        onSubmit={handleRegistration}
       >
         <Stack justifyContent="center" sx={{ textAlign: "center" }} gap="8px">
-          <Typography variant="h3">Login</Typography>
+          <Typography variant="h3">Registration</Typography>
           <Typography color="text.secondary" variant="h6">
-            Do not share your login information with anyone
+            Create an account for enroll our courses.
           </Typography>
         </Stack>
         <Stack sx={{ width: "100%" }} gap="24px">
+          <Stack gap="8px">
+            <Typography sx={{ fontWeight: "600" }}>Name *</Typography>
+            <TextField
+              variant="outlined"
+              size="small"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Stack>
+          <Stack gap="8px">
+            <Typography sx={{ fontWeight: "600" }}>
+              BM&DC Registration No *
+            </Typography>
+            <TextField
+              variant="outlined"
+              size="small"
+              value={bmdcNo}
+              onChange={(e) => setBmdcNo(e.target.value)}
+            />
+          </Stack>
           <Stack gap="8px">
             <Typography sx={{ fontWeight: "600" }}>Email *</Typography>
             <TextField
@@ -96,6 +116,15 @@ export default function Form() {
               size="small"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+            />
+          </Stack>
+          <Stack gap="8px">
+            <Typography sx={{ fontWeight: "600" }}>Contact Number *</Typography>
+            <TextField
+              variant="outlined"
+              size="small"
+              value={contactNumber}
+              onChange={(e) => setContactNumber(e.target.value)}
             />
           </Stack>
           <Stack gap="8px">
@@ -118,7 +147,7 @@ export default function Form() {
                             ? "hide the password"
                             : "display the password"
                         }
-                        onClick={handleClickShowPassword}
+                        onClick={handleShowPassword}
                         edge="end"
                       >
                         {showPassword ? (
@@ -132,33 +161,60 @@ export default function Form() {
                 />
               </FormControl>
               <Typography
-                sx={{
-                  fontSize: "13px !important",
-                  textDecoration: "underline",
-                }}
-                color="primary"
-                component="a"
-                href="/forgot-password"
+                sx={{ fontSize: "13px !important" }}
+                color="text.secondary"
               >
-                Forgot your password?
+                The password must be at least 8 characters long and include at
+                least 1 letter and 1 number.
               </Typography>
             </Stack>
+          </Stack>
+          <Stack gap="8px">
+            <Typography sx={{ fontWeight: "600" }}>
+              Confirm Password *
+            </Typography>
+            <FormControl sx={{ width: "100%" }} variant="outlined" size="small">
+              <OutlinedInput
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={
+                        showConfirmPassword
+                          ? "hide the password"
+                          : "display the password"
+                      }
+                      onClick={handleShowConfirmPassword}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff color="#918EAF" size="20px" />
+                      ) : (
+                        <EyeOn color="#918EAF" size="20px" />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
           </Stack>
           <Button
             variant="contained"
             type="submit"
             startIcon={
-              loading && (
+              registrationLoading && (
                 <CircularProgress size={24} sx={{ color: "#ffffff" }} />
               )
             }
           >
-            {loading ? "Connecting" : "Login"}
+            {registrationLoading ? "Creating..." : "Create"}
           </Button>
         </Stack>
         <Typography color="text.secondary">
-          Don&apos;t have an account?{" "}
-          <Link to="/registration">
+          Already have an account?{" "}
+          <Link to="/login">
             <Box
               component="span"
               sx={{
@@ -167,7 +223,7 @@ export default function Form() {
                 fontWeight: 600,
               }}
             >
-              Create Account
+              Login
             </Box>
           </Link>
         </Typography>
