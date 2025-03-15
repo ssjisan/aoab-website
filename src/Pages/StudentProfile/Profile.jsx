@@ -1,11 +1,31 @@
 import Navbar from "../../Layout/Navbar/Navbar";
-import { Container, Grid, Stack, Typography } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
 import BasicInfo from "../../Components/StudentProfile/Profile/BasicInfo";
 import ProfileCard from "../../Components/StudentProfile/Profile/ProfileCard";
 import AOACourses from "../../Components/StudentProfile/Profile/AOACourses";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Profile() {
+  const [profile, setProfile] = useState(null); // Set initial state to null to avoid .map on an empty array
+
+  useEffect(() => {
+    // Function to load the profile data
+    const loadProfileData = async () => {
+      try {
+        const { data } = await axios.get("/my-profile-data");
+        setProfile(data); // Assuming data is an object, not an array
+      } catch (err) {
+        toast.error("Error loading profile:", err);
+      }
+    };
+
+    // Call the function to load profile data
+    loadProfileData();
+  }, []);
+
   return (
     <div>
       <Navbar />
@@ -27,9 +47,9 @@ export default function Profile() {
           </Typography>
         </Stack>
         <Stack gap="24px">
-          <ProfileCard />
-          <BasicInfo />
-          <AOACourses />
+          <ProfileCard profile={profile} />
+          <BasicInfo profile={profile} />
+          <AOACourses profile={profile} />
         </Stack>
       </Container>
     </div>

@@ -1,26 +1,41 @@
 import {
   Box,
-  Stack,
   Typography,
   List,
   ListItemButton,
   Drawer,
   ListItemIcon,
-  useMediaQuery,
   Avatar,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import navConfig from "../Navbar/ProfileMenu";
 import { DataContext } from "../../DataProcessing/DataProcessing";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-export default function ProfileMenuDrawer({ isScrolled }) {
+export default function ProfileMenuDrawer() {
   const { auth, setAuth } = useContext(DataContext); // Use the auth context
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const [profile, setProfile] = useState(null); // Set initial state to null to avoid .map on an empty array
 
-  const forBelow499 = useMediaQuery("(max-width:949px)");
+  useEffect(() => {
+    // Function to load the profile data
+    const loadProfileData = async () => {
+      try {
+        const { data } = await axios.get("/my-profile-data");
+        setProfile(data); // Assuming data is an object, not an array
+      } catch (err) {
+        toast.error("Error loading profile:", err);
+      }
+    };
+
+    // Call the function to load profile data
+    loadProfileData();
+  }, []);
+
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
@@ -55,18 +70,17 @@ export default function ProfileMenuDrawer({ isScrolled }) {
           }}
         >
           <Avatar
-            src={auth?.user?.profileImage || ""}
+            src={profile?.picture?.[0]?.url || ""} // Assuming the profile picture is the first image in the array
             alt="Profile"
-            variant="square"
             sx={{
               width: "100%",
               height: "100%",
-              fontSize: "24px",
-              bgcolor: "#111827", // Default background color
+              fontSize: "32px",
+              color: "#FFF",
+              bgcolor: "#000",
             }}
           >
-            {auth?.user?.name ? auth.user.name.charAt(0).toUpperCase() : "G"}{" "}
-            {/* Fallback initial */}
+            {profile?.name ? profile.name.charAt(0).toUpperCase() : "G"}{" "}
           </Avatar>
         </Box>
         <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
@@ -137,19 +151,17 @@ export default function ProfileMenuDrawer({ isScrolled }) {
         onClick={toggleDrawer(true)}
       >
         <Avatar
-          src={auth?.user?.profileImage || ""}
+          src={profile?.picture?.[0]?.url || ""} // Assuming the profile picture is the first image in the array
           alt="Profile"
-          variant="square"
           sx={{
-            width: "100%",
-            height: "100%",
-            fontSize: "24px",
-            color:"#FFF",
-            backgroundImage: "url('/pp.png')", backgroundSize: "cover" 
+            width: "40px",
+            height: "40px",
+            fontSize: "32px",
+            color: "#FFF",
+            bgcolor: "#000",
           }}
         >
-          {auth?.user?.name ? auth.user.name.charAt(0).toUpperCase() : "G"}{" "}
-          {/* Fallback initial */}
+          {profile?.name ? profile.name.charAt(0).toUpperCase() : "G"}{" "}
         </Avatar>
       </Box>
 

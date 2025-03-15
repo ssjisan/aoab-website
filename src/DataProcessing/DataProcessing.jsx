@@ -11,7 +11,7 @@ export default function DataProcessing({ children }) {
   const { runningEvents, monthlyEvents, loadRunningEvents, hasMore, loading } =
     EventData();
   const { auth, setAuth } = AuthProvider();
-  const { email, setEmail, handleSubmit,sendingOtp } = ForgotPassword();
+  const { email, setEmail, handleSubmit, sendingOtp } = ForgotPassword();
   // *************************************************** Axios Configuration *********************************************************** //
   // eslint-disable-next-line
   axios.defaults.baseURL = process.env.REACT_APP_SERVER_API;
@@ -32,7 +32,7 @@ export default function DataProcessing({ children }) {
         email,
         setEmail,
         handleSubmit,
-        sendingOtp
+        sendingOtp,
       }}
     >
       {children}

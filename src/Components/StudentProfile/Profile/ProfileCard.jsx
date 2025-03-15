@@ -1,27 +1,14 @@
-import { useEffect, useState } from "react";
 import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
-import axios from "axios";
-import toast from "react-hot-toast";
-import ProgressBar from "../../Common/ProgressBar";
+import PropTypes from "prop-types"; // Import PropTypes for prop validation
+import ImageUpload from "./ImageUpload";
+import { useState } from "react";
 
-export default function ProfileCard() {
-  const [profile, setProfile] = useState(null); // Set initial state to null to avoid .map on an empty array
+export default function ProfileCard({ profile }) {
+  const [openDrawer, setOpenDrawer] = useState(false);
 
-  useEffect(() => {
-    // Function to load the profile data
-    const loadProfileData = async () => {
-      try {
-        const { data } = await axios.get("/my-profile-data");
-        setProfile(data); // Assuming data is an object, not an array
-      } catch (err) {
-        toast.error("Error loading profile:", err);
-      }
-    };
-
-    // Call the function to load profile data
-    loadProfileData();
-  }, []);
-
+  const toggleDrawer = (open) => () => {
+    setOpenDrawer(open);
+  };
   if (!profile) {
     return <Typography>Loading...</Typography>; // Display loading text until profile is fetched
   }
@@ -31,13 +18,14 @@ export default function ProfileCard() {
       sx={{
         width: "100%",
         borderRadius: "12px",
-        background: "#05060f08",
+        border: "1px solid #05060f08",
         boxShadow:
           "0px 0px 2px rgba(145, 158, 171, 0.2), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
         p: "16px",
       }}
-      flexDirection="row"
+      flexDirection={{ sm: "column", md: "row", lg: "row" }}
       gap="16px"
+      alignItems={{ xs: "center", sm: "center" }}
     >
       <Box
         sx={{
@@ -55,8 +43,7 @@ export default function ProfileCard() {
             height: "80px",
             fontSize: "32px",
             color: "#FFF",
-            backgroundImage: "url('/pp.png')",
-            backgroundSize: "cover",
+            bgcolor: "#000",
           }}
         >
           {profile?.name ? profile.name.charAt(0).toUpperCase() : "G"}{" "}
@@ -64,19 +51,57 @@ export default function ProfileCard() {
       </Box>
       <Stack
         gap="2px"
-        sx={{ height: "inherit", width: "100%" }}
-        justifyContent="flex-end"
+        sx={{
+          height: "inherit",
+          width: "100%",
+          textAlign: { xs: "center", sm: "center", md: "left", lg: "left" },
+        }}
       >
-        <Typography variant="h5" sx={{ fontWeight: "700" }}>
-          {profile.name}
-        </Typography>
+        <Stack flexDirection="row" gap="8px" alignItems="center">
+          <Typography variant="h5" sx={{ fontWeight: "700" }}>
+            {profile.name}
+          </Typography>
+          <Stack
+            sx={{
+              border: "1px dashed #919EAB",
+              p: "4px 8px",
+              borderRadius: "20px",
+            }}
+          >
+            <Typography sx={{ fontSize: "12px !important", fontWeight: "600" }}>
+              Not verified
+            </Typography>
+          </Stack>
+        </Stack>
         <Typography variant="body1" color="text.secondary">
           {profile.email}
         </Typography>
       </Stack>
-      <Stack gap="2px" sx={{ height: "inherit" }} justifyContent="center">
-        <ProgressBar done={90} />
-      </Stack>
+      <Button
+        sx={{ width: "180px" }}
+        variant="contained"
+        onClick={toggleDrawer(true)}
+      >
+        Upload Image
+      </Button>
+      <ImageUpload
+        open={openDrawer}
+        toggleDrawer={toggleDrawer}
+        currentImage={profile?.picture?.[0]?.url}
+      />
     </Stack>
   );
 }
+
+// Prop types validation for the ProfileCard component
+ProfileCard.propTypes = {
+  profile: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    picture: PropTypes.arrayOf(
+      PropTypes.shape({
+        url: PropTypes.string,
+      })
+    ),
+  }).isRequired,
+};

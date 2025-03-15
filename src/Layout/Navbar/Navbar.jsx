@@ -7,7 +7,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import MenuDrawer from "./MenuDrawer";
 import { Menu, Plus, RightArrow } from "../../assets/Icons";
 import Logo from "../../assets/Logo";
@@ -23,8 +23,7 @@ export default function Navbar() {
   const forBelow1100 = useMediaQuery("(max-width:1100px)");
   const forBelow767 = useMediaQuery("(max-width:767px)");
   const [open, setOpen] = useState(false);
-  const { auth, setAuth } = useContext(DataContext); // Auth context
-  const navigate = useNavigate();
+  const { auth } = useContext(DataContext); // Auth context
 
   useEffect(() => {
     const handleScroll = () => {
