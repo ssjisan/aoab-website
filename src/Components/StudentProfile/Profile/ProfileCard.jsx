@@ -1,16 +1,36 @@
-import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
-import PropTypes from "prop-types"; // Import PropTypes for prop validation
+import { Avatar, Box, Button, Stack, Typography, CircularProgress } from "@mui/material";
+import PropTypes from "prop-types";
 import ImageUpload from "./ImageUpload";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ProfileCard({ profile }) {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
   };
+
+  useEffect(() => {
+    if (profile?.picture?.[0]?.url) {
+      setLoading(true);
+      const img = new Image();
+      img.src = profile.picture[0].url;
+      img.onload = () => {
+        setImageLoaded(true);
+        setLoading(false);
+      };
+      img.onerror = () => {
+        setLoading(false);
+      };
+    } else {
+      setLoading(false);
+    }
+  }, [profile?.picture]);
+
   if (!profile) {
-    return <Typography>Loading...</Typography>; // Display loading text until profile is fetched
+    return <Typography>Loading...</Typography>;
   }
 
   return (
@@ -32,22 +52,29 @@ export default function ProfileCard({ profile }) {
           width: "80px",
           height: "80px",
           borderRadius: "8px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative",
         }}
       >
-        {/* Replace the commented Avatar with the actual data */}
-        <Avatar
-          src={profile?.picture?.[0]?.url || ""} // Assuming the profile picture is the first image in the array
-          alt="Profile"
-          sx={{
-            width: "80px",
-            height: "80px",
-            fontSize: "32px",
-            color: "#FFF",
-            bgcolor: "#000",
-          }}
-        >
-          {profile?.name ? profile.name.charAt(0).toUpperCase() : "G"}{" "}
-        </Avatar>
+        {loading ? (
+          <CircularProgress size={40} />
+        ) : (
+          <Avatar
+            src={imageLoaded ? profile?.picture?.[0]?.url : ""}
+            alt="Profile"
+            sx={{
+              width: "80px",
+              height: "80px",
+              fontSize: "32px",
+              color: "#FFF",
+              bgcolor: "#000",
+            }}
+          >
+            {profile?.name ? profile.name.charAt(0).toUpperCase() : "G"}
+          </Avatar>
+        )}
       </Box>
       <Stack
         gap="2px"
@@ -77,18 +104,10 @@ export default function ProfileCard({ profile }) {
           {profile.email}
         </Typography>
       </Stack>
-      <Button
-        sx={{ width: "180px" }}
-        variant="contained"
-        onClick={toggleDrawer(true)}
-      >
+      <Button sx={{ width: "180px" }} variant="contained" onClick={toggleDrawer(true)}>
         Upload Image
       </Button>
-      <ImageUpload
-        open={openDrawer}
-        toggleDrawer={toggleDrawer}
-        currentImage={profile?.picture?.[0]?.url}
-      />
+      <ImageUpload open={openDrawer} toggleDrawer={toggleDrawer} currentImage={profile?.picture?.[0]?.url} />
     </Stack>
   );
 }

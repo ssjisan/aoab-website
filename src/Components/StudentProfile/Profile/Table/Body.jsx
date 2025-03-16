@@ -7,9 +7,10 @@ export default function Body({ profile }) {
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   const toggleDrawer = (open, course) => () => {
-    setSelectedCourse(course);
+    setSelectedCourse(course); // Set the selected course with its data
     setOpenDrawer(open);
   };
+
   const courses = [
     {
       name: "aoBasicCourse",
@@ -86,7 +87,7 @@ export default function Body({ profile }) {
         const courseStatus =
           courseData.status === null
             ? "N/A"
-            : courseData.status === true
+            : courseData.status === "yes"
             ? "Yes"
             : "No";
 
@@ -106,8 +107,10 @@ export default function Body({ profile }) {
             <TableCell sx={{ border: "1px solid #ddd", p: "8px 16px" }}>
               {hasDocument ? (
                 <a
-                  href={courseData.documents[0].url}
-                  target="_blank"
+                  href={`https://docs.google.com/viewer?url=${encodeURIComponent(
+                    courseData.documents[0].url
+                  )}&embedded=true`}
+                  target="_blank" // Open in a new tab
                   rel="noopener noreferrer"
                 >
                   View Document

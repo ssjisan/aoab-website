@@ -112,7 +112,7 @@ export default function ImageUpload({ open, toggleDrawer, currentImage }) {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                backgroundColor: selectedImage ? "transparent" : "#f5f5f5",
+                backgroundColor: selectedImage ? "transparent" : "#ddd",
               }}
             >
               {selectedImage ? (
@@ -140,7 +140,7 @@ export default function ImageUpload({ open, toggleDrawer, currentImage }) {
             disabled={loading || !imageFile}
           >
             {loading ? (
-              <CircularProgress size={24} color="inherit" />
+              <CircularProgress size={24} color="inherit" /> 
             ) : (
               "Upload Image"
             )}
