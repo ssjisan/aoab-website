@@ -1,4 +1,11 @@
-import { Avatar, Box, Button, Stack, Typography, CircularProgress } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Stack,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import PropTypes from "prop-types";
 import ImageUpload from "./ImageUpload";
 import { useState, useEffect } from "react";
@@ -90,24 +97,44 @@ export default function ProfileCard({ profile }) {
           </Typography>
           <Stack
             sx={{
-              border: "1px dashed #919EAB",
+              border: !profile.isAccountVerified === true && "1px dashed #919EAB",
+              background: profile.isAccountVerified === true && "#004182",
+              color:profile.isAccountVerified === true && "#fff",
               p: "4px 8px",
               borderRadius: "20px",
             }}
           >
-            <Typography sx={{ fontSize: "12px !important", fontWeight: "600" }}>
-              Not verified
-            </Typography>
+            {profile.isAccountVerified === true ? (
+              <Typography
+                sx={{ fontSize: "12px !important", fontWeight: "600" }}
+              >
+                Verified
+              </Typography>
+            ) : (
+              <Typography
+                sx={{ fontSize: "12px !important", fontWeight: "600" }}
+              >
+                Not verified
+              </Typography>
+            )}
           </Stack>
         </Stack>
         <Typography variant="body1" color="text.secondary">
           {profile.email}
         </Typography>
       </Stack>
-      <Button sx={{ width: "180px" }} variant="contained" onClick={toggleDrawer(true)}>
+      <Button
+        sx={{ width: "180px" }}
+        variant="contained"
+        onClick={toggleDrawer(true)}
+      >
         Upload Image
       </Button>
-      <ImageUpload open={openDrawer} toggleDrawer={toggleDrawer} currentImage={profile?.picture?.[0]?.url} />
+      <ImageUpload
+        open={openDrawer}
+        toggleDrawer={toggleDrawer}
+        currentImage={profile?.picture?.[0]?.url}
+      />
     </Stack>
   );
 }
@@ -117,6 +144,7 @@ ProfileCard.propTypes = {
   profile: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
+    isAccountVerified: PropTypes.boolean,
     picture: PropTypes.arrayOf(
       PropTypes.shape({
         url: PropTypes.string,
