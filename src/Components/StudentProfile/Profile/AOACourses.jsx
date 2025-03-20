@@ -1,6 +1,7 @@
 import { Stack, Table, TableContainer, Typography } from "@mui/material";
 import Header from "./Table/Header";
 import Body from "./Table/Body";
+import PropTypes from "prop-types";
 
 export default function AOACourses({ profile }) {
   return (
@@ -29,3 +30,17 @@ export default function AOACourses({ profile }) {
     </Stack>
   );
 }
+
+// Define PropTypes
+AOACourses.propTypes = {
+  profile: PropTypes.shape({
+    aoaCourses: PropTypes.arrayOf(
+      PropTypes.shape({
+        courseName: PropTypes.string.isRequired,
+        year: PropTypes.number.isRequired,
+        status: PropTypes.string.isRequired,
+      })
+    ),
+    otherDetails: PropTypes.object, // Adjust based on actual structure
+  }),
+};

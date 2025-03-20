@@ -54,6 +54,21 @@ export default function Header() {
             textOverflow: "ellipsis",
           }}
         >
+          Complete At
+        </TableCell>
+        <TableCell
+          align="left"
+          sx={{
+            fontWeight: "700",
+            p: "16px",
+            color: "#111827",
+            backgroundColor: "rgb(244, 246, 248)",
+            border: "1px solid #ddd",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
           Uploaded Documents
         </TableCell>
         <TableCell

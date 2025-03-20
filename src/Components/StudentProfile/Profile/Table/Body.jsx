@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Button, TableBody, TableCell, TableRow } from "@mui/material";
 import CourseDataDrawer from "../CourseDataDrawer";
 import { useState } from "react";
@@ -6,10 +7,18 @@ export default function Body({ profile }) {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
-  const toggleDrawer = (open, course) => () => {
-    setSelectedCourse(course); // Set the selected course with its data
-    setOpenDrawer(open);
+  const toggleDrawer = (open, courseLabel) => () => {
+    const selectedCourse = courses.find(
+      (course) => course.label === courseLabel
+    );
+
+    if (selectedCourse) {
+      const profileData = profile[selectedCourse.name] || {}; // Fetch existing profile data
+      setSelectedCourse({ ...selectedCourse, ...profileData }); // Merge both
+      setOpenDrawer(open);
+    }
   };
+  const closeDrawer = () => setOpenDrawer(false);
 
   const courses = [
     {
@@ -43,6 +52,11 @@ export default function Body({ profile }) {
       question: "Have you completed AOA Foot & Ankle Seminar?",
     },
     {
+      name: "aoPeer",
+      label: "AO Peer",
+      question: "Have you completed AO Peer Seminar?",
+    },
+    {
       name: "aoaOtherCourses",
       label: "AOA Other Courses",
       question:
@@ -70,7 +84,7 @@ export default function Body({ profile }) {
       <TableBody>
         <TableRow>
           <TableCell
-            colSpan={3}
+            colSpan={5}
             sx={{ border: "1px solid #ddd", textAlign: "center" }}
           >
             Loading...
@@ -93,7 +107,7 @@ export default function Body({ profile }) {
 
         const hasDocument =
           courseData.documents && courseData.documents.length > 0;
-
+        const completionYear = courseData.completionYear || "N/A";
         return (
           <TableRow key={course.name}>
             <TableCell sx={{ border: "1px solid #ddd", p: "8px 16px" }}>
@@ -104,26 +118,50 @@ export default function Body({ profile }) {
             >
               {courseStatus}
             </TableCell>
+            <TableCell
+              sx={{ border: "1px solid #ddd", p: "8px 16px", width: "64px" }}
+            >
+              {completionYear}
+            </TableCell>
             <TableCell sx={{ border: "1px solid #ddd", p: "8px 16px" }}>
               {hasDocument ? (
-                <a
-                  href={`https://docs.google.com/viewer?url=${encodeURIComponent(
-                    courseData.documents[0].url
-                  )}&embedded=true`}
-                  target="_blank" // Open in a new tab
-                  rel="noopener noreferrer"
-                >
-                  View Document
-                </a>
+                courseData.documents.length === 1 ? (
+                  <a
+                    href={`https://docs.google.com/viewer?url=${encodeURIComponent(
+                      courseData.documents[0].url
+                    )}&embedded=true`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {courseData.documents[0].name}
+                  </a>
+                ) : (
+                  <ol style={{ margin: 0, paddingLeft: "16px" }}>
+                    {courseData.documents.map((doc) => (
+                      <li key={doc.url} style={{ marginBottom: "8px" }}>
+                        <a
+                          href={`https://docs.google.com/viewer?url=${encodeURIComponent(
+                            doc.url
+                          )}&embedded=true`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {doc.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                )
               ) : (
                 "No Document"
               )}
             </TableCell>
+
             <TableCell
               align="center"
               sx={{ border: "1px solid #ddd", width: "48px", p: "8px 16px" }}
             >
-              <Button variant="soft" onClick={toggleDrawer(true, course)}>
+              <Button variant="soft" onClick={toggleDrawer(true, course.label)}>
                 Edit
               </Button>
             </TableCell>
@@ -134,7 +172,93 @@ export default function Body({ profile }) {
         open={openDrawer}
         toggleDrawer={toggleDrawer}
         selectedCourse={selectedCourse}
+        closeDrawer={closeDrawer}
       />
     </TableBody>
   );
 }
+
+Body.propTypes = {
+  profile: PropTypes.shape({
+    aoBasicCourse: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    aoAdvanceCourse: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    aoMastersCourse: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    aoaPediatricSeminar: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    aoaPelvicSeminar: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    aoaFootAnkleSeminar: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    aoaOtherCourses: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    aoaFellowship: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    tableFaculty: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    nationalFaculty: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+  }),
+};

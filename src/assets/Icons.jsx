@@ -842,6 +842,8 @@ export const Profile = ({ color, size }) => {
     </div>
   );
 };
+
+
 Menu.propTypes = {
   color: PropTypes.string.isRequired,
 };

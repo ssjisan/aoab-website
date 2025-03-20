@@ -1,6 +1,7 @@
 import Navbar from "../../Layout/Navbar/Navbar";
-import { Container, Grid, Stack, Typography } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
+import ChangePassword from "../../Components/StudentProfile/Profile/ChangePassword";
 export default function Password() {
   return (
     <div>
@@ -19,10 +20,10 @@ export default function Password() {
         >
           <Typography sx={{ fontWeight: "700" }}>Chnage Password</Typography>
           <Typography variant="subtitle2" color="text.secondary">
-          For security reasons, do not share your password with anyone.
+            For security reasons, do not share your password with anyone.
           </Typography>
         </Stack>
-        Info
+        <ChangePassword />
       </Container>
     </div>
   );

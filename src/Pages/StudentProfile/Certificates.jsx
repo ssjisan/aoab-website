@@ -1,6 +1,7 @@
 import Navbar from "../../Layout/Navbar/Navbar";
-import { Container, Grid, Stack, Typography } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
+import { NoCertificate } from "../../assets/NoCertificate";
 export default function Certificates() {
   return (
     <div>
@@ -23,7 +24,16 @@ export default function Certificates() {
             certificates here.
           </Typography>
         </Stack>
-        Certificates
+        <Stack
+          sx={{ widht: "100%", pt:"64px" }}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <NoCertificate />
+          <Typography variant="h5" color="text.secondary">
+            No Certificates yet!
+          </Typography>
+        </Stack>
       </Container>
     </div>
   );

@@ -3,10 +3,10 @@ import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
 import BasicInfo from "../../Components/StudentProfile/Profile/BasicInfo";
 import ProfileCard from "../../Components/StudentProfile/Profile/ProfileCard";
-import AOACourses from "../../Components/StudentProfile/Profile/AOACourses";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import AOACourses from "../../Components/StudentProfile/Profile/AOACourses";
 
 export default function Profile() {
   const [profile, setProfile] = useState(null); // Set initial state to null to avoid .map on an empty array
@@ -49,7 +49,7 @@ export default function Profile() {
         <Stack gap="24px">
           <ProfileCard profile={profile} />
           <BasicInfo profile={profile} />
-          <AOACourses profile={profile} />
+          <AOACourses profile={profile}/>
         </Stack>
       </Container>
     </div>

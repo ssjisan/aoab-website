@@ -1,6 +1,7 @@
 import Navbar from "../../Layout/Navbar/Navbar";
-import { Container, Grid, Stack, Typography } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
+import { NoEnrollment } from "./../../assets/NoEnrollment";
 export default function EnrollmentHistory() {
   return (
     <div>
@@ -19,11 +20,20 @@ export default function EnrollmentHistory() {
         >
           <Typography sx={{ fontWeight: "700" }}>Enrollment History</Typography>
           <Typography variant="subtitle2" color="text.secondary">
-          The courses you have enrolled in on our platform.
+            The courses you have enrolled in on our platform.
           </Typography>
         </Stack>
-        Enrollment History
+        <Stack
+          sx={{ widht: "100%", pt: "64px" }}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <NoEnrollment />
+          <Typography variant="h5" color="text.secondary">
+            No Enrollment History!
+          </Typography>
+        </Stack>
       </Container>
     </div>
-  )
+  );
 }
