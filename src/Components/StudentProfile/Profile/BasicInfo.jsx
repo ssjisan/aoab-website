@@ -201,7 +201,7 @@ export default function BasicInfo({ profile }) {
             sx={{ fontWeight: "600" }}
             color="text.secondary"
           >
-            Year of Post Graduation
+            Year of Graduation
           </Typography>
           <TextField
             sx={{

@@ -118,7 +118,11 @@ export default function Form() {
               {email}
             </Box>
           </Typography>
-
+          <Stack sx={{p:"8px", background:'#d7e6fc', textAlign:"center", borderRadius:"12px", color:"#003768"}}>
+            <Typography>
+            Please check your Spam or Other folder if you don't see the OTP in your inbox.
+            </Typography>
+          </Stack>
           <Stack gap="8px">
             <Typography sx={{fontWeight:"600"}}>One Time Password (OTP)</Typography>
             <TextField

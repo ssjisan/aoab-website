@@ -48,8 +48,26 @@ export default function Profile() {
         </Stack>
         <Stack gap="24px">
           <ProfileCard profile={profile} />
+          {profile?.remarks && (
+            <Stack
+              gap="8px"
+              alignItems="center"
+              justifyContent="center"
+              sx={{
+                background: "#FFE9D5",
+                p: "8px 16px",
+                borderRadius: "12px",
+                height: "48px",
+                textAlign: "center",
+              }}
+            >
+              <Typography variant="body1" sx={{ color: "#FF5630" }}>
+                {profile?.remarks}
+              </Typography>
+            </Stack>
+          )}
           <BasicInfo profile={profile} />
-          <AOACourses profile={profile}/>
+          <AOACourses profile={profile} />
         </Stack>
       </Container>
     </div>

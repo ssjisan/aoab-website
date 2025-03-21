@@ -23,14 +23,20 @@ export default function EventData() {
       setLoading(true);
       const currentSkip = initial ? 0 : skip; // Reset skip for initial load
 
-      // Fetch data from API with query params
-      const { data } = await axios.get("/courses_events");
+      // Fetch data from API with query params for pagination
+      const { data } = await axios.get("/courses_events", {
+        params: {
+          limit,
+          skip: currentSkip,
+          status: "running", // Only fetch running events
+        },
+      });
 
       if (initial) {
         // Reset state on initial load
         const { monthlyEvent, otherEvents } = filterMonthlyEvents(data.coursesEvents);
-        setMonthlyEvents(monthlyEvent ? [monthlyEvent] : []);
-        setRunningEvents(otherEvents);
+        setMonthlyEvents(monthlyEvent ? [monthlyEvent] : []); // Nearest upcoming event
+        setRunningEvents(otherEvents); // All other running events
         setSkip(limit); // Reset skip for next batch
       } else {
         // Append new events to the list
@@ -52,8 +58,9 @@ export default function EventData() {
 
     // Filter events to get only future events
     const upcomingEvents = events.filter((event) => {
-      const eventDate = new Date(event.startDate); // Convert startDate to a Date object
-      return eventDate > currentDate; // Check if the event's start date is in the future
+      const eventStartDate = new Date(event.startDate); // Convert startDate to a Date object
+      const eventEndDate = new Date(event.endDate); // Convert endDate to a Date object
+      return eventStartDate > currentDate && eventEndDate > currentDate; // Check if the event is ongoing
     });
 
     // Sort the events by the nearest start date
@@ -67,9 +74,7 @@ export default function EventData() {
     const nextEvent = sortedUpcomingEvents[0]; // Take the nearest event
 
     // Return the monthly event and the remaining events
-    const remainingEvents = events.filter(
-      (event) => event._id !== nextEvent?._id
-    );
+    const remainingEvents = events.filter((event) => event._id !== nextEvent?._id);
     return { monthlyEvent: nextEvent, otherEvents: remainingEvents };
   };
 

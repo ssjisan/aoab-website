@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function Form() {
-  const {setAuth} = useContext(DataContext)
+  const { setAuth } = useContext(DataContext);
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(120);
@@ -37,17 +37,17 @@ export default function Form() {
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     try {
       const { data } = await axios.post("/verify-otp", { email, otp });
-  
+
       // Log the response data to see its structure
       console.log("OTP Response Data: ", data);
-  
+
       // Handle success case: Check if the token and user exist in the response
       if (data?.token && data?.user) {
         toast.success("OTP Verified Successfully!");
-  
+
         // Save token & user data in local storage
         localStorage.setItem("auth", JSON.stringify(data));
         setAuth((prevAuth) => ({
@@ -55,7 +55,7 @@ export default function Form() {
           token: data.token,
           user: data.user,
         }));
-  
+
         navigate("/profile"); // Redirect to the profile page
       } else {
         // If response doesn't contain expected success data, show an error
@@ -65,7 +65,7 @@ export default function Form() {
       setLoading(false);
       // Log the error response for debugging
       console.log("Error Response: ", err);
-  
+
       if (err.response && err.response.data) {
         toast.error(
           err.response.data.message || "An error occurred. Please try again."
@@ -75,9 +75,6 @@ export default function Form() {
       }
     }
   };
-  
-  
-  
 
   // Resend OTP function
   const handleResendOtp = async () => {
@@ -122,7 +119,20 @@ export default function Form() {
               {email}
             </Box>
           </Typography>
-
+          <Stack
+            sx={{
+              p: "8px",
+              background: "#d7e6fc",
+              textAlign: "center",
+              borderRadius: "12px",
+              color: "#003768",
+            }}
+          >
+            <Typography>
+              Please check your Spam or Other folder if you don't see the OTP in
+              your inbox.
+            </Typography>
+          </Stack>
           <Stack gap="8px">
             <Typography sx={{ fontWeight: "600" }}>
               One Time Password (OTP)

@@ -44,6 +44,7 @@ export default function CourseDataDrawer({
     "aoaFellowship",
     "tableFaculty",
     "nationalFaculty",
+    "regionalFaculty",
   ];
 
   const isMultipleAllowed = multipleFileCourses.includes(selectedCourse?.name);

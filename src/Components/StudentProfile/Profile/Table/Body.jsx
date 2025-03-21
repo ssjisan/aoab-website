@@ -77,6 +77,11 @@ export default function Body({ profile }) {
       label: "National Faculty",
       question: "Have you joined as National Faculty yet?",
     },
+    {
+      name: "regionalFaculty",
+      label: "Regional Faculty",
+      question: "Have you joined as Regional Faculty yet?",
+    },
   ];
 
   if (!profile) {
@@ -253,6 +258,14 @@ Body.propTypes = {
       ),
     }),
     nationalFaculty: PropTypes.shape({
+      status: PropTypes.string,
+      documents: PropTypes.arrayOf(
+        PropTypes.shape({
+          url: PropTypes.string.isRequired,
+        })
+      ),
+    }),
+    regionalFaculty: PropTypes.shape({
       status: PropTypes.string,
       documents: PropTypes.arrayOf(
         PropTypes.shape({

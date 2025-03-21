@@ -144,9 +144,10 @@ export default function ProfileMenuDrawer() {
         sx={{
           width: "40px",
           height: "40px",
-          borderRadius: "4px",
+          borderRadius: "20px",
           overflow: "hidden",
           cursor: "pointer",
+          border:"1px solid black"
         }}
         onClick={toggleDrawer(true)}
       >

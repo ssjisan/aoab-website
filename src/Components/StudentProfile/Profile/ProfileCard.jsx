@@ -10,7 +10,9 @@ import PropTypes from "prop-types";
 import ImageUpload from "./ImageUpload";
 import { useState, useEffect } from "react";
 
+
 export default function ProfileCard({ profile }) {
+  
   const [openDrawer, setOpenDrawer] = useState(false);
   const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -40,6 +42,8 @@ export default function ProfileCard({ profile }) {
     return <Typography>Loading...</Typography>;
   }
 
+
+  
   return (
     <Stack
       sx={{
@@ -97,9 +101,10 @@ export default function ProfileCard({ profile }) {
           </Typography>
           <Stack
             sx={{
-              border: !profile.isAccountVerified === true && "1px dashed #919EAB",
+              border:
+                !profile.isAccountVerified === true && "1px dashed #919EAB",
               background: profile.isAccountVerified === true && "#004182",
-              color:profile.isAccountVerified === true && "#fff",
+              color: profile.isAccountVerified === true && "#fff",
               p: "4px 8px",
               borderRadius: "20px",
             }}
@@ -135,6 +140,7 @@ export default function ProfileCard({ profile }) {
         toggleDrawer={toggleDrawer}
         currentImage={profile?.picture?.[0]?.url}
       />
+      
     </Stack>
   );
 }
