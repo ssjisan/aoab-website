@@ -41,6 +41,7 @@ export default function CourseDataDrawer({
 
   const multipleFileCourses = [
     "aoaOtherCourses",
+    "aoNonOperativeCourse",
     "aoaFellowship",
     "tableFaculty",
     "nationalFaculty",
@@ -146,7 +147,7 @@ export default function CourseDataDrawer({
 
   return (
     <Drawer open={open} onClose={closeDrawer} anchor="right">
-      <Stack sx={{ width: "320px" }}>
+      <Stack sx={{ maxWidth: "100%", width: "380px" }}>
         <Stack
           sx={{ p: 2, borderBottom: "1px solid rgba(145, 142, 175, 0.24)" }}
           flexDirection="row"

@@ -6,6 +6,8 @@ import {
   Drawer,
   ListItemIcon,
   Avatar,
+  Stack,
+  IconButton,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
@@ -13,6 +15,7 @@ import navConfig from "../Navbar/ProfileMenu";
 import { DataContext } from "../../DataProcessing/DataProcessing";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { LeftArrow } from "../../assets/Icons";
 
 export default function ProfileMenuDrawer() {
   const { auth, setAuth } = useContext(DataContext); // Use the auth context
@@ -48,7 +51,7 @@ export default function ProfileMenuDrawer() {
   };
 
   const DrawerList = (
-    <Box sx={{ width: 280 }} role="presentation" onClick={toggleDrawer(false)}>
+    <Box sx={{ maxwidth:"100%",width: "380px" }} role="presentation" onClick={toggleDrawer(false)}>
       {/* User Profile Section */}
       <Box
         sx={{
@@ -60,6 +63,12 @@ export default function ProfileMenuDrawer() {
           borderBottom: "1px solid #E0E0E0",
         }}
       >
+        <Stack sx={{width:"100%", mb:"40px" }} justifyContent={"flex-start"} flexDirection="row" gap="8px" alignItems="center" onClick={toggleDrawer(false)}>
+          <IconButton sx={{width:"40px", height:"40px"}}>
+            <LeftArrow size="20px" color="#000"/>
+          </IconButton>
+          <Typography sx={{fontSize:"16px"}}>Back</Typography>
+        </Stack>
         <Box
           sx={{
             width: "70px",
@@ -92,7 +101,7 @@ export default function ProfileMenuDrawer() {
       </Box>
 
       {/* Navigation List */}
-      <List sx={{ p: "8px" }}>
+      <List sx={{ p: "16px" }}>
         {navConfig({ pathname }).map((data) => {
           const isLogout = data.title === "Log out";
 

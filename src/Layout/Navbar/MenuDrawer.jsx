@@ -1,4 +1,4 @@
-import { Box, Button, Drawer, Stack, Typography } from "@mui/material";
+import { Box, Drawer, Stack, Typography } from "@mui/material";
 import { main } from "./NavConfig";
 import { useLocation } from "react-router-dom";
 import { Close, Plus } from "../../assets/Icons";
@@ -152,11 +152,6 @@ export default function MenuDrawer({ toggleDrawer, handleDrawerClose, open }) {
             </Stack>
           ))}
         </Stack>
-        <Box sx={{ p: "16px" }}>
-          <Button variant="contained" fullWidth component={"a"} href="/login">
-            Login
-          </Button>
-        </Box>
       </Stack>
     </Drawer>
   );

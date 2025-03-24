@@ -21,8 +21,8 @@ export default function AOACourses({ profile }) {
           AOA Courses & Others Details
         </Typography>
       </Stack>
-      <TableContainer sx={{ borderRadius: "12px", overflow: "hidden" }}>
-        <Table>
+      <TableContainer sx={{ borderRadius: "12px", }}>
+        <Table >
           <Header />
           <Body profile={profile} />
         </Table>

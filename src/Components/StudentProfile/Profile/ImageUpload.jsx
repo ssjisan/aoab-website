@@ -74,7 +74,7 @@ export default function ImageUpload({ open, toggleDrawer, currentImage }) {
 
   return (
     <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
-      <Stack sx={{ width: "280px" }}>
+      <Stack sx={{ maxidth: "100%", width:"380px" }}>
         <Stack
           sx={{ p: 2, borderBottom: "1px solid rgba(145, 142, 175, 0.24)" }}
           flexDirection="row"

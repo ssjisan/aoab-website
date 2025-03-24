@@ -63,6 +63,11 @@ export default function Body({ profile }) {
         "Have you completed any other AOA Course (e.g., Non-Operative, Hybrid, etc.)?",
     },
     {
+      name: "aoNonOperativeCourse",
+      label: "Ao Non Operative Course",
+      question: "Have you completed any Ao Non Operative Course?",
+    },
+    {
       name: "aoaFellowship",
       label: "AOA Fellowship",
       question: "Have you completed any AOA Fellowship?",
@@ -163,9 +168,16 @@ export default function Body({ profile }) {
             </TableCell>
 
             <TableCell
-              align="center"
-              sx={{ border: "1px solid #ddd", width: "48px", p: "8px 16px" }}
-            >
+          align="center"
+          sx={{
+            position: "sticky",
+            right: 0,
+            backgroundColor: "#fff",
+            zIndex: 1, // Ensures it stays above other columns
+            outline: "1px solid rgba(0, 0, 0, 0.2)", // Lighter border
+            p: "8px 16px",
+          }}
+        >
               <Button variant="soft" onClick={toggleDrawer(true, course.label)}>
                 Edit
               </Button>

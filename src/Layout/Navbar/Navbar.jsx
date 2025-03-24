@@ -40,8 +40,6 @@ export default function Navbar() {
     };
   }, []);
 
-  
-
   const handleTouchItem = (itemId) => {
     setTouchedItem((prev) => (prev === itemId ? null : itemId));
   };
@@ -88,19 +86,52 @@ export default function Navbar() {
           />
         </Box>
         {forBelow1100 ? (
-          <IconButton
-            onClick={toggleDrawer}
-            sx={{
-              borderRadius: "8px",
-              background: "rgba(145, 142, 175, 0.16)",
-            }}
-          >
-            <Menu
-              color={
-                pathname === "/" ? (isScrolled ? "#0D0A25" : "#fff") : "#0D0A25"
-              }
-            />
-          </IconButton>
+          <Stack flexDirection="row" gap="16px">
+            {auth?.token ? (
+              <ProfileMenuDrawer isScrolled={isScrolled} />
+            ) : (
+              <Button
+                component="a"
+                href="/login"
+                rel="noopener noreferrer"
+                sx={{
+                  backgroundColor:
+                    pathname === "/"
+                      ? isScrolled
+                        ? "#003258"
+                        : "rgba(255, 255, 255, 1)"
+                      : "#003258",
+                  color: pathname === "/" && !isScrolled ? "#003258" : "#fff",
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  textTransform: "none",
+                  "&:hover":
+                    pathname === "/" && !isScrolled
+                      ? { backgroundColor: "#FFF" }
+                      : null,
+                }}
+              >
+                Login
+              </Button>
+            )}
+            <IconButton
+              onClick={toggleDrawer}
+              sx={{
+                borderRadius: "8px",
+                background: "rgba(145, 142, 175, 0.16)",
+              }}
+            >
+              <Menu
+                color={
+                  pathname === "/"
+                    ? isScrolled
+                      ? "#0D0A25"
+                      : "#fff"
+                    : "#0D0A25"
+                }
+              />
+            </IconButton>
+          </Stack>
         ) : (
           <Stack
             flexDirection="row"
@@ -250,7 +281,7 @@ export default function Navbar() {
         )}
         {!forBelow1100 &&
           (auth?.token ? (
-            <ProfileMenuDrawer isScrolled={isScrolled}/>
+            <ProfileMenuDrawer isScrolled={isScrolled} />
           ) : (
             <Button
               variant="contained"

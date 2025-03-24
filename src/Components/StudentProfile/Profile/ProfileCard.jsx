@@ -10,9 +10,7 @@ import PropTypes from "prop-types";
 import ImageUpload from "./ImageUpload";
 import { useState, useEffect } from "react";
 
-
 export default function ProfileCard({ profile }) {
-  
   const [openDrawer, setOpenDrawer] = useState(false);
   const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -42,8 +40,6 @@ export default function ProfileCard({ profile }) {
     return <Typography>Loading...</Typography>;
   }
 
-
-  
   return (
     <Stack
       sx={{
@@ -95,7 +91,17 @@ export default function ProfileCard({ profile }) {
           textAlign: { xs: "center", sm: "center", md: "left", lg: "left" },
         }}
       >
-        <Stack flexDirection="row" gap="8px" alignItems="center">
+        <Stack
+          flexDirection="row"
+          gap="8px"
+          alignItems="center"
+          justifyContent={{
+            xs: "center",
+            sm: "center",
+            md: "flex-start",
+            lg: "flex-start",
+          }}
+        >
           <Typography variant="h5" sx={{ fontWeight: "700" }}>
             {profile.name}
           </Typography>
@@ -140,7 +146,6 @@ export default function ProfileCard({ profile }) {
         toggleDrawer={toggleDrawer}
         currentImage={profile?.picture?.[0]?.url}
       />
-      
     </Stack>
   );
 }
