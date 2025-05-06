@@ -131,7 +131,7 @@ export default function ProfileCard({ profile }) {
           </Stack>
         </Stack>
         <Typography variant="body1" color="text.secondary">
-          {profile.email}
+        {profile.isAccountVerified ? profile.aoaNo : profile.email}
         </Typography>
       </Stack>
       <Button
@@ -154,6 +154,7 @@ export default function ProfileCard({ profile }) {
 ProfileCard.propTypes = {
   profile: PropTypes.shape({
     name: PropTypes.string.isRequired,
+    aoaNo: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     isAccountVerified: PropTypes.boolean,
     picture: PropTypes.arrayOf(

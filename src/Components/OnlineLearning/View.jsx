@@ -122,12 +122,17 @@ export default function View() {
           onlineLearning.map((row, i) => (
             <Stack
               sx={{
-                p: "8px 16px",
+                p: {
+                  xs: "16px",
+                  sm: "8px 16px",
+                  md: "8px 16px",
+                  lg: "8px 16px",
+                },
                 backgroundColor: "#EFF1F5",
                 borderRadius: "12px",
               }}
               gap="16px"
-              flexDirection="row"
+              flexDirection={{ xs: "column", sm: "row", md: "row", lg: "row" }}
               alignItems="center"
               key={i}
             >
@@ -136,6 +141,12 @@ export default function View() {
                   fontSize: "64px !important",
                   fontWeight: 700,
                   opacity: 0.15,
+                  display: {
+                    xs: "none",
+                    sm: "block",
+                    md: "block",
+                    lg: "block",
+                  },
                 }}
               >
                 {i + 1}

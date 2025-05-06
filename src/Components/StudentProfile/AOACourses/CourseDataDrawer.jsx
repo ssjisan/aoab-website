@@ -24,6 +24,7 @@ export default function CourseDataDrawer({
   selectedCourse,
   updateTableData,
   closeDrawer,
+  courses,
 }) {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -39,32 +40,49 @@ export default function CourseDataDrawer({
     }
   }, [selectedCourse]);
 
-  const multipleFileCourses = [
-    "aoaOtherCourses",
-    "aoNonOperativeCourse",
-    "aoaFellowship",
-    "tableFaculty",
-    "nationalFaculty",
-    "regionalFaculty",
-  ];
-
-  const isMultipleAllowed = multipleFileCourses.includes(selectedCourse?.name);
-
   const handleRadioChange = (event) => {
     setSelectedAnswer(event.target.value);
   };
+  
+  const isMultipleAllowed = courses.some((course) => {
+  const match = course?._id === selectedCourse?._id;
+  return match && course.typeOfParticipation === 1;
+});
+
+console.log(selectedCourse);
+console.log(selectedCourse?.typeOfParticipation);
+
 
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
+    
+    // ✅ Filter only PDF files
+    const pdfFiles = newFiles.filter(
+      (file) =>
+        file.type === "application/pdf" ||
+        file.name.toLowerCase().endsWith(".pdf")
+    );
+
+    // 🚫 Show alert if any invalid file selected
+    if (pdfFiles.length !== newFiles.length) {
+      toast.error("Only PDF files are allowed.");
+    }
+
+    if (pdfFiles.length === 0) {
+      event.target.value = ""; // reset input so same file can be selected again
+      return;
+    }
 
     if (isMultipleAllowed) {
       setSelectedFiles((prevFiles) => {
-        const totalFiles = [...prevFiles, ...newFiles].slice(0, 5);
+        const totalFiles = [...prevFiles, ...pdfFiles].slice(0, 5);
         return totalFiles;
       });
     } else {
-      setSelectedFiles([newFiles[0]]);
+      setSelectedFiles([pdfFiles[0]]);
     }
+
+    event.target.value = ""; // clear file input
   };
 
   const handleRemoveFile = (file, source) => {
@@ -85,7 +103,7 @@ export default function CourseDataDrawer({
   const handleSave = async () => {
     setIsUploading(true);
     const formData = new FormData();
-    formData.append("fieldName", selectedCourse?.name);
+    formData.append("courseId", selectedCourse?._id);
     formData.append("status", selectedAnswer);
     formData.append("completionYear", completionYear); // Add this line
 
@@ -102,7 +120,7 @@ export default function CourseDataDrawer({
     }
 
     try {
-      const response = await axios.post("/update-course", formData, {
+      const response = await axios.post(`/update-course/${selectedCourse?._id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -118,7 +136,7 @@ export default function CourseDataDrawer({
           updateTableData(response.data);
         }
 
-        toggleDrawer(false)();
+        toggleDrawer(false);
       } else {
         toast.error(response.data.message || "Failed to update course");
       }
@@ -144,6 +162,7 @@ export default function CourseDataDrawer({
       setIsUploading(false);
     }
   };
+  
 
   return (
     <Drawer open={open} onClose={closeDrawer} anchor="right">
@@ -155,7 +174,7 @@ export default function CourseDataDrawer({
           justifyContent="space-between"
         >
           <Typography variant="h6" sx={{ fontWeight: "600" }}>
-            AOA Courses & Others
+            {selectedCourse?.courseName}
           </Typography>
           <IconButton onClick={closeDrawer}>
             <Cross color="black" size="20px" />
@@ -164,7 +183,7 @@ export default function CourseDataDrawer({
         <Stack sx={{ p: 2 }}>
           <Stack gap="8px" sx={{ mb: "24px" }}>
             <Typography sx={{ fontWeight: 700 }} variant="h6">
-              {selectedCourse?.question}
+            {selectedCourse ? `Have you attended ${selectedCourse.courseName}?` : ""}
             </Typography>
             <RadioGroup
               value={selectedAnswer}
@@ -316,24 +335,3 @@ export default function CourseDataDrawer({
     </Drawer>
   );
 }
-
-CourseDataDrawer.propTypes = {
-  open: PropTypes.bool.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
-  selectedCourse: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    question: PropTypes.string.isRequired,
-    status: PropTypes.string,
-    completionYear: PropTypes.string,
-    documents: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        url: PropTypes.string.isRequired,
-        size: PropTypes.number.isRequired,
-        public_id: PropTypes.string, // Optional field
-      })
-    ),
-  }),
-  updateTableData: PropTypes.func,
-  closeDrawer: PropTypes.func.isRequired,
-};

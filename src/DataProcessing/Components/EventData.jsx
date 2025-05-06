@@ -12,16 +12,15 @@ export default function EventData() {
 
   useEffect(() => {
     loadRunningEvents(true); // Initial load
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on component mount
 
   // Function to load running events, handles pagination logic
   const loadRunningEvents = async (initial = false) => {
-    if (loading) return; // Prevent multiple requests
-    if (!hasMore && !initial) return; // Stop if no more events
+    if (loading || (!hasMore && !initial)) return; // Prevent multiple requests if loading or no more events
 
     try {
       setLoading(true);
-      const currentSkip = initial ? 0 : skip; // Reset skip for initial load
+      const currentSkip = initial ? 0 : skip; // Reset skip for initial load or use the current skip value for further loads
 
       // Fetch data from API with query params for pagination
       const { data } = await axios.get("/courses_events", {
@@ -44,7 +43,8 @@ export default function EventData() {
         setSkip(currentSkip + limit); // Increment skip for next batch
       }
 
-      setHasMore(data.hasMore); // Update hasMore flag
+      setHasMore(data.hasMore); // Update hasMore flag based on the response
+
     } catch (err) {
       toast.error("Error loading running events: " + err.message);
     } finally {
@@ -74,7 +74,9 @@ export default function EventData() {
     const nextEvent = sortedUpcomingEvents[0]; // Take the nearest event
 
     // Return the monthly event and the remaining events
-    const remainingEvents = events.filter((event) => event._id !== nextEvent?._id);
+    const remainingEvents = events.filter(
+      (event) => event._id !== nextEvent?._id
+    );
     return { monthlyEvent: nextEvent, otherEvents: remainingEvents };
   };
 

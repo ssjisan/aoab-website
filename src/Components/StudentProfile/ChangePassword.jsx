@@ -8,10 +8,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useContext, useState } from "react";
-import { EyeOff, EyeOn } from "../../../assets/Icons";
-import { DataContext } from "../../../DataProcessing/DataProcessing";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { EyeOff, EyeOn } from "../../assets/Icons";
+import { DataContext } from "../../DataProcessing/DataProcessing";
 
 export default function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");

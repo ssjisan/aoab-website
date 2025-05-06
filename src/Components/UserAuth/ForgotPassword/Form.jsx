@@ -21,14 +21,14 @@ export default function ForgotPasswordForm() {
         onSubmit={handleSubmit} // Bind handleSubmit to form submission
       >
         <Stack justifyContent="center" sx={{ textAlign: "center" }}>
-          <Typography variant="h3">Forgot Password</Typography>
+          <Typography variant="h4">Forgot Password</Typography>
           <Typography color="text.secondary" variant="h6">
             Please enter your email to reset your password.
           </Typography>
         </Stack>
         <Stack sx={{ width: "100%" }} gap="24px">
           <Stack gap="8px">
-          <Typography sx={{fontWeight:"600"}}>Email *</Typography>
+            <Typography sx={{ fontWeight: "600" }}>Email *</Typography>
             <TextField
               variant="outlined"
               size="small"

@@ -31,7 +31,9 @@ export default function ProfileMenuDrawer() {
         const { data } = await axios.get("/my-profile-data");
         setProfile(data); // Assuming data is an object, not an array
       } catch (err) {
-        toast.error("Error loading profile:", err);
+        if (err) {
+          toast.error("Error loading profile: " + (err.response?.data?.message || err.message));
+        }
       }
     };
 

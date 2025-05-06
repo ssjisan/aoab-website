@@ -13,7 +13,7 @@ export default function Copyright() {
       <Typography>
         Powered by{" "}
         <a
-          href="https://www.insighttechbd.com"
+          href="https://insighttechglobal.com/"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -21,7 +21,7 @@ export default function Copyright() {
             color: "inherit", // Keeps the text color consistent with Typography
           }}
         >
-          Insighttech bd
+          Insighttech Global
         </a>
       </Typography>
     </Container>

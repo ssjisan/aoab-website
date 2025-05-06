@@ -1,12 +1,13 @@
 import Navbar from "../../Layout/Navbar/Navbar";
 import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
-import BasicInfo from "../../Components/StudentProfile/Profile/BasicInfo";
-import ProfileCard from "../../Components/StudentProfile/Profile/ProfileCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import AOACourses from "../../Components/StudentProfile/Profile/AOACourses";
+import ProfileAlert from "../../Components/StudentProfile/ProfileAlert";
+import BasicInfo from "../../Components/StudentProfile/BasicInfo/BasicInfo";
+import AOACourses from "../../Components/StudentProfile/AOACourses/AOACourses";
+import ProfileCard from "../../Components/StudentProfile/ProfileCard/ProfileCard";
 
 export default function Profile() {
   const [profile, setProfile] = useState(null); // Set initial state to null to avoid .map on an empty array
@@ -70,6 +71,7 @@ export default function Profile() {
           <AOACourses profile={profile} />
         </Stack>
       </Container>
+      <ProfileAlert profile={profile} />
     </div>
   );
 }

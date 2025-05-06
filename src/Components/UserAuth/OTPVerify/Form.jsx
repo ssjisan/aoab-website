@@ -99,7 +99,7 @@ export default function Form() {
         onSubmit={handleVerifyOtp}
       >
         <Stack justifyContent="center" sx={{ textAlign: "center" }} gap="8px">
-          <Typography variant="h3">Account Verification</Typography>
+          <Typography variant="h4">Account Verification</Typography>
           <Typography color="text.secondary">
             Please enter the OTP to verify your account.
           </Typography>
@@ -167,7 +167,7 @@ export default function Form() {
               {timeLeft > 0 ? (
                 <>
                   OTP will expire in{" "}
-                  <strong>{`${String(Math.floor(timeLeft / 60)).padStart(
+                  <strong style={{color:"#000"}}>{`${String(Math.floor(timeLeft / 60)).padStart(
                     2,
                     "0"
                   )}:${String(timeLeft % 60).padStart(2, "0")}`}</strong>

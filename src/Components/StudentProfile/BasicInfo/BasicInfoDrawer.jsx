@@ -5,52 +5,49 @@ import {
   Typography,
   TextField,
   Button,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  InputAdornment,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Cross } from "../../../assets/Icons";
 import axios from "axios";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import { Calender } from "../../../assets/Icons";
 
 export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
-  // *************************************************************TEST
-  const CalenderIcon = () => {
-    return <Calender color="grey" size={10} />;
-  };
-
   //  *************************************************************Calling all data from db ************************************************************* //
+
   useEffect(() => {
     if (profile) {
-      setName(profile.name || "");
-      setBmdcNo(profile.bmdcNo || "");
-      setEmail(profile.email || "");
-      setContactNumber(profile.contactNumber || "");
-      setCurrentWorkingPlace(profile?.currentWorkingPlace?.[0]?.name || "");
+      setName(profile.name || "N/A");
+      setBmdcNo(profile.bmdcNo || "N/A");
+      setEmail(profile.email || "N/A");
+      setContactNumber(profile.contactNumber || "N/A");
+      setCurrentWorkingPlace(profile?.currentWorkingPlace?.[0]?.name || "N/A");
       setCurrentDesignation(
-        profile?.currentWorkingPlace?.[0]?.designation || ""
+        profile?.currentWorkingPlace?.[0]?.designation || "N/A"
       );
 
-      // Check if postGraduationDegrees exist and set state
-      if (profile?.postGraduationDegrees?.length > 0) {
-        const postGradDegree = profile?.postGraduationDegrees[0];
-        setPostGraduationDegreeName(postGradDegree?.degreeName || "");
-        // Set the postGraduationYear as a Day.js object if it exists
-        if (postGradDegree?.yearOfGraduation) {
-          setPostGraduationYear(
-            dayjs(`${postGradDegree.yearOfGraduation}-01-01`)
-          ); // Use a dummy date (01-01) since only the year is needed
-        }
-      }
+      const degree = profile?.postGraduationDegrees?.[0];
+
+      setPostGraduationDegreeName(
+        degree?.degreeName ? degree.degreeName : "N/A"
+      );
+      setPostGraduationYear(
+        degree?.yearOfGraduation ? degree.yearOfGraduation.toString() : "N/A"
+      );
+      setPostGraduationIsComplete(
+        typeof degree?.isCompleted === "boolean"
+          ? degree.isCompleted.toString()
+          : null
+      );
     }
   }, [profile]);
+
   //  *************************************************************Calling all data from db ************************************************************* //
 
-  const currentYear = dayjs();
-  const minYear = dayjs("1990-01-01");
   const [name, setName] = useState(profile?.name || "");
   const [bmdcNo, setBmdcNo] = useState(profile?.bmdcNo || "");
   const [email, setEmail] = useState(profile?.email || "");
@@ -64,36 +61,67 @@ export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
     profile?.currentWorkingPlace?.[0]?.designation || ""
   );
   const [postGraduationDegreeName, setPostGraduationDegreeName] = useState(""); // State for degree name
-  const [postGraduationYear, setPostGraduationYear] = useState(dayjs()); // State for year of graduation
+  const [postGraduationYear, setPostGraduationYear] = useState(""); // State for year of graduation
+  const [postGraduationIsComplete, setPostGraduationIsComplete] =
+    useState(null);
 
-  // Handle DatePicker Change
-  const handleDateChange = (newValue) => {
-    if (newValue) {
-      setPostGraduationYear(dayjs(newValue)); // Ensure it is a valid dayjs object
-    }
-  };
-
-  // ***************************************************************TEST
 
   const handleSubmit = async () => {
-    const year = dayjs(postGraduationYear).isValid() ? dayjs(postGraduationYear).year() : null;
+    const isCompleted = postGraduationIsComplete === "true";
+
+    // Validation when post graduation is marked as complete
+    if (isCompleted) {
+      if (
+        !postGraduationDegreeName?.trim() ||
+        postGraduationDegreeName === "Not Yet" ||
+        postGraduationDegreeName === "N/A"
+      ) {
+        toast.error("Please enter the Post Graduation Degree Name.");
+        return;
+      }
+      if (
+        !postGraduationYear?.trim() ||
+        postGraduationYear === "Not Yet" ||
+        postGraduationYear === "N/A"
+      ) {
+        toast.error("Please enter the Year of Post Graduation.");
+        return;
+      }
+    }
+
+    const degreeName = isCompleted
+      ? postGraduationDegreeName.trim()
+      : "Not Yet";
+    const yearOfGraduation = isCompleted
+      ? postGraduationYear.trim()
+      : "Not Yet";
+
+    // Trimmed values
+    const trimmedWorkingPlace = currentWorkingPlace?.trim();
+    const trimmedDesignation = currentDesignation?.trim();
+
     const updatedData = {
-      name,
-      email,
-      bmdcNo,
-      contactNumber,
-      // Update currentWorkingPlace as an array of objects
+      name: name || "N/A",
+      email: email || "N/A",
+      bmdcNo: bmdcNo || "N/A",
+      contactNumber: contactNumber || "N/A",
       currentWorkingPlace: [
         {
-          name: currentWorkingPlace,
-          designation: currentDesignation,
+          name:
+            !trimmedWorkingPlace || trimmedWorkingPlace === "N/A"
+              ? null
+              : trimmedWorkingPlace,
+          designation:
+            !trimmedDesignation || trimmedDesignation === "N/A"
+              ? null
+              : trimmedDesignation,
         },
       ],
-      // Adding postGraduationDegrees to the payload
       postGraduationDegrees: [
         {
-          degreeName: postGraduationDegreeName,
-          yearOfGraduation: year,
+          degreeName,
+          yearOfGraduation,
+          isCompleted,
         },
       ],
     };
@@ -105,10 +133,8 @@ export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
         toast.success("Profile updated successfully!");
       }
     } catch (error) {
-      // Extract error message from response
       const errorMessage =
         error.response?.data?.message || "An error occurred while updating.";
-
       toast.error(errorMessage);
     }
   };
@@ -161,6 +187,14 @@ export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
               onChange={(e) => setBmdcNo(e.target.value)}
               fullWidth
               size="small"
+              type="number"
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">A-</InputAdornment>
+                  ),
+                },
+              }}
               disabled={profile?.isBmdcVerified === true}
             />
           </Stack>
@@ -195,6 +229,14 @@ export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
               onChange={(e) => setContactNumber(e.target.value)}
               fullWidth
               size="small"
+              type="number"
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">+880</InputAdornment>
+                  ),
+                },
+              }}
             />
           </Stack>
           <Stack gap="8px">
@@ -235,6 +277,23 @@ export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
               sx={{ fontWeight: "600" }}
               color="text.primary"
             >
+              Have you completed your Post Graduation?
+            </Typography>
+            <RadioGroup
+              row
+              value={postGraduationIsComplete}
+              onChange={(e) => setPostGraduationIsComplete(e.target.value)}
+            >
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
+            </RadioGroup>
+          </Stack>
+          <Stack gap="8px">
+            <Typography
+              variant="body1"
+              sx={{ fontWeight: "600" }}
+              color="text.primary"
+            >
               Post Graduation Degree Name
             </Typography>
             <TextField
@@ -243,38 +302,38 @@ export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
               onChange={(e) => setPostGraduationDegreeName(e.target.value)}
               fullWidth
               size="small"
+              required={
+                postGraduationIsComplete === "true" && !postGraduationDegreeName
+              }
+              disabled={postGraduationIsComplete === "false"}
             />
           </Stack>
+
           <Stack gap="8px">
             <Typography
               variant="body1"
               sx={{ fontWeight: "600" }}
               color="text.primary"
             >
-              Year of Graduation
+              Year of Post Graduation
             </Typography>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                slotProps={{
-                  textField: { size: "small" },
-                }}
-                slots={{
-                  openPickerIcon: CalenderIcon,
-                }}
-                views={["year"]}
-                minDate={minYear}
-                maxDate={currentYear}
-                value={
-                  postGraduationYear
-                    ? dayjs(`${postGraduationYear}-01-01`)
-                    : null
-                }
-                onChange={handleDateChange}
-                renderInput={(params) => (
-                  <TextField {...params} placeholder="YYYY" />
-                )}
-              />
-            </LocalizationProvider>
+            <TextField
+              variant="outlined"
+              value={
+                postGraduationYear === "Not Yet" ||
+                isNaN(Number(postGraduationYear))
+                  ? "-"
+                  : postGraduationYear
+              }
+              onChange={(e) => setPostGraduationYear(e.target.value)}
+              // type={postGraduationIsComplete === true ? "number" : "text"}
+              disabled={postGraduationIsComplete === "false"}
+              required={
+                postGraduationIsComplete === "true" && !postGraduationYear
+              }
+              fullWidth
+              size="small"
+            />
           </Stack>
           <Button variant="contained" onClick={handleSubmit} fullWidth>
             Save Changes
@@ -304,7 +363,11 @@ BasicInfoDrawer.propTypes = {
     postGraduationDegrees: PropTypes.arrayOf(
       PropTypes.shape({
         degreeName: PropTypes.string,
-        yearOfGraduation: PropTypes.number,
+        yearOfGraduation: PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.number,
+        ]),
+        isCompleted: PropTypes.bool,
       })
     ),
   }).isRequired,

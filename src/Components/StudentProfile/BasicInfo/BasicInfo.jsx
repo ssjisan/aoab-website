@@ -6,8 +6,8 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types"; // Import PropTypes for prop validation
-import BasicInfoDrawer from "./BasicInfoDrawer";
 import { useState } from "react";
+import BasicInfoDrawer from "./BasicInfoDrawer";
 
 export default function BasicInfo({ profile }) {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -73,18 +73,23 @@ export default function BasicInfo({ profile }) {
           size="small"
           value={profile?.bmdcNo}
           disabled
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {profile?.isBmdcVerified === null
-                  ? "🔄"
-                  : profile?.isBmdcVerified === true
-                  ? "✅"
-                  : profile?.isBmdcVerified === false
-                  ? "❌"
-                  : null}
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">A-</InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  {profile?.isBmdcVerified === null
+                    ? "🔄"
+                    : profile?.isBmdcVerified === true
+                    ? "✅"
+                    : profile?.isBmdcVerified === false
+                    ? "❌"
+                    : null}
+                </InputAdornment>
+              ),
+            },
           }}
         />
       </Stack>
@@ -127,6 +132,13 @@ export default function BasicInfo({ profile }) {
           }}
           variant="outlined"
           size="small"
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">+880</InputAdornment>
+              ),
+            },
+          }}
           value={profile?.contactNumber}
           disabled
         />
@@ -201,7 +213,7 @@ export default function BasicInfo({ profile }) {
             sx={{ fontWeight: "600" }}
             color="text.secondary"
           >
-            Year of Graduation
+            Year of Post Graduation
           </Typography>
           <TextField
             sx={{

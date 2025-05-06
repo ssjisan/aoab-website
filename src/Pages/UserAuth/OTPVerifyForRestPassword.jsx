@@ -1,13 +1,13 @@
 import { Box } from "@mui/material";
-import Logo from "../../assets/Logo";
 import Form from "../../Components/UserAuth/OTPVerifyForRestPassword/Form";
 import Error404 from "../../Components/Common/Error404";
 import { useContext } from "react";
 import { DataContext } from "../../DataProcessing/DataProcessing";
+import Symbolic from "../../assets/Symbolic";
 
 export default function OTPVerifyForRestPassword() {
   const NavSx = {
-    padding: "16px 24px",
+    padding: "8px 24px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -26,12 +26,12 @@ export default function OTPVerifyForRestPassword() {
           <Box sx={NavSx}>
             <Box
               sx={{
-                width: "180px",
+                width: "56px",
               }}
               component="a"
               href="/"
             >
-              <Logo colorOne={"#003258"} colorTwo={"#91B512"} />
+              <Symbolic colorTwo={"#003258"} colorOne={"#91B512"} />
             </Box>
           </Box>
           <Form />

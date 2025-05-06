@@ -83,7 +83,7 @@ export default function Form() {
         onSubmit={handleLogin}
       >
         <Stack justifyContent="center" sx={{ textAlign: "center" }} gap="8px">
-          <Typography variant="h3">Login</Typography>
+          <Typography variant="h4">Login</Typography>
           <Typography color="text.secondary" variant="h6">
             Do not share your login information with anyone
           </Typography>

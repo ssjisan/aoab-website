@@ -98,7 +98,7 @@ export default function Form() {
         onSubmit={handleOtpVerify}
       >
         <Stack justifyContent="center" sx={{ textAlign: "center" }} gap="8px">
-          <Typography variant="h3">Reset Password</Typography>
+          <Typography variant="h4">Reset Password</Typography>
           <Typography color="text.secondary">
             Please enter the OTP to verify your account.
           </Typography>

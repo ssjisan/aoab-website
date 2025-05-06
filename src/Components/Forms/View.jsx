@@ -29,16 +29,13 @@ export default function View() {
       const currentSkip = initial ? 0 : skip;
 
       // Fetch data from the server
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_SERVER_API}/search-forms`,
-        {
-          params: {
-            searchQuery: query, // Use the provided query
-            limit,
-            skip: currentSkip,
-          },
-        }
-      );
+      const { data } = await axios.get("/search-forms", {
+        params: {
+          searchQuery: query, // Use the provided query
+          limit,
+          skip: currentSkip,
+        },
+      });
 
       // Handle response data
       if (initial) {
@@ -54,7 +51,7 @@ export default function View() {
       setHasMore(data.hasMore);
       setDataLoaded(true); // Mark data as loaded
     } catch (err) {
-      toast.error("Error loading videos"); // Show error toast
+      toast.error("Error loading videos", err.message); // Show error toast
     } finally {
       setLoading(false); // Reset loading state
     }
@@ -79,7 +76,7 @@ export default function View() {
       )
     );
   };
-  
+
   return (
     <Stack gap="24px" alignItems="center">
       {/* Show search bar only after data has been loaded */}
@@ -105,67 +102,77 @@ export default function View() {
 
       {/* Journals list */}
       <Stack gap={"24px"} sx={{ width: "100%" }}>
-        {!dataLoaded
-          ? Array.from({ length: 3 }).map((_, index) => (
-              <Skeleton
-                key={index}
-                variant="rectangular"
-                height={120}
-                sx={{ borderRadius: "12px" }}
-              />
-            ))
-          : onlineLearning.length === 0 ? (
-            // Display message if no results found
-            <Typography variant="h6" color="text.secondary">
-              No results found for &quot;{searchQuery}&quot;
-            </Typography>
-          ) : (
-            onlineLearning.map((row, i) => (
-              <Stack
+        {!dataLoaded ? (
+          Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton
+              key={index}
+              variant="rectangular"
+              height={120}
+              sx={{ borderRadius: "12px" }}
+            />
+          ))
+        ) : onlineLearning.length === 0 ? (
+          // Display message if no results found
+          <Typography variant="h6" color="text.secondary">
+            No results found for &quot;{searchQuery}&quot;
+          </Typography>
+        ) : (
+          onlineLearning.map((row, i) => (
+            <Stack
+              sx={{
+                p: "8px 16px",
+                backgroundColor: "#EFF1F5",
+                borderRadius: "12px",
+              }}
+              gap="16px"
+              flexDirection={{ xs: "column", sm: "row", md: "row", lg: "row" }}
+              alignItems="center"
+              key={i}
+            >
+              <Typography
                 sx={{
-                  p: "8px 16px",
-                  backgroundColor: "#EFF1F5",
-                  borderRadius: "12px",
+                  fontSize: "64px !important",
+                  fontWeight: 700,
+                  opacity: 0.15,
+                  display: {
+                    xs: "none",
+                    sm: "block",
+                    md: "block",
+                    lg: "block",
+                  },
                 }}
-                gap="16px"
-                flexDirection="row"
-                alignItems="center"
-                key={i}
               >
+                {i + 1}
+              </Typography>
+              <Stack sx={{ width: "100%", pl: "16px" }}>
                 <Typography
-                  sx={{
-                    fontSize: "64px !important",
-                    fontWeight: 700,
-                    opacity: 0.15,
-                  }}
+                  variant="h4"
+                  color="text.primary"
+                  sx={{ wordWrap: "break-word" }}
                 >
-                  {i + 1}
+                  {highlightText(row.title)} {/* Highlight the title */}
                 </Typography>
-                <Stack sx={{ width: "100%", pl: "16px" }}>
-                  <Typography variant="h4" color="text.primary">
-                    {highlightText(row.title)} {/* Highlight the title */}
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {new Date(row.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </Typography>
-                </Stack>
-                <Button
-                  variant="soft"
-                  sx={{ width: "180px" }}
-                  component="a" // This makes the Button behave as a link
-                  href={row.link} // Link from the database
-                  target="_blank" // Open the link in a new tab
-                  rel="noopener noreferrer" // Security feature when opening external links
-                >
-                  Read More
-                </Button>
+                <Typography variant="body1" color="text.secondary">
+                  {new Date(row.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </Typography>
               </Stack>
-            ))
-          )}
+              <Button
+                variant="soft"
+                sx={{ width: "180px" }}
+                component="a" // This makes the Button behave as a link
+                href={row.link} // Link from the database
+                target="_blank" // Open the link in a new tab
+                rel="noopener noreferrer" // Security feature when opening external links
+              >
+                Read More
+              </Button>
+            </Stack>
+          ))
+        )}
       </Stack>
 
       {/* Load More button */}

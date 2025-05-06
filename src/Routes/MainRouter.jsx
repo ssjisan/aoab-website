@@ -52,7 +52,6 @@ export default function MainRoute() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/clinical-research" element={<ClinicalResearch />} />
-        <Route path="/videos" element={<Videos />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/online-learning" element={<OnlineLearning />} />
         <Route
@@ -77,6 +76,7 @@ export default function MainRoute() {
           <Route path="/password" element={<Password />} />
           <Route path="/certificate" element={<Certificates />} />
           <Route path="/enrollment-history" element={<EnrollmentHistory />} />
+          <Route path="/videos" element={<Videos />} />
         </Route>
       </Routes>
     </>

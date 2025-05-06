@@ -77,10 +77,7 @@ export default function Header() {
             border: "1px solid #ddd",
             p: "8px 16px",
             width: "48px",
-            position: "sticky",
-            right: 0, // Fixed to the right
             backgroundColor: "rgb(244, 246, 248)",
-            zIndex: 1, // Ensure it stays on top
           }}
         ></TableCell>
       </TableRow>

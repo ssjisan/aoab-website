@@ -10,9 +10,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { EyeOff, EyeOn } from "../../../assets/Icons";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -36,7 +36,7 @@ export default function Form() {
   const handleRegistration = async (e) => {
     e.preventDefault();
     setRegistrationLoading(true);
-  
+
     try {
       const { data } = await axios.post("/registration", {
         name,
@@ -46,7 +46,7 @@ export default function Form() {
         password,
         confirmPassword,
       });
-  
+
       if (data?.error) {
         setRegistrationLoading(false);
         toast.error(data.error || "An error occurred. Please try again.");
@@ -65,14 +65,14 @@ export default function Form() {
       }
     }
   };
-  
-  
 
   return (
-    <Container sx={{ display: "flex", justifyContent: "center" }}>
+    <Container
+      sx={{ display: "flex", alignItems: "center", justifyContent:"center"}}
+    >
       <Stack
         sx={{
-          pt: "120px",
+          pt:"80px",
           width: "480px",
           maxWidth: "100%",
           pb: "48px",
@@ -82,13 +82,13 @@ export default function Form() {
         component="form"
         onSubmit={handleRegistration}
       >
-        <Stack justifyContent="center" sx={{ textAlign: "center" }} gap="8px">
-          <Typography variant="h3">Registration</Typography>
+        <Stack justifyContent="center" sx={{ textAlign: "center" }} gap="4px">
+          <Typography variant="h4">Registration</Typography>
           <Typography color="text.secondary" variant="h6">
             Create an account for enroll our courses.
           </Typography>
         </Stack>
-        <Stack sx={{ width: "100%" }} gap="24px">
+        <Stack sx={{ width: "100%" }} gap="16px">
           <Stack gap="8px">
             <Typography sx={{ fontWeight: "600" }}>Name *</Typography>
             <TextField
@@ -106,8 +106,23 @@ export default function Form() {
               variant="outlined"
               size="small"
               value={bmdcNo}
+              type="number"
               onChange={(e) => setBmdcNo(e.target.value)}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">A-</InputAdornment>
+                  ),
+                },
+              }}
             />
+            <Typography
+              sx={{ fontSize: "13px !important" }}
+              color="text.secondary"
+            >
+              Please enter your BM&DC Registration No without the &apos;A-&apos;
+              prefix. Only the digits should be entered.
+            </Typography>
           </Stack>
           <Stack gap="8px">
             <Typography sx={{ fontWeight: "600" }}>Email *</Typography>
@@ -124,8 +139,23 @@ export default function Form() {
               variant="outlined"
               size="small"
               value={contactNumber}
+              type="number"
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">+880</InputAdornment>
+                  ),
+                },
+              }}
               onChange={(e) => setContactNumber(e.target.value)}
             />
+            <Typography
+              sx={{ fontSize: "13px !important" }}
+              color="text.secondary"
+            >
+              Please enter your contact number without the +880 prefix. Only the
+              digits should be entered.
+            </Typography>
           </Stack>
           <Stack gap="8px">
             <Typography sx={{ fontWeight: "600" }}>Password *</Typography>
@@ -165,7 +195,7 @@ export default function Form() {
                 color="text.secondary"
               >
                 The password must be at least 8 characters long and include at
-                least 1 letter and 1 number.
+                least 1 letter, 1 number, and 1 special character.
               </Typography>
             </Stack>
           </Stack>

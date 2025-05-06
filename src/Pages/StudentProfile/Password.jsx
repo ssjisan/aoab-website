@@ -1,7 +1,7 @@
 import Navbar from "../../Layout/Navbar/Navbar";
 import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
-import ChangePassword from "../../Components/StudentProfile/Profile/ChangePassword";
+import ChangePassword from "../../Components/StudentProfile/ChangePassword";
 export default function Password() {
   return (
     <div>
