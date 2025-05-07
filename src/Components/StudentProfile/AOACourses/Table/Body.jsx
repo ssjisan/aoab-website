@@ -3,6 +3,8 @@ import { Button, TableBody, TableCell, TableRow } from "@mui/material";
 import CourseDataDrawer from "../CourseDataDrawer";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Document, Page, pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export default function Body({ profile }) {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -56,16 +58,16 @@ export default function Body({ profile }) {
         const courseData =
           profile.courses.find((c) => c._id === course._id) || {};
         const courseStatus =
-        courseData && courseData.status != null
-          ? courseData.status === "yes"
-            ? "Yes"
-            : "No"
-          : "N/A";
+          courseData && courseData.status != null
+            ? courseData.status === "yes"
+              ? "Yes"
+              : "No"
+            : "N/A";
 
-          const completionYear = courseData?.completionYear || "N/A";
+        const completionYear = courseData?.completionYear || "N/A";
 
-          const hasDocument =
-            courseData?.documents && courseData.documents.length > 0;
+        const hasDocument =
+          courseData?.documents && courseData.documents.length > 0;
         return (
           <TableRow key={course._id}>
             <TableCell sx={{ border: "1px solid #ddd", p: "8px 16px" }}>
@@ -119,7 +121,10 @@ export default function Body({ profile }) {
               align="center"
               sx={{ border: "1px solid #ddd", p: "8px 16px", width: "64px" }}
             >
-              <Button variant="soft" onClick={()=>toggleDrawer(true, course._id)}>
+              <Button
+                variant="soft"
+                onClick={() => toggleDrawer(true, course._id)}
+              >
                 Edit
               </Button>
             </TableCell>
