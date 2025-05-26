@@ -33,6 +33,11 @@ export default function View() {
             month: "long",
             day: "numeric",
           });
+          console.log(
+            `Event: ${data.title}, Has Cover Photo: `,
+            data?.coverPhoto?.length > 0,
+            data?.coverPhoto
+          );
           return (
             <Grid item xs={12} sm={12} md={4} lg={4} key={data._id}>
               <Stack gap="24px">
@@ -44,7 +49,10 @@ export default function View() {
                   }}
                 >
                   <img
-                    src={data.coverPhoto[0].url}
+                    src={
+                      data.coverPhoto.url ||
+                      "https://dummyimage.com/600x400/000/fff"
+                    }
                     width={"100%"}
                     height={"100%"}
                     style={{ objectFit: "cover" }}

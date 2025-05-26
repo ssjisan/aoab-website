@@ -3,8 +3,6 @@ import { Button, TableBody, TableCell, TableRow } from "@mui/material";
 import CourseDataDrawer from "../CourseDataDrawer";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Document, Page, pdfjs } from "react-pdf";
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export default function Body({ profile }) {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -15,7 +13,7 @@ export default function Body({ profile }) {
     // Fetch course data from the API
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("/setup_course");
+        const response = await axios.get("/category_list");
         setCourses(response.data); // Assuming response is an array of course data
       } catch (error) {
         console.error("Error fetching courses:", error);

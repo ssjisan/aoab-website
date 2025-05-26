@@ -157,7 +157,6 @@ export default function Navbar() {
                   href={hasSubmenu ? null : data.link}
                   onMouseEnter={() => setHoveredItem(data.id)}
                   onMouseLeave={() => setHoveredItem(null)}
-                  onClick={() => hasSubmenu && handleTouchItem(data.id)} // Toggle submenu on touch/click
                   justifyContent="center"
                 >
                   <Stack
@@ -242,16 +241,16 @@ export default function Navbar() {
                               sx={{
                                 p: "16px",
                                 width: "312px",
-                                borderRadius: "12px",
+                                borderRadius: "16px",
                                 border: "1px solid #F2F2F2",
                                 textDecoration: "none",
                                 transition: "border-color 0.3s ease",
-                                background: "#003258",
+                                background: "rgba(0, 50, 88, 0.16)",
                                 "&:hover": {
                                   border: "1px solid #fff",
                                 },
                               }}
-                              gap="16px"
+                              gap="24px"
                               component="a"
                               href={submenu.link}
                               target="_blank"
@@ -259,14 +258,27 @@ export default function Navbar() {
                             >
                               <Stack
                                 flexDirection="row"
-                                justifyContent="space-between"
+                                gap="8px"
+                                alignItems="center"
                               >
-                                <Typography sx={{ color: "#fff" }}>
+                                <Typography
+                                  sx={{
+                                    color: "#003258",
+                                    fontWeight: "700",
+                                    fontSize: "14px !important",
+                                  }}
+                                >
                                   {submenu.title}
                                 </Typography>
-                                <RightArrow size="16px" color="#FFF" />
+                                <RightArrow size="16px" color="#003258" />
                               </Stack>
-                              <Typography sx={{ color: "#fff" }}>
+                              <Typography
+                                sx={{
+                                  color: "#003258",
+                                  fontSize: "14px !important",
+                                  fontWeight: "400",
+                                }}
+                              >
                                 {submenu.subtitle}
                               </Typography>
                             </Stack>

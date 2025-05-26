@@ -8,6 +8,7 @@ import ProfileAlert from "../../Components/StudentProfile/ProfileAlert";
 import BasicInfo from "../../Components/StudentProfile/BasicInfo/BasicInfo";
 import AOACourses from "../../Components/StudentProfile/AOACourses/AOACourses";
 import ProfileCard from "../../Components/StudentProfile/ProfileCard/ProfileCard";
+import Signature from "../../Components/StudentProfile/Signature/Signature";
 
 export default function Profile() {
   const [profile, setProfile] = useState(null); // Set initial state to null to avoid .map on an empty array
@@ -68,6 +69,7 @@ export default function Profile() {
             </Stack>
           )}
           <BasicInfo profile={profile} />
+          <Signature profile={profile} />
           <AOACourses profile={profile} />
         </Stack>
       </Container>

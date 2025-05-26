@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import navConfig from "../Layout/Navbar/ProfileMenu";
 import { useLocation, Link } from "react-router-dom";
-import {useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Sidebar() {
   const { pathname } = useLocation();
@@ -48,7 +48,7 @@ export default function Sidebar() {
           display: "flex",
           flexDirection: "row", // Horizontal for small screens, vertical for large
           alignItems: "center",
-          justifyContent:forBelow767 ? "flex-start" :"center",
+          justifyContent: forBelow767 ? "flex-start" : "center",
           gap: "24px",
           flexWrap: "nowrap",
           overflowX: forBelow767 ? "auto" : "hidden", // Enable horizontal scroll on small screens
@@ -76,8 +76,10 @@ export default function Sidebar() {
                   borderRadius: "8px",
                   padding: "8px 12px",
                   height: "44px",
-                  background: pathname === data.items[0].link ? "#FCECFF" : "transparent",
-                  color: pathname === data.items[0].link ? "#9C27B0" : "#637381",
+                  background:
+                    pathname === data.items[0].link ? "#d6dee4" : "transparent",
+                  color:
+                    pathname === data.items[0].link ? "#072439" : "#637381",
                   flex: "0 0 auto",
                   display: "flex",
                   justifyContent: "center",
@@ -85,7 +87,9 @@ export default function Sidebar() {
                   alignContent: "center",
                 }}
               >
-                <ListItemIcon sx={{ minWidth: "36px" }}>{data.icon}</ListItemIcon>
+                <ListItemIcon sx={{ minWidth: "36px" }}>
+                  {data.icon}
+                </ListItemIcon>
                 <Typography
                   sx={{
                     fontWeight: pathname === data.items[0].link ? 600 : 500,

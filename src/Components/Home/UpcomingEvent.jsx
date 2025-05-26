@@ -68,7 +68,7 @@ export default function UpcomingEvent() {
                   }}
                 >
                   <img
-                    src={data.coverPhoto[0].url}
+                    src={data.coverPhoto.url}
                     alt="About Us"
                     style={{
                       objectFit: "cover",

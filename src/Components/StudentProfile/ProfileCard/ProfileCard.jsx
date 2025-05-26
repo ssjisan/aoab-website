@@ -14,11 +14,15 @@ export default function ProfileCard({ profile }) {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [currentImage, setCurrentImage] = useState(
+    profile?.picture?.[0]?.url || ""
+  );
 
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
   };
 
+  // Reload image when profile changes
   useEffect(() => {
     if (profile?.picture?.[0]?.url) {
       setLoading(true);
@@ -26,6 +30,7 @@ export default function ProfileCard({ profile }) {
       img.src = profile.picture[0].url;
       img.onload = () => {
         setImageLoaded(true);
+        setCurrentImage(profile.picture[0].url);
         setLoading(false);
       };
       img.onerror = () => {
@@ -35,6 +40,12 @@ export default function ProfileCard({ profile }) {
       setLoading(false);
     }
   }, [profile?.picture]);
+
+  const handleUploadSuccess = (newImageUrl) => {
+    setCurrentImage(newImageUrl);
+    setImageLoaded(true);
+    setOpenDrawer(false);
+  };
 
   if (!profile) {
     return <Typography>Loading...</Typography>;
@@ -69,7 +80,7 @@ export default function ProfileCard({ profile }) {
           <CircularProgress size={40} />
         ) : (
           <Avatar
-            src={imageLoaded ? profile?.picture?.[0]?.url : ""}
+            src={imageLoaded ? currentImage : ""}
             alt="Profile"
             sx={{
               width: "80px",
@@ -131,12 +142,12 @@ export default function ProfileCard({ profile }) {
           </Stack>
         </Stack>
         <Typography variant="body1" color="text.secondary">
-        {profile.isAccountVerified ? profile.aoaNo : profile.email}
+          {profile.isAccountVerified ? profile.aoaNo : profile.email}
         </Typography>
       </Stack>
       <Button
         sx={{ width: "180px" }}
-        variant="contained"
+        variant="soft"
         onClick={toggleDrawer(true)}
       >
         Upload Image
@@ -144,19 +155,19 @@ export default function ProfileCard({ profile }) {
       <ImageUpload
         open={openDrawer}
         toggleDrawer={toggleDrawer}
-        currentImage={profile?.picture?.[0]?.url}
+        currentImage={currentImage}
+        onSuccess={handleUploadSuccess}
       />
     </Stack>
   );
 }
 
-// Prop types validation for the ProfileCard component
 ProfileCard.propTypes = {
   profile: PropTypes.shape({
     name: PropTypes.string.isRequired,
     aoaNo: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
-    isAccountVerified: PropTypes.boolean,
+    isAccountVerified: PropTypes.bool,
     picture: PropTypes.arrayOf(
       PropTypes.shape({
         url: PropTypes.string,

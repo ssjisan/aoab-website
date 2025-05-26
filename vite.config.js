@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
       ),
     },
     plugins: [react()],
-    build: { chunkSizeWarningLimit: 1600 },
+    build: { chunkSizeWarningLimit: 3200 },
     server: {
       host: true,           // Enables LAN access (0.0.0.0)
       port: 5173,           // Or any port you want
