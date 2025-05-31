@@ -12,6 +12,7 @@ import Chip from "../Common/Chip";
 import { useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { DataContext } from "../../DataProcessing/DataProcessing";
+import { Calender, CalenderDualTone } from "../../assets/Icons";
 
 export default function UpcomingEvent() {
   const { pathname } = useLocation();
@@ -64,7 +65,7 @@ export default function UpcomingEvent() {
                     borderRadius: "12px",
                     overflow: "hidden",
                     width: "100%",
-                    height: "100%", // Ensures it matches the content height
+                    height: "100%",
                   }}
                 >
                   <img
@@ -89,21 +90,77 @@ export default function UpcomingEvent() {
                   }}
                   justifyContent="space-between"
                   gap="24px"
+                  alignItems="flex-end"
                 >
-                  <Stack gap="16px">
+                  <Stack gap="16px" sx={{ width: "100%" }}>
                     <Stack gap="8px">
                       <Chip chip={"Next Event"} />
                       <Typography variant="h4">{data.title}</Typography>
                     </Stack>
-                    <Typography variant="h6" color="text.secondary">
-                      Date: <Box component={"span"} sx={{color:"#003258"}}>{start} to {end}</Box>
-                    </Typography>
-                    <Typography variant="h6" color="text.secondary">
-                      Contact person: <Box component={"span"} sx={{color:"#003258"}}>{data.contactPerson}</Box>
-                    </Typography>
-                    <Typography variant="h6" color="text.secondary">
-                      Email: <Box component={"span"} sx={{color:"#003258"}}>{data.contactEmail}</Box>
-                    </Typography>
+                    <Stack gap="8px" flexDirection="row" alignItems="center">
+                      <CalenderDualTone color="#003258" size={24} />
+                      <Box>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          component="span"
+                        >
+                          Event Date:&nbsp;
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          component="span"
+                          fontWeight="600"
+                        >
+                          {start} &nbsp; - &nbsp; {end}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                    {data.contactPersons && data.contactPersons.length > 0 && (
+                      
+                      <Stack direction="column" spacing={2} mt={4} flexWrap="wrap">
+                                            <Typography>Contact</Typography>
+
+                        {data.contactPersons.map((person, index) => (
+                          <Stack
+                          flexDirection="row"
+                          gap="8px"
+                            key={index}
+                            sx={{
+                              border: "1px solid rgba(0,0,0,0.1)",
+                              borderRadius: "12px",
+                              backgroundColor: "#fafafa",
+                              padding: "16px",
+                              minWidth: "240px",
+                              flex: "1 1 auto",
+                            }}
+                          >
+                            <Calender size="24px" color="black" />
+                            <Stack>
+                              <Typography
+                                variant="body1"
+                                color="text.primary"
+                                component="span"
+                                fontWeight="600"
+                              >
+                                {person.name}
+                              </Typography>
+                              {person.email && (
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  component="span"
+                                  fontWeight="600"
+                                >
+                                  {person.email}
+                                </Typography>
+                              )}
+                            </Stack>
+                          </Stack>
+                        ))}
+                      </Stack>
+                    )}
                   </Stack>
                   <Button
                     variant="contained"

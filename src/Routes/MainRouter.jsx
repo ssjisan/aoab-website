@@ -21,6 +21,7 @@ import Certificates from "../Pages/StudentProfile/Certificates";
 import EnrollmentHistory from "../Pages/StudentProfile/EnrollmentHistory";
 import Password from "../Pages/StudentProfile/password";
 import Registration from "../Pages/UserAuth/Registration";
+import EnrollmentCourse from "../Pages/EnrollmentCourse";
 
 export default function MainRoute() {
   return (
@@ -77,6 +78,7 @@ export default function MainRoute() {
           <Route path="/certificate" element={<Certificates />} />
           <Route path="/enrollment-history" element={<EnrollmentHistory />} />
           <Route path="/videos" element={<Videos />} />
+          <Route path="/enrollment" element={<EnrollmentCourse/>}/>
         </Route>
       </Routes>
     </>

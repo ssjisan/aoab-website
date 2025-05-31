@@ -17,7 +17,7 @@ export default function ProfileCard({ profile }) {
   const [currentImage, setCurrentImage] = useState(
     profile?.picture?.[0]?.url || ""
   );
-
+  
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
   };

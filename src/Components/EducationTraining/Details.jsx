@@ -1,14 +1,23 @@
-import { Box, Button, Container, Stack, Typography, Skeleton } from "@mui/material";
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  Typography,
+  Skeleton,
+} from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { Calender } from "../../assets/Icons";
+import { CalenderDualTone, Fees } from "../../assets/Icons";
+import { DataContext } from "../../DataProcessing/DataProcessing";
 
 export default function Details() {
   const { id } = useParams();
 
   const [courseEvent, setCourseEvent] = useState(null);
+  const { auth } = useContext(DataContext);
 
   useEffect(() => {
     loadBlog();
@@ -16,23 +25,73 @@ export default function Details() {
 
   const loadBlog = async () => {
     try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_SERVER_API}/courses_events/${id}`
-      );
+      const { data } = await axios.get(`/courses_events/${id}`);
       setCourseEvent(data);
     } catch (err) {
       toast.error("Error loading blog details", err.message);
     }
   };
+  const navigate = useNavigate();
+
+  const handleCheckEligibility = async () => {
+  if (!auth?.user?._id) {
+    // Store intended action in localStorage (or context)
+    localStorage.setItem("registerCourseId", courseEvent?._id);
+    toast("Please log in to register.");
+    navigate("/login");
+    return;
+  }
+
+  try {
+    const { data } = await axios.post("/check-eligibility", {
+      studentId: auth.user._id,
+      courseId: courseEvent._id,
+    });
+
+    navigate("/enrollment", {
+      state: {
+        eligibility: {
+          success: data.success,
+          message: data.message,
+          courseEvent,
+        },
+      },
+    });
+  } catch (err) {
+    console.error("Registration error:", err);
+    navigate("/enrollment", {
+      state: {
+        eligibility: {
+          success: false,
+          message:
+            err?.response?.data?.message ||
+            "Something went wrong during registration.",
+          courseEvent,
+        },
+      },
+    });
+  }
+};
+
 
   if (!courseEvent) {
     // Skeleton loader when data is not yet available
     return (
       <Box sx={{ pt: "180px" }}>
         <Container>
-          <Skeleton variant="rectangular" width="100%" height="480px" sx={{ mb: "48px" }} />
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height="480px"
+            sx={{ mb: "48px" }}
+          />
           <Skeleton variant="text" width="60%" height={50} sx={{ mt: 2 }} />
-          <Stack gap="16px" sx={{ mt: "48px" }} flexDirection="row" justifyContent="space-between">
+          <Stack
+            gap="16px"
+            sx={{ mt: "48px" }}
+            flexDirection="row"
+            justifyContent="space-between"
+          >
             <Stack gap="8px" flexDirection="row" alignItems="center">
               <Skeleton variant="circular" width={24} height={24} />
               <Skeleton variant="text" width={150} />
@@ -43,7 +102,12 @@ export default function Details() {
             </Stack>
             <Skeleton variant="rectangular" width={120} height={40} />
           </Stack>
-          <Skeleton variant="rectangular" width="100%" height={200} sx={{ mt: 4 }} />
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height={200}
+            sx={{ mt: 4 }}
+          />
         </Container>
       </Box>
     );
@@ -62,11 +126,12 @@ export default function Details() {
 
   return (
     <Box sx={{ pt: "180px" }}>
-      <Container>
-        <Box sx={{ width: "100%", height: "480px", mb: "48px" }}>
-          {courseEvent.coverPhoto && courseEvent.coverPhoto[0] ? (
+      <Container sx={{ mt: "64px", width: "960px", maxWidth: "100%" }}>
+        <Box sx={{ width: "100%", height: "480px" }}>
+          {/* Check if coverPhoto and coverPhoto[0] exist before rendering */}
+          {courseEvent.coverPhoto ? (
             <img
-              src={courseEvent.coverPhoto[0].url}
+              src={courseEvent.coverPhoto.url}
               alt={courseEvent.title}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
@@ -83,35 +148,115 @@ export default function Details() {
           flexDirection="row"
           justifyContent="space-between"
         >
-          <Stack gap="8px" flexDirection="row" alignItems="center">
-            <Calender color="#003258" size={24} />
-            <Typography variant="h6" color="text.secondary">
-              {start} &nbsp; - &nbsp; {end}
-            </Typography>
+          <Stack gap="16px">
+            <Stack gap="8px" flexDirection="row">
+              <CalenderDualTone color="#003258" size={24} />
+              <Box>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  component="span"
+                >
+                  Event Date:&nbsp;
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  component="span"
+                  fontWeight="600"
+                >
+                  {start} &nbsp; - &nbsp; {end}
+                </Typography>
+              </Box>
+            </Stack>
+            <Stack gap="0px" flexDirection="column">
+              <Stack gap="8px" flexDirection="row">
+                <Fees color="#003258" size={24} />
+                <Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    component="span"
+                  >
+                    Enrollment Fee:&nbsp;
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.primary"
+                    component="span"
+                    fontWeight="600"
+                  >
+                    {courseEvent.fee} taka
+                  </Typography>
+                </Box>
+              </Stack>
+            </Stack>
           </Stack>
-          <Stack gap="0px" flexDirection="column">
-            <Typography variant="body2" color="text.secondary">
-              Enrollment Fee
-            </Typography>
-            <Typography variant="h6" color="text.primary">
-              {courseEvent.fees === 0 ? "Free" : courseEvent.fees}
-            </Typography>
-          </Stack>
-          <Button variant="contained" disabled>
+          <Button variant="contained" onClick={handleCheckEligibility}>
             Register
           </Button>
         </Stack>
-        <Stack sx={{mt:"24px", mb:"24px"}} gap="16px">
-          <Typography variant="h6" color="text.secondary">
-          Contact Person: <Box component={"span"} sx={{color:"#000"}}>{courseEvent.contactPerson}</Box>
-          </Typography>
-          <Typography variant="h6" color="text.secondary">
-          Contact Email: <Box component={"span"} sx={{color:"#000"}}>{courseEvent.contactEmail}</Box>
-          </Typography>
-        </Stack>
+        {courseEvent.contactPersons &&
+          courseEvent.contactPersons.length > 0 && (
+            <Stack direction="row" spacing={2} mt={4} flexWrap="wrap">
+              {courseEvent.contactPersons.map((person, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    border: "1px solid rgba(0,0,0,0.1)",
+                    borderRadius: "12px",
+                    backgroundColor: "#fafafa",
+                    padding: "16px",
+                    minWidth: "240px",
+                    flex: "1 1 auto",
+                  }}
+                >
+                  <Typography variant="subtitle1" fontWeight="700" gutterBottom>
+                    Contact Person {index + 1}
+                  </Typography>
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      component="span"
+                    >
+                      Name:&nbsp;
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.primary"
+                      component="span"
+                      fontWeight="600"
+                    >
+                      {person.name}
+                    </Typography>
+                  </Box>
+                  {person.email && (
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        component="span"
+                      >
+                        Email:&nbsp;
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.primary"
+                        component="span"
+                        fontWeight="600"
+                      >
+                        {person.email}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </Stack>
+          )}
         <Typography
-          sx={{ whiteSpace: "pre-wrap" }}
-          dangerouslySetInnerHTML={{ __html: courseEvent.details }}
+          sx={{ whiteSpace: "pre-wrap" }} // Ensure white space is preserved
+          dangerouslySetInnerHTML={{ __html: courseEvent.details }} // Render HTML content safely
         />
       </Container>
     </Box>
