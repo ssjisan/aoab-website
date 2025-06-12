@@ -78,7 +78,7 @@ export default function MainRoute() {
           <Route path="/certificate" element={<Certificates />} />
           <Route path="/enrollment-history" element={<EnrollmentHistory />} />
           <Route path="/videos" element={<Videos />} />
-          <Route path="/enrollment" element={<EnrollmentCourse/>}/>
+          <Route path="/enrollment/:id" element={<EnrollmentCourse/>}/>
         </Route>
       </Routes>
     </>

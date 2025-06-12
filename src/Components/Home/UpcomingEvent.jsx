@@ -12,7 +12,7 @@ import Chip from "../Common/Chip";
 import { useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { DataContext } from "../../DataProcessing/DataProcessing";
-import { Calender, CalenderDualTone } from "../../assets/Icons";
+import {  Mail } from "../../assets/Icons";
 
 export default function UpcomingEvent() {
   const { pathname } = useLocation();
@@ -69,7 +69,7 @@ export default function UpcomingEvent() {
                   }}
                 >
                   <img
-                    src={data.coverPhoto.url}
+                    src={data?.coverPhoto?.url}
                     alt="About Us"
                     style={{
                       objectFit: "cover",
@@ -97,9 +97,7 @@ export default function UpcomingEvent() {
                       <Chip chip={"Next Event"} />
                       <Typography variant="h4">{data.title}</Typography>
                     </Stack>
-                    <Stack gap="8px" flexDirection="row" alignItems="center">
-                      <CalenderDualTone color="#003258" size={24} />
-                      <Box>
+                    <Box>
                         <Typography
                           variant="body2"
                           color="text.secondary"
@@ -116,16 +114,21 @@ export default function UpcomingEvent() {
                           {start} &nbsp; - &nbsp; {end}
                         </Typography>
                       </Box>
-                    </Stack>
                     {data.contactPersons && data.contactPersons.length > 0 && (
-                      
-                      <Stack direction="column" spacing={2} mt={4} flexWrap="wrap">
-                                            <Typography>Contact</Typography>
+                      <Stack
+                        direction="column"
+                        spacing={2}
+                        mt={4}
+                        flexWrap="wrap"
+                      >
+                        <Typography variant="h6" fontWeight={700}>
+                          Contact Person
+                        </Typography>
 
                         {data.contactPersons.map((person, index) => (
                           <Stack
-                          flexDirection="row"
-                          gap="8px"
+                            flexDirection="row"
+                            gap="8px"
                             key={index}
                             sx={{
                               border: "1px solid rgba(0,0,0,0.1)",
@@ -136,7 +139,7 @@ export default function UpcomingEvent() {
                               flex: "1 1 auto",
                             }}
                           >
-                            <Calender size="24px" color="black" />
+                            <Mail size="24px" color="black" />
                             <Stack>
                               <Typography
                                 variant="body1"

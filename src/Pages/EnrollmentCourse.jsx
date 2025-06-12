@@ -1,59 +1,192 @@
-import { Box, Typography, Button, Container } from "@mui/material";
+import { Typography, Button, Container, Stack, TextField } from "@mui/material";
 import Footer from "../Components/Footer/Footer";
 import Navbar from "../Layout/Navbar/Navbar";
-import { useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../DataProcessing/DataProcessing";
-import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
+import EligibilityModal from "./EligibilityModal";
 
 export default function EnrollmentCourse() {
-  const { auth } = useContext(DataContext);
-  const location = useLocation();
   const navigate = useNavigate();
+  const { id: courseId } = useParams();
+  const { auth } = useContext(DataContext);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [course, setCourse] = useState(null);
+  const studentId = auth?.user?._id;
+  const [enrollmentSuccess, setEnrollmentSuccess] = useState(null); // null, true, or false
 
-  // Extract eligibility data from route state
-  const eligibility = location.state?.eligibility;
+  // ✅ Load course details on mount
+  useEffect(() => {
+    const loadCourse = async () => {
+      try {
+        const { data } = await axios.get(`/courses_events/${courseId}`);
+        setCourse(data);
+      } catch (err) {
+        toast.error("Failed to load course data", err.message);
+      }
+    };
 
-  // Redirect back if no eligibility data found (optional)
-  if (!eligibility) {
-    navigate("/"); // or wherever appropriate
-    return null;
+    if (courseId) loadCourse();
+  }, [courseId]);
+
+  // ✅ Handle enrollment
+  const handleEnrollClick = async () => {
+    try {
+      if (!studentId) {
+        toast.error("You must be logged in to enroll");
+        return;
+      }
+
+      const payload = { studentId, courseId };
+      const res = await axios.post("/eligibility-check", payload);
+
+      if (res.data.success) {
+        // toast.success(res.data.message || "Eligible for enrollment.");
+        setEnrollmentSuccess(true);
+        setModalMessage([
+          res.data.message || "You are eligible for this course.",
+        ]);
+        setModalOpen(true);
+      } else {
+        setEnrollmentSuccess(false);
+        setModalMessage(res.data.reasons || ["Enrollment failed."]);
+        setModalOpen(true);
+      }
+    } catch (err) {
+      const reasons = err?.response?.data?.reasons;
+      setEnrollmentSuccess(false);
+      setModalMessage(
+        Array.isArray(reasons) ? reasons : ["Enrollment failed. Try again."]
+      );
+      setModalOpen(true);
+    }
+  };
+  console.log(modalMessage);
+  const handleConfirmEnrollment = async () => {
+  const payload = {
+    courseId,
+    studentId,
+  };
+
+  try {
+    const res = await axios.post("/enrollment", payload);
+    if (res.status === 201) {
+      navigate("/enrollment-history")
+      toast.success("Enrollment successful!");
+    }
+  } catch (error) {
+    const backendMessage = error?.response?.data?.error;
+    toast.error(backendMessage || "Something went wrong. Please try again.");
   }
+};
+
 
   return (
     <>
       <Navbar />
       <Container>
-        <Box sx={{ pt: "120px", px: 3 }}>
-          <Typography variant="h4" sx={{ mb: 3 }}>
-            Enrollment Report
-          </Typography>
+        <Stack
+          sx={{ pt: "120px", px: 3, pb: "80px" }}
+          alignItems="center"
+          gap="64px"
+        >
+          <Stack sx={{ width: "40%" }} gap="16px">
+            <Typography variant="h4" sx={{ mb: 3 }}>
+              Course Enrollment
+            </Typography>
 
-          <Typography
-            variant="h6"
-            color={eligibility.success ? "green" : "error"}
-            sx={{ mb: 2 }}
-          >
-            {eligibility.message}
-          </Typography>
-
-          {/* Optional: show some course info */}
-          {eligibility.courseEvent && (
-            <>
-              <Typography variant="subtitle1" sx={{ mb: 2 }}>
-                Course Title: {eligibility.courseEvent.title}
+            <Stack gap="8px">
+              <Typography variant="body1" fontWeight={600}>
+                Course name
               </Typography>
-              <Typography variant="body2" sx={{ mb: 4 }}>
-                Enrollment Fee: {eligibility.courseEvent.fee} taka
-              </Typography>
-            </>
-          )}
+              <TextField
+                variant="outlined"
+                fullWidth
+                size="small"
+                value={course?.title || ""}
+                disabled
+              />
+            </Stack>
 
-          {/* Optional: Back to courses or other navigation */}
-          <Button variant="contained" onClick={() => navigate(-1)}>
-            Back
-          </Button>
-        </Box>
+            <Stack gap="8px">
+              <Typography variant="body1" fontWeight={600}>
+                Location
+              </Typography>
+              <TextField
+                variant="outlined"
+                fullWidth
+                size="small"
+                value={course?.location || ""}
+                disabled
+              />
+            </Stack>
+
+            <Stack gap="8px">
+              <Typography variant="body1" fontWeight={600}>
+                Fees
+              </Typography>
+              <TextField
+                variant="outlined"
+                fullWidth
+                size="small"
+                value={course?.fee ? `${course.fee} taka` : ""}
+                disabled
+              />
+            </Stack>
+
+            <Stack gap="8px">
+              <Typography variant="body1" fontWeight={600}>
+                Start Date
+              </Typography>
+              <TextField
+                variant="outlined"
+                fullWidth
+                size="small"
+                value={
+                  course?.startDate
+                    ? new Date(course.startDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : ""
+                }
+                disabled
+              />
+            </Stack>
+
+            <Stack gap="16px" direction="column">
+              <Stack gap="16px" direction="row">
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate(-1)}
+                  sx={{ flex: 1 }}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleEnrollClick}
+                  sx={{ flex: 1 }}
+                >
+                  Enroll
+                </Button>
+              </Stack>
+            </Stack>
+          </Stack>
+        </Stack>
       </Container>
+      <EligibilityModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        messages={modalMessage}
+        success={enrollmentSuccess}
+        title={course?.title}
+        onConfirm={handleConfirmEnrollment}
+      />
       <Footer />
     </>
   );

@@ -50,7 +50,7 @@ export default function View() {
                 >
                   <img
                     src={
-                      data.coverPhoto.url ||
+                      data?.coverPhoto?.url ||
                       "https://dummyimage.com/600x400/000/fff"
                     }
                     width={"100%"}

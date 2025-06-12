@@ -33,10 +33,10 @@ export default function CourseDataDrawer({
   const [isUploading, setIsUploading] = useState(false);
   const [removedFiles, setRemovedFiles] = useState([]);
 
-  const isValidYearFormat =
-    /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec),\s\d{4}$/.test(
-      completionYear
-    );
+  // const isValidYearFormat =
+  //   /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec),\s\d{4}$/.test(
+  //     completionYear
+  //   );
 
   const handleRadioChange = (event) => {
     setSelectedAnswer(event.target.value);
@@ -121,10 +121,10 @@ export default function CourseDataDrawer({
         return;
       }
 
-      if (!isValidYearFormat) {
-        toast.error("Please enter the date in the format 'MMM, YYYY'.");
-        return;
-      }
+      // if (!isValidYearFormat) {
+      //   toast.error("Please enter the date in the format 'MMM, YYYY'.");
+      //   return;
+      // }
 
       if (selectedFiles.length === 0 && existingFiles.length === 0) {
         toast.error("Please upload at least one file.");

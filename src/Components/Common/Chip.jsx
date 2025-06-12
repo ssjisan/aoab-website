@@ -5,7 +5,7 @@ export default function Chip({ chip }) {
   return (
     <Stack
       sx={{
-        padding: "8px 16px",
+        padding: "4px 16px",
         borderRadius: "100px",
         backgroundColor: "rgba(0, 50, 88, 0.16)",
         width:"fit-content"
@@ -13,7 +13,7 @@ export default function Chip({ chip }) {
     >
       <Typography
         color="primary"
-        sx={{ fontWeight: 600, lineHeight: "16px", whiteSpace: "nowrap" }}
+        sx={{ fontWeight: 400, lineHeight: "14px", whiteSpace: "nowrap", fontSize:"12px" }}
       >
         {chip}
       </Typography>

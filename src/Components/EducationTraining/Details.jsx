@@ -6,18 +6,16 @@ import {
   Typography,
   Skeleton,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { CalenderDualTone, Fees } from "../../assets/Icons";
-import { DataContext } from "../../DataProcessing/DataProcessing";
 
 export default function Details() {
   const { id } = useParams();
 
   const [courseEvent, setCourseEvent] = useState(null);
-  const { auth } = useContext(DataContext);
 
   useEffect(() => {
     loadBlog();
@@ -31,48 +29,6 @@ export default function Details() {
       toast.error("Error loading blog details", err.message);
     }
   };
-  const navigate = useNavigate();
-
-  const handleCheckEligibility = async () => {
-  if (!auth?.user?._id) {
-    // Store intended action in localStorage (or context)
-    localStorage.setItem("registerCourseId", courseEvent?._id);
-    toast("Please log in to register.");
-    navigate("/login");
-    return;
-  }
-
-  try {
-    const { data } = await axios.post("/check-eligibility", {
-      studentId: auth.user._id,
-      courseId: courseEvent._id,
-    });
-
-    navigate("/enrollment", {
-      state: {
-        eligibility: {
-          success: data.success,
-          message: data.message,
-          courseEvent,
-        },
-      },
-    });
-  } catch (err) {
-    console.error("Registration error:", err);
-    navigate("/enrollment", {
-      state: {
-        eligibility: {
-          success: false,
-          message:
-            err?.response?.data?.message ||
-            "Something went wrong during registration.",
-          courseEvent,
-        },
-      },
-    });
-  }
-};
-
 
   if (!courseEvent) {
     // Skeleton loader when data is not yet available
@@ -192,7 +148,7 @@ export default function Details() {
               </Stack>
             </Stack>
           </Stack>
-          <Button variant="contained" onClick={handleCheckEligibility}>
+          <Button variant="contained" href={`/enrollment/${courseEvent._id}`}>
             Register
           </Button>
         </Stack>
