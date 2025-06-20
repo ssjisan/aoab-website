@@ -22,25 +22,24 @@ export default function Body({
   const fileInputRefs = useRef({});
   const { auth } = useContext(DataContext);
   const [selectedFileNameMap, setSelectedFileNameMap] = useState({});
+  console.log(enrollmentDetails);
 
   const studentId = auth?.user?._id;
 
-  const handleUploadClick = (courseId) => {
-    if (fileInputRefs.current[courseId]) {
-      fileInputRefs.current[courseId].click();
-    }
+  const handleUploadClick = (enrollmentId) => {
+    fileInputRefs.current[enrollmentId]?.click();
   };
 
-  const handleFileChange = async (e, courseId) => {
+  const handleFileChange = async (e, enrollmentId) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    setSelectedFileNameMap((prev) => ({ ...prev, [courseId]: file.name }));
+    setSelectedFileNameMap((prev) => ({ ...prev, [enrollmentId]: file.name }));
 
     const formData = new FormData();
     formData.append("paymentProof", file);
-    formData.append("studentId", studentId);
-    formData.append("courseId", courseId);
+    formData.append("studentId", studentId); // optional but useful for extra validation
+    formData.append("enrollmentId", enrollmentId);
 
     const toastId = toast.loading("Uploading...");
 
@@ -56,7 +55,7 @@ export default function Body({
       );
 
       toast.success("Upload successful!", { id: toastId });
-      setSelectedFileNameMap((prev) => ({ ...prev, [courseId]: "" }));
+      setSelectedFileNameMap((prev) => ({ ...prev, [enrollmentId]: "" }));
       if (typeof handleEnrollments === "function") {
         await handleEnrollments(); // ✅ refresh data
       }
@@ -66,7 +65,7 @@ export default function Body({
         err.response?.data?.message ||
         "Something went wrong.";
       toast.error(`Upload failed: ${errorMessage}`, { id: toastId });
-      setSelectedFileNameMap((prev) => ({ ...prev, [courseId]: "" }));
+      setSelectedFileNameMap((prev) => ({ ...prev, [enrollmentId]: "" }));
     }
   };
 
@@ -111,32 +110,35 @@ export default function Body({
           return (
             <TableRow key={data._id}>
               <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
-                {data.courseId?.title}
+                {data.title}
               </TableCell>
 
               <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
-                {new Date(data.enrolledAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: true,
-                })}
+                {new Date(data.enrollment.enrolledAt).toLocaleDateString(
+                  "en-US",
+                  {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  }
+                )}
               </TableCell>
 
               <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
-                <Badge label={data.status} />
+                <Badge label={data.enrollment.status} />
               </TableCell>
 
               <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
-                <Badge label={data.paymentReceived} />
+                <Badge label={data.enrollment.paymentReceived} />
               </TableCell>
 
               <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
-                {data.paymentProof?.url ? (
+                {data.enrollment.paymentProof?.url ? (
                   <a
-                    href={data.paymentProof.url}
+                    href={data.enrollment.paymentProof.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ color: "#1976d2", textDecoration: "underline" }}
@@ -146,8 +148,12 @@ export default function Body({
                 ) : (
                   <>
                     No File &nbsp;
-                    {!["expired", "waitlist"].includes(data.status) && (
-                      <button onClick={() => handleUploadClick(courseId)}>
+                    {!["expired", "waitlist"].includes(
+                      data.enrollment.status
+                    ) && (
+                      <button
+                        onClick={() => handleUploadClick(data.enrollment._id)}
+                      >
                         Upload
                       </button>
                     )}
@@ -157,9 +163,11 @@ export default function Body({
                 <input
                   type="file"
                   accept="image/*"
-                  ref={(ref) => (fileInputRefs.current[courseId] = ref)}
+                  ref={(ref) =>
+                    (fileInputRefs.current[data.enrollment._id] = ref)
+                  }
                   style={{ display: "none" }}
-                  onChange={(e) => handleFileChange(e, courseId)}
+                  onChange={(e) => handleFileChange(e, data.enrollment._id)}
                 />
               </TableCell>
             </TableRow>

@@ -31,7 +31,6 @@ export default function EnrollmentCourse() {
 
     if (courseId) loadCourse();
   }, [courseId]);
-
   // ✅ Handle enrollment
   const handleEnrollClick = async () => {
     try {
@@ -64,25 +63,37 @@ export default function EnrollmentCourse() {
       setModalOpen(true);
     }
   };
-  console.log(modalMessage);
+
   const handleConfirmEnrollment = async () => {
-  const payload = {
-    courseId,
-    studentId,
-  };
+    const payload = {
+      courseId,
+      courseTitle: course?.title,
+      categoryId:
+        typeof course?.category === "object"
+          ? course?.category?._id
+          : course?.category,
+      studentId,
+    };
 
-  try {
-    const res = await axios.post("/enrollment", payload);
-    if (res.status === 201) {
-      navigate("/enrollment-history")
-      toast.success("Enrollment successful!");
+    try {
+      const res = await axios.post("/enrollment", payload);
+
+      if (res.status === 201) {
+        const status = res.data?.data?.status;
+
+        toast.success(
+          status === "waitlist"
+            ? "You have been waitlisted successfully."
+            : "Enrollment successful!"
+        );
+
+        navigate("/enrollment-history");
+      }
+    } catch (error) {
+      const backendMessage = error?.response?.data?.error;
+      toast.error(backendMessage || "Something went wrong. Please try again.");
     }
-  } catch (error) {
-    const backendMessage = error?.response?.data?.error;
-    toast.error(backendMessage || "Something went wrong. Please try again.");
-  }
-};
-
+  };
 
   return (
     <>

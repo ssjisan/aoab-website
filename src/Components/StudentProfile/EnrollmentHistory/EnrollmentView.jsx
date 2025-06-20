@@ -3,10 +3,8 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Body from "./Table/Body";
-import { useNavigate } from "react-router-dom";
 import { DataContext } from "../../../DataProcessing/DataProcessing";
 import Header from "./Table/Header";
-// import CustomeHeader from "../../Common/Table/CustomeHeader";
 
 export default function EnrollmentView() {
   const [loading, setLoading] = useState(false);
@@ -32,15 +30,6 @@ export default function EnrollmentView() {
     }
   }, [studentId]);
 
-  const columns = [
-    { key: "name", label: "Name" },
-    { key: "bmdcNo	", label: "BM&DC No" },
-    { key: "contact	", label: "Contact" },
-    { key: "enrollmentDate", label: "Enrollment Date" },
-    { key: "status	", label: "Status" },
-    { key: "payment	", label: "Payment" },
-  ];
-
   return (
     <Box
       sx={{
@@ -48,7 +37,7 @@ export default function EnrollmentView() {
       }}
     >
       {enrollments
-        ?.filter((item) => item.remark)
+        ?.filter((item) => item.enrollment.remark)
         .map((item) => (
           <Box
             key={item._id}
@@ -65,7 +54,7 @@ export default function EnrollmentView() {
         Payment for <em>{item?.courseId?.title}</em> was rejected.
             </strong>
             <br />
-            Reason: {item.remark}
+            Reason: {item.enrollment.remark}
           </Box>
         ))}
 
