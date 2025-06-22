@@ -10,14 +10,14 @@ export default function Body({ profile }) {
   const [selectedCourseCategory, setSelectedCourseCategory] = useState(null);
   const [courseCategories, setCourseCategories] = useState([]);
   const [existingCourseData, setExistingCourseData] = useState([]);
+
   useEffect(() => {
-    // Fetch course data from the API
     const fetchCourseCategories = async () => {
       try {
         const response = await axios.get("/category_list");
         setCourseCategories(response.data);
       } catch (error) {
-        toast.error("Error fetching courses:", error);
+        toast.error("Error fetching courses",error.message);
       }
     };
 
@@ -41,9 +41,12 @@ export default function Body({ profile }) {
 
   return (
     <TableBody>
-      {courseCategories.map((course) => {
+      {courseCategories.map((courseCategory) => {
         const courseData =
-          profile.courses.find((c) => c.courseCategoryId === course._id) || {};
+          profile.courses.find(
+            (c) => c.courseCategoryId === courseCategory._id
+          ) || {};
+
         const courseStatus =
           courseData && courseData.status != null
             ? courseData.status === "yes"
@@ -55,10 +58,11 @@ export default function Body({ profile }) {
 
         const hasDocument =
           courseData?.documents && courseData.documents.length > 0;
+
         return (
-          <TableRow key={course._id}>
+          <TableRow key={courseCategory._id}>
             <TableCell sx={{ border: "1px solid #ddd", p: "8px 16px" }}>
-              {course.courseName}
+              {courseCategory.courseName}
             </TableCell>
             <TableCell
               sx={{ border: "1px solid #ddd", p: "8px 16px", width: "64px" }}
@@ -72,7 +76,15 @@ export default function Body({ profile }) {
             </TableCell>
             <TableCell sx={{ border: "1px solid #ddd", p: "8px 16px" }}>
               {hasDocument ? (
-                courseData.documents.length === 1 ? (
+                courseData.systemUpload ? (
+                  <a
+                    href={courseData.documents[0].url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {courseData.documents[0].name}
+                  </a>
+                ) : courseData.documents.length === 1 ? (
                   <a
                     href={`https://docs.google.com/viewer?url=${encodeURIComponent(
                       courseData.documents[0].url
@@ -111,11 +123,12 @@ export default function Body({ profile }) {
               <Button
                 variant="soft"
                 onClick={() => {
-                  setSelectedCourseCategory(course);
+                  setSelectedCourseCategory(courseCategory);
                   setOpenDrawer(true);
 
                   const matchedCourse = profile.courses.find(
-                    (c) => String(c.courseCategoryId) === String(course._id)
+                    (c) =>
+                      String(c.courseCategoryId) === String(courseCategory._id)
                   );
 
                   if (matchedCourse) {
@@ -123,7 +136,7 @@ export default function Body({ profile }) {
                     setExistingCourseData(matchedCourse);
                   } else {
                     console.log(
-                      `Course Category ID "${course._id}" NOT present in profile.courses`
+                      `Course Category ID "${courseCategory._id}" NOT present in profile.courses`
                     );
                     setExistingCourseData(null);
                   }
@@ -135,6 +148,7 @@ export default function Body({ profile }) {
           </TableRow>
         );
       })}
+
       <CourseDataDrawer
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}
@@ -149,8 +163,10 @@ export default function Body({ profile }) {
 
 Body.propTypes = {
   profile: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     courses: PropTypes.arrayOf(
       PropTypes.shape({
+        courseId: PropTypes.string, // new: must be set in DB
         courseCategoryId: PropTypes.string.isRequired,
         status: PropTypes.string,
         documents: PropTypes.arrayOf(
@@ -160,6 +176,7 @@ Body.propTypes = {
           })
         ),
         completionYear: PropTypes.string,
+        systemUpload: PropTypes.bool,
       })
     ),
   }),
