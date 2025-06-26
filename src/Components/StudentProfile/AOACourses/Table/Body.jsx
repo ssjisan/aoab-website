@@ -17,7 +17,7 @@ export default function Body({ profile }) {
         const response = await axios.get("/category_list");
         setCourseCategories(response.data);
       } catch (error) {
-        toast.error("Error fetching courses",error.message);
+        toast.error("Error fetching courses", error.message);
       }
     };
 
@@ -76,39 +76,52 @@ export default function Body({ profile }) {
             </TableCell>
             <TableCell sx={{ border: "1px solid #ddd", p: "8px 16px" }}>
               {hasDocument ? (
-                courseData.systemUpload ? (
-                  <a
-                    href={courseData.documents[0].url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {courseData.documents[0].name}
-                  </a>
-                ) : courseData.documents.length === 1 ? (
-                  <a
-                    href={`https://docs.google.com/viewer?url=${encodeURIComponent(
-                      courseData.documents[0].url
-                    )}&embedded=true`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {courseData.documents[0].name}
-                  </a>
+                courseData.documents.length === 1 ? (
+                  // Single document
+                  courseData.systemUpload ? (
+                    // Embed directly using iframe for Cloudinary documents
+                    <iframe
+                      src={courseData.documents[0].url}
+                      title={courseData.documents[0].name}
+                      width="100%"
+                      height="400px"
+                      style={{ border: "none" }}
+                    />
+                  ) : (
+                    // Google Docs viewer for external links
+                    <a
+                      href={`https://docs.google.com/viewer?url=${encodeURIComponent(
+                        courseData.documents[0].url
+                      )}&embedded=true`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {courseData.documents[0].name}
+                    </a>
+                  )
                 ) : (
+                  // Multiple documents — show all
                   <ol style={{ margin: 0, paddingLeft: "16px" }}>
-                    {courseData.documents.map((doc) => (
-                      <li key={doc.url} style={{ marginBottom: "8px" }}>
-                        <a
-                          href={`https://docs.google.com/viewer?url=${encodeURIComponent(
+                    {courseData.documents.map((doc) => {
+                      const isSystemUploadDoc = courseData.systemUpload;
+                      const previewUrl = isSystemUploadDoc
+                        ? doc.url
+                        : `https://docs.google.com/viewer?url=${encodeURIComponent(
                             doc.url
-                          )}&embedded=true`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {doc.name}
-                        </a>
-                      </li>
-                    ))}
+                          )}&embedded=true`;
+
+                      return (
+                        <li key={doc.url} style={{ marginBottom: "8px" }}>
+                          <a
+                            href={previewUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {doc.name}
+                          </a>
+                        </li>
+                      );
+                    })}
                   </ol>
                 )
               ) : (
