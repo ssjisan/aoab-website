@@ -55,9 +55,8 @@ export default function Signature({ profile }) {
     >
       <Stack gap="8px" sx={{ width: "360px" }}>
         <Typography
-          variant="body1"
-          sx={{ fontWeight: "600" }}
-          color="text.secondary"
+          variant="h5"
+          sx={{ fontWeight: "700" }}
         >
           Your Signature
         </Typography>

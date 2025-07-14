@@ -104,7 +104,17 @@ export default function EnrollmentCourse() {
           alignItems="center"
           gap="64px"
         >
-          <Stack sx={{ width: "40%" }} gap="16px">
+          <Stack
+            sx={{
+              width: {
+                xs: "100%", // extra-small and small screens
+                sm: "100%", // small screens (optional, same as xs)
+                md: "60%", // medium and larger screens
+                lg: "40%",
+              },
+            }}
+            gap="16px"
+          >
             <Typography variant="h4" sx={{ mb: 3 }}>
               Course Enrollment
             </Typography>
@@ -169,23 +179,24 @@ export default function EnrollmentCourse() {
               />
             </Stack>
 
-            <Stack gap="16px" direction="column">
-              <Stack gap="16px" direction="row">
-                <Button
-                  variant="outlined"
-                  onClick={() => navigate(-1)}
-                  sx={{ flex: 1 }}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleEnrollClick}
-                  sx={{ flex: 1 }}
-                >
-                  Enroll
-                </Button>
-              </Stack>
+            <Stack
+              gap="16px"
+              direction={{ xs: "column", sm: "column", md: "row" }}
+            >
+              <Button
+                variant="outlined"
+                onClick={() => navigate(-1)}
+                sx={{ flex: 1 }}
+              >
+                Back
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleEnrollClick}
+                sx={{ flex: 1 }}
+              >
+                Enroll
+              </Button>
             </Stack>
           </Stack>
         </Stack>

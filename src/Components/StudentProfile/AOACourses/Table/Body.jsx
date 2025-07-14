@@ -53,12 +53,9 @@ export default function Body({ profile }) {
               ? "Yes"
               : "No"
             : "N/A";
-
         const completionYear = courseData?.completionYear || "N/A";
-
         const hasDocument =
           courseData?.documents && courseData.documents.length > 0;
-
         return (
           <TableRow key={courseCategory._id}>
             <TableCell sx={{ border: "1px solid #ddd", p: "8px 16px" }}>
@@ -70,7 +67,7 @@ export default function Body({ profile }) {
               {courseStatus}
             </TableCell>
             <TableCell
-              sx={{ border: "1px solid #ddd", p: "8px 16px", width: "64px" }}
+              sx={{ border: "1px solid #ddd", p: "8px 16px", width: "120px" }}
             >
               {completionYear}
             </TableCell>
@@ -87,7 +84,6 @@ export default function Body({ profile }) {
                           doc.url
                         )}&embedded=true`
                       : doc.url;
-
                     return (
                       <a
                         href={previewUrl}
@@ -129,7 +125,6 @@ export default function Body({ profile }) {
                 "No Document"
               )}
             </TableCell>
-
             <TableCell
               align="center"
               sx={{ border: "1px solid #ddd", p: "8px 16px", width: "64px" }}
@@ -162,7 +157,6 @@ export default function Body({ profile }) {
           </TableRow>
         );
       })}
-
       <CourseDataDrawer
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}

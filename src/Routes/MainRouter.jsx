@@ -22,6 +22,8 @@ import EnrollmentHistory from "../Pages/StudentProfile/EnrollmentHistory";
 import Password from "../Pages/StudentProfile/password";
 import Registration from "../Pages/UserAuth/Registration";
 import EnrollmentCourse from "../Pages/EnrollmentCourse";
+import DocPreview from "../Pages/StudentProfile/DocPreview";
+import AdminLoginAsStudent from "../Pages/AdminLoginAsStudent";
 
 export default function MainRoute() {
   return (
@@ -72,6 +74,7 @@ export default function MainRoute() {
           element={<OTPVerifyForRestPassword />}
         />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/admin-access" element={<AdminLoginAsStudent />} />
         <Route path="" element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/password" element={<Password />} />
@@ -79,6 +82,7 @@ export default function MainRoute() {
           <Route path="/enrollment-history" element={<EnrollmentHistory />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/enrollment/:id" element={<EnrollmentCourse/>}/>
+          <Route path="/preview" element={<DocPreview />} />
         </Route>
       </Routes>
     </>

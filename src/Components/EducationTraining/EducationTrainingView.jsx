@@ -16,7 +16,7 @@ export default function EducationTrainingView() {
       >
         <SectionContent
           chip="Upcoming events"
-          title="Driving knowledge development and transfer in trauma and orthopedic care."
+          title="Join our forces to give better service to our people by enriching yourself."
           subTitle="The AO Alliance is a nonprofit dedicated to improving fracture care in over 30 LMICs across Sub-Saharan Africa and Asia, reducing suffering, disability, and poverty through sustainable programs."
         />
         <Box>

@@ -17,7 +17,7 @@ export default function FormList() {
       >
         <SectionContent
           chip="Important Forms"
-          title="Driving knowledge development and transfer in trauma and orthopedic care."
+          title="Help us to organize yourselves."
           subTitle="You will find all different type of forms for application , registration etc here."
         />
         <Box>

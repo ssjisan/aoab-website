@@ -17,7 +17,7 @@ export default function ListOfLinks() {
       >
         <SectionContent
           chip="Important Links"
-          title="Driving knowledge development and transfer in trauma and orthopedic care."
+          title="Find our participants in the last events."
           subTitle="You will find details of past events here in this section of AOA Bangladesh."
         />
         <Box>

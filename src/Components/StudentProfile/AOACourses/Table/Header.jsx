@@ -7,7 +7,7 @@ export default function Header() {
       sx={{
         borderRadius: "1em 0 0 1em",
         overflowX: "auto",
-        backgroundColor: "rgb(244, 246, 248)", // Set background color
+        backgroundColor: "rgb(244, 246, 248)",
       }}
     >
       <TableRow>
@@ -19,9 +19,6 @@ export default function Header() {
             color: "#111827", // Dark text color
             backgroundColor: "rgb(244, 246, 248)", // Match background
             border: "1px solid #ddd", // Border for all cells
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
           }}
         >
           Course Name
@@ -34,9 +31,6 @@ export default function Header() {
             color: "#111827",
             backgroundColor: "rgb(244, 246, 248)",
             border: "1px solid #ddd",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
           }}
         >
           Status
@@ -49,9 +43,6 @@ export default function Header() {
             color: "#111827",
             backgroundColor: "rgb(244, 246, 248)",
             border: "1px solid #ddd",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
           }}
         >
           Complete At
@@ -64,9 +55,6 @@ export default function Header() {
             color: "#111827",
             backgroundColor: "rgb(244, 246, 248)",
             border: "1px solid #ddd",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
           }}
         >
           Uploaded Documents

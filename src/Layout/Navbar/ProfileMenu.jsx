@@ -1,10 +1,4 @@
-import {
-  Certificate,
-  EnrollHistory,
-  Logout,
-  Password,
-  Profile,
-} from "../../assets/Icons";
+import { EnrollHistory, Logout, Password, Profile } from "../../assets/Icons";
 
 const navConfig = ({ pathname }) => [
   {
@@ -49,21 +43,6 @@ const navConfig = ({ pathname }) => [
       {
         title: "Enrollment history",
         link: "/enrollment-history",
-      },
-    ],
-  },
-  {
-    title: "Certificate",
-    icon: (
-      <Certificate
-        color={pathname === "/certificate" ? "#072439" : "#637381"}
-        size={20}
-      />
-    ),
-    items: [
-      {
-        title: "Certificates",
-        link: "/certificate",
       },
     ],
   },

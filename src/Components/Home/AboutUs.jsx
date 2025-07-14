@@ -1,15 +1,46 @@
-import { Box, Container, Grid, Stack } from "@mui/material";
-import SectionContent from "../Common/SectionContent";
+import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 
 export default function AboutUs() {
   return (
     <Container sx={{ pt: "64px", pb: "64px" }}>
       <Stack gap="64px">
-        <SectionContent
-          chip="About Us"
-          title="Driving knowledge development and transfer in trauma and orthopedic care."
-          subTitle="The AO Alliance is a non profit organisation dedicated to improving fracture care by reducing suffering, disability, and poverty through sustainable programs."
-        />
+        <Grid container>
+          <Grid item xs={12} sm={12} md={10} lg={10}>
+            <Stack gap="16px">
+              <Stack gap="8px">
+                <Stack
+                  sx={{
+                    padding: "4px 16px",
+                    borderRadius: "100px",
+                    backgroundColor: "rgba(0, 50, 88, 0.16)",
+                    width: "fit-content",
+                  }}
+                >
+                  <Typography
+                    color="primary"
+                    sx={{
+                      fontWeight: 400,
+                      lineHeight: "14px",
+                      whiteSpace: "nowrap",
+                      fontSize: "12px",
+                    }}
+                  >
+                    About Us
+                  </Typography>
+                </Stack>
+                <Typography variant="h2">
+                  Pioneer in knowledge development and transfer for trauma and
+                  orthopedic care in Bangladesh.
+                </Typography>
+              </Stack>
+              <Typography variant="h6" color="text.secondary">
+                The AO Alliance is a non profit organisation dedicated to
+                improving fracture care by reducing suffering, disability, and
+                poverty through sustainable programs.
+              </Typography>
+            </Stack>
+          </Grid>
+        </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={6} lg={6}>
             <Box

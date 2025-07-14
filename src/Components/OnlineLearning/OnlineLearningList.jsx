@@ -17,7 +17,7 @@ export default function OnlineLearningList() {
       >
         <SectionContent
           chip="Online Learning"
-          title="Driving knowledge development and transfer in trauma and orthopedic care."
+          title="Always keep moving forward n enrich your knowledge."
           subTitle="You will find link of all orthopedic journal here in this section"
         />
         <Box>

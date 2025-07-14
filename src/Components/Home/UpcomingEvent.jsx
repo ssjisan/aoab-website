@@ -12,7 +12,7 @@ import Chip from "../Common/Chip";
 import { useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { DataContext } from "../../DataProcessing/DataProcessing";
-import {  Mail } from "../../assets/Icons";
+import { Mail } from "../../assets/Icons";
 
 export default function UpcomingEvent() {
   const { pathname } = useLocation();
@@ -33,10 +33,10 @@ export default function UpcomingEvent() {
         p:
           pathname === "/educations&training/aoa-bangladesh"
             ? forBelow767
-              ? "100px 0px 40px 0px"
+              ? "100px 16px 40px 16px" // top, right, bottom, left
               : "210px 0px 64px 0px"
             : forBelow767
-            ? "40px 0px"
+            ? "40px 16px"
             : "64px 0px",
       }}
     >
@@ -98,22 +98,22 @@ export default function UpcomingEvent() {
                       <Typography variant="h4">{data.title}</Typography>
                     </Stack>
                     <Box>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          component="span"
-                        >
-                          Event Date:&nbsp;
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="text.primary"
-                          component="span"
-                          fontWeight="600"
-                        >
-                          {start} &nbsp; - &nbsp; {end}
-                        </Typography>
-                      </Box>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        component="span"
+                      >
+                        Event Date:&nbsp;
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.primary"
+                        component="span"
+                        fontWeight="600"
+                      >
+                        {start} &nbsp; - &nbsp; {end}
+                      </Typography>
+                    </Box>
                     {data.contactPersons && data.contactPersons.length > 0 && (
                       <Stack
                         direction="column"
@@ -167,7 +167,9 @@ export default function UpcomingEvent() {
                   </Stack>
                   <Button
                     variant="contained"
-                    sx={{ width: "fit-content" }}
+                    sx={{
+                      width: { xs: "100%", sm: "fit-content" },
+                    }}
                     onClick={() => handlePreview(data._id)}
                   >
                     View Details

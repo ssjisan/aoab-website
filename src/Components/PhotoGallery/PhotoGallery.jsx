@@ -16,7 +16,7 @@ export default function PhotoGallery() {
       >
         <SectionContent
           chip="Gallery"
-          title="Driving knowledge development and transfer in trauma and orthopedic care."
+          title="Celebrating Moments that Shaped Our Journey."
           subTitle="Glimpses  of different events of AOA Bangladesh. Learning knowledge with attitude."
         />
         <ImageCardDeck />

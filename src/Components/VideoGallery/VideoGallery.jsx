@@ -16,7 +16,7 @@ export default function VideoGallery() {
       >
         <SectionContent
           chip="Videos"
-          title="Driving knowledge development and transfer in trauma and orthopedic care."
+          title="I hear and I forget, I see and I remember, I do and I understand."
           subTitle="Watch n learn both operative and non operative techniques by looking at videos of this section."
         />
         <VideoCardDeck />
