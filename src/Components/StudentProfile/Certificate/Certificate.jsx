@@ -71,10 +71,10 @@ export default function Certificate({ profile }) {
                     src={jpgUrl}
                     alt={doc.name}
                     style={{
-                      width: 115,
-                      height: 90,
-                      border: "1px solid #ccc",
-                      borderRadius: 8,
+                      width: 120,
+                      height: 80,
+                      border: "1px solid #c9c9c9ff",
+                      borderRadius: 12,
                       objectFit: "cover",
                     }}
                   />

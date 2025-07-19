@@ -1,17 +1,26 @@
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Modal,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { Cross, Warning } from "../../assets/Icons";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 export default function ProfileAlert({ profile }) {
   const [open, setOpen] = useState(false);
 
-  const getMissingFields = () => {
-    if (!profile) return [];
+  const [missingItems, setMissingItems] = useState([]);
+
+  useEffect(() => {
+    if (!profile) return;
 
     const missing = [];
 
-    const hasPicture = Array.isArray(profile.picture) && profile.picture.length > 0;
+    const hasPicture =
+      Array.isArray(profile.picture) && profile.picture.length > 0;
     if (!hasPicture) missing.push("Profile picture");
 
     const workingPlace = profile.currentWorkingPlace?.[0];
@@ -22,14 +31,19 @@ export default function ProfileAlert({ profile }) {
     if (!pg?.degreeName) missing.push("Post-graduation degree name");
     if (!pg?.yearOfGraduation) missing.push("Year of post-graduation");
 
-    return missing;
-  };
+    const hasCertificates =
+      Array.isArray(profile.postGraduationCertificates) &&
+      profile.postGraduationCertificates.length > 0;
+    if (!hasCertificates) missing.push("Post-graduation certificate");
 
-  useEffect(() => {
-    if (getMissingFields().length > 0) {
+    if (missing.length > 0) {
+      setMissingItems(missing);
       setOpen(true);
     }
   }, [profile]);
+
+
+  if (!profile || missingItems.length === 0) return null;
 
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
@@ -65,12 +79,7 @@ export default function ProfileAlert({ profile }) {
         </Box>
 
         {/* Content */}
-        <Stack
-          spacing={3}
-          alignItems="center"
-          justifyContent="center"
-          sx={{ px: 4, py: 3 }}
-        >
+        <Stack spacing={3} alignItems="center" sx={{ px: 4, py: 3 }}>
           <Warning size="48px" color="#dc3545" />
 
           <Typography variant="body1" sx={{ fontWeight: 500, textAlign: "center" }}>
@@ -78,9 +87,9 @@ export default function ProfileAlert({ profile }) {
             profile by adding the missing fields below:
           </Typography>
 
-          {/* Missing Fields List */}
+          {/* List missing items */}
           <Box sx={{ width: "100%", pl: 2 }}>
-            {getMissingFields().map((field, idx) => (
+            {missingItems.map((item, idx) => (
               <Typography
                 key={idx}
                 variant="body1"
@@ -92,7 +101,10 @@ export default function ProfileAlert({ profile }) {
                   fontWeight: 500,
                 }}
               >
-                <Box component="span" sx={{ mr: 1 }}>❌</Box> {field}
+                <Box component="span" sx={{ mr: 1 }}>
+                  ❌
+                </Box>{" "}
+                {item}
               </Typography>
             ))}
           </Box>
@@ -105,7 +117,6 @@ export default function ProfileAlert({ profile }) {
             borderTop: "1px solid rgba(145, 158, 171, 0.24)",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
           }}
         >
           <Typography sx={{ color: "gray", textAlign: "center" }}>
@@ -135,5 +146,6 @@ ProfileAlert.propTypes = {
         ]),
       })
     ),
+    postGraduationCertificates: PropTypes.arrayOf(PropTypes.string),
   }),
 };
