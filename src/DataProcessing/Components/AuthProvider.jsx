@@ -20,7 +20,7 @@ export default function AuthProvider() {
 
       try {
         // Decode the token to extract `exp`
-        const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode JWT token
+        const decodedToken = JSON.parse(atob(token.split(".")[1])); // Decode JWT token
         const { exp } = decodedToken; // Extract expiry timestamp
 
         // Check if the token has expired
