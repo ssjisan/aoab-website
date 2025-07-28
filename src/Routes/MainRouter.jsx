@@ -19,7 +19,7 @@ import ResetPassword from "../Pages/UserAuth/ResetPassword";
 import Profile from "../Pages/StudentProfile/Profile";
 import Certificates from "../Pages/StudentProfile/Certificates";
 import EnrollmentHistory from "../Pages/StudentProfile/EnrollmentHistory";
-import Password from "../Pages/StudentProfile/password";
+import Password from "../Pages/StudentProfile/Password";
 import Registration from "../Pages/UserAuth/Registration";
 import EnrollmentCourse from "../Pages/EnrollmentCourse";
 import DocPreview from "../Pages/StudentProfile/DocPreview";
