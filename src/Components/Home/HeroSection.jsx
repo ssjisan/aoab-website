@@ -47,6 +47,9 @@ export default function HeroSection() {
             Help us to reduce human suffering, disability and poverty as we work
             to improve care of the injured in Bangladesh
           </Typography>
+          <Typography>
+            Checking
+          </Typography>
         </Box>
       </Container>
     </Box>
