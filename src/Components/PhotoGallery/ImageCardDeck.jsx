@@ -3,7 +3,7 @@ import { AlbumIcon } from "../../assets/Icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import GalleryView from "./GalleryVIew";
+import GalleryView from "./GalleryView";
 
 export default function ImageCardDeck() {
   const IconBoxSx = {
