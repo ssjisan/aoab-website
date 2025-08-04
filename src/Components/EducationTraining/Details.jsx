@@ -188,7 +188,8 @@ export default function Details() {
             </Stack>
           </Stack>
 
-          <Stack gap="16px">
+         {
+          courseEvent.registrationRequired &&  <Stack gap="16px">
             <Button variant="soft" onClick={handleCheckEligibility}>
               Check Eligibility
             </Button>
@@ -196,6 +197,7 @@ export default function Details() {
               Register
             </Button>
           </Stack>
+         }
         </Stack>
 
         {courseEvent.contactPersons?.length > 0 && (
