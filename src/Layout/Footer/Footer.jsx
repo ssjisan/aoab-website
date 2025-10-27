@@ -59,7 +59,7 @@ export default function Footer() {
           <Typography variant="body1" color="text.secondary">
             Powered By{" "}
             <Box component="span" sx={{ textDecoration: "underline" }}>
-              <Link to="https://insighttechbd.com/" target="_blank" style={{textDecoration:"none", color:"inherit"}}>Insighttech Bangladesh</Link>
+              <Link to="http://codesenate.com" target="_blank" style={{textDecoration:"none", color:"inherit"}}>CodeSenate</Link>
             </Box>
           </Typography>
         </Box>

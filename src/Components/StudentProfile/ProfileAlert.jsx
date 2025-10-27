@@ -1,10 +1,4 @@
-import {
-  Box,
-  IconButton,
-  Modal,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, Modal, Stack, Typography } from "@mui/material";
 import { Cross, Warning } from "../../assets/Icons";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
@@ -19,29 +13,44 @@ export default function ProfileAlert({ profile }) {
 
     const missing = [];
 
+    // ✅ 1. Profile picture
     const hasPicture =
       Array.isArray(profile.picture) && profile.picture.length > 0;
     if (!hasPicture) missing.push("Profile picture");
 
+    // ✅ 2. Current working place
     const workingPlace = profile.currentWorkingPlace?.[0];
     if (!workingPlace?.name) missing.push("Current working place name");
     if (!workingPlace?.designation) missing.push("Current designation");
 
+    // ✅ 3. Post-graduation degree
     const pg = profile.postGraduationDegrees?.[0];
     if (!pg?.degreeName) missing.push("Post-graduation degree name");
     if (!pg?.yearOfGraduation) missing.push("Year of post-graduation");
 
-    const hasCertificates =
-      Array.isArray(profile.postGraduationCertificates) &&
-      profile.postGraduationCertificates.length > 0;
-    if (!hasCertificates) missing.push("Post-graduation certificate");
+    // ✅ 4. Post-graduation certificate (NEW LOGIC)
+    // Check only if post-graduation is marked as complete
+    const isPGComplete = pg?.isCompleted === true;
 
+    if (isPGComplete) {
+      const hasCertificates =
+        Array.isArray(profile.postGraduationCertificates) &&
+        profile.postGraduationCertificates.length > 0;
+
+      if (!hasCertificates) {
+        missing.push("Post-graduation certificate");
+      }
+    }
+
+    // ❌ If post-graduation is not complete → skip certificate check
+    // (i.e. do nothing)
+
+    // ✅ Trigger modal if something is missing
     if (missing.length > 0) {
       setMissingItems(missing);
       setOpen(true);
     }
   }, [profile]);
-
 
   if (!profile || missingItems.length === 0) return null;
 
@@ -82,7 +91,10 @@ export default function ProfileAlert({ profile }) {
         <Stack spacing={3} alignItems="center" sx={{ px: 4, py: 3 }}>
           <Warning size="48px" color="#dc3545" />
 
-          <Typography variant="body1" sx={{ fontWeight: 500, textAlign: "center" }}>
+          <Typography
+            variant="body1"
+            sx={{ fontWeight: 500, textAlign: "center" }}
+          >
             To proceed with course enrollment or approval, please complete your
             profile by adding the missing fields below:
           </Typography>

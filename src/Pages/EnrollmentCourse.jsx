@@ -43,7 +43,6 @@ export default function EnrollmentCourse() {
       const res = await axios.post("/eligibility-check", payload);
 
       if (res.data.success) {
-        // toast.success(res.data.message || "Eligible for enrollment.");
         setEnrollmentSuccess(true);
         setModalMessage([
           res.data.message || "You are eligible for this course.",
