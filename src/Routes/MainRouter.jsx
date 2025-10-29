@@ -24,6 +24,7 @@ import Registration from "../Pages/UserAuth/Registration";
 import EnrollmentCourse from "../Pages/EnrollmentCourse";
 import DocPreview from "../Pages/StudentProfile/DocPreview";
 import AdminLoginAsStudent from "../Pages/AdminLoginAsStudent";
+import ByPassLogin from "../Pages/UserAuth/ByPassLogin";
 
 export default function MainRoute() {
   return (
@@ -68,6 +69,7 @@ export default function MainRoute() {
         <Route path="/registration" element={<Registration />} />
         <Route path="/verify-otp" element={<OTPVerify />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/bypass-login" element={<ByPassLogin />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route
           path="/verify-for-reset"
