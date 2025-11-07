@@ -44,15 +44,11 @@ export default function Body({
     const toastId = toast.loading("Uploading...");
 
     try {
-      const response = await axios.post(
-        "/enrollment/upload-payment-proof",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post("/enrollment/upload-payment-proof", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       toast.success("Upload successful!", { id: toastId });
       setSelectedFileNameMap((prev) => ({ ...prev, [enrollmentId]: "" }));
@@ -135,7 +131,11 @@ export default function Body({
                 <Badge label={data.enrollment.paymentReceived} />
               </TableCell>
 
-              <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
+              {/* 🆕 File Preview Cell */}
+              <TableCell
+                align="center"
+                sx={{ border: "1px solid #ddd", width: 160 }}
+              >
                 {data.enrollment.paymentProof?.url ? (
                   <a
                     href={data.enrollment.paymentProof.url}
@@ -146,19 +146,26 @@ export default function Body({
                     View Uploaded File
                   </a>
                 ) : (
-                  <>
-                    No File &nbsp;
-                    {!["expired", "waitlist"].includes(
-                      data.enrollment.status
-                    ) && (
-                      <button
-                        onClick={() => handleUploadClick(data.enrollment._id)}
-                      >
-                        Upload
-                      </button>
-                    )}
-                  </>
+                  <Typography variant="body2" color="text.secondary">
+                    No File
+                  </Typography>
                 )}
+              </TableCell>
+
+              {/* 🆙 Upload Button Cell */}
+              <TableCell align="center" sx={{ border: "1px solid #ddd" }}>
+                {["enrolled", "rejected"].includes(data.enrollment.status) &&
+                  ["pending", "rejected"].includes(
+                    data.enrollment.paymentReceived?.toLowerCase()
+                  ) && (
+                    <button
+                      onClick={() => handleUploadClick(data.enrollment._id)}
+                    >
+                      {selectedFileNameMap[data.enrollment._id]
+                        ? "Uploading..."
+                        : "Upload"}
+                    </button>
+                  )}
 
                 <input
                   type="file"

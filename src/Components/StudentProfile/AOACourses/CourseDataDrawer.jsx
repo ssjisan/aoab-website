@@ -168,7 +168,7 @@ export default function CourseDataDrawer({
     } catch (error) {
       console.error(error);
       toast.error(
-        error?.response?.data?.error  || "Failed to save course data.",
+        error?.response?.data?.error || "Failed to save course data.",
         { id: toastId }
       );
     } finally {

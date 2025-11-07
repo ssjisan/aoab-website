@@ -35,6 +35,12 @@ export default function Header() {
         >
           Payment info
         </TableCell>
+        <TableCell
+          align="left"
+          sx={{ p: "8px", fontWeight: "600", border: "1px solid #ddd" }}
+        >
+          Action
+        </TableCell>
       </TableRow>
     </TableHead>
   );
