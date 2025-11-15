@@ -18,11 +18,12 @@ export default function Body({
   loading,
   enrollmentDetails,
   handleEnrollments,
+  courseMap,
 }) {
   const fileInputRefs = useRef({});
   const { auth } = useContext(DataContext);
   const [selectedFileNameMap, setSelectedFileNameMap] = useState({});
-  console.log(enrollmentDetails);
+  console.log(courseMap);
 
   const studentId = auth?.user?._id;
 
@@ -102,11 +103,31 @@ export default function Body({
           if (!fileInputRefs.current[courseId]) {
             fileInputRefs.current[courseId] = createRef();
           }
+
+          // 🟢 Dynamic expired logic
+          const course = courseMap?.[data.courseId];
+          let finalStatus = data.enrollment.status;
+          const now = new Date();
+
+          if (course) {
+            const eventEnd = new Date(course.endDate);
+            const paymentDeadline = new Date(course.paymentReceiveEndDate);
+            const registrationEnd = new Date(course.registrationEndDate);
+
+            if (now > eventEnd) {
+              finalStatus = "expired";
+            } else if (now > paymentDeadline && data.enrollment.paymentReceived !== "approved") {
+              finalStatus = "expired";
+            } else if (now > registrationEnd) {
+              finalStatus = "expired";
+            }
+          }
+
+          // Upload button logic uses the same dynamic status
           const canUpload =
             data.enrollment.paymentReceived !== "approved" &&
-            !["waitlist", "confirmed", "expired"].includes(
-              data.enrollment.status
-            );
+            !["waitlist", "confirmed", "expired"].includes(finalStatus);
+
           return (
             <TableRow key={data._id}>
               <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
@@ -127,8 +148,9 @@ export default function Body({
                 )}
               </TableCell>
 
+              {/* Badge showing dynamic status */}
               <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
-                <Badge label={data.enrollment.status} />
+                <Badge label={finalStatus} />
               </TableCell>
 
               <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
@@ -190,4 +212,5 @@ Body.propTypes = {
   enrollmentDetails: PropTypes.array.isRequired,
   loading: PropTypes.string,
   handleEnrollments: PropTypes.string,
+  courseMap: PropTypes.object,
 };

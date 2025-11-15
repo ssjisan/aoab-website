@@ -9,8 +9,8 @@ import Header from "./Table/Header";
 export default function EnrollmentView() {
   const [loading, setLoading] = useState(false);
   const [enrollments, setEnrollments] = useState([]);
-  console.log("enrollments",enrollments);
-  
+const [courseMap, setCourseMap] = useState({});
+
   const { auth } = useContext(DataContext);
   const studentId = auth?.user?._id;
   const loadStudentEnrollments = async () => {
@@ -31,6 +31,31 @@ export default function EnrollmentView() {
       loadStudentEnrollments();
     }
   }, [studentId]);
+
+  const loadCoursesByIds = async () => {
+  try {
+    const ids = [...new Set(enrollments.map(e => e.courseId))];
+
+    const responses = await Promise.all(
+      ids.map(id => axios.get(`/courses_events/${id}`))
+    );
+
+    const map = {};
+    responses.forEach((res, i) => {
+      map[ids[i]] = res.data; // courseEvent data
+    });
+
+    setCourseMap(map);
+  } catch (err) {
+    toast.error("Failed to load course details",err.message);
+  }
+};
+ 
+  useEffect(() => {
+  if (enrollments.length > 0) {
+    loadCoursesByIds();
+  }
+}, [enrollments]);
 
   return (
     <Box
@@ -67,6 +92,7 @@ export default function EnrollmentView() {
             enrollmentDetails={enrollments}
             loading={loading}
             handleEnrollments={loadStudentEnrollments}
+            courseMap={courseMap}
           />
         </Table>
       </TableContainer>
