@@ -9,6 +9,8 @@ import Header from "./Table/Header";
 export default function EnrollmentView() {
   const [loading, setLoading] = useState(false);
   const [enrollments, setEnrollments] = useState([]);
+  console.log("enrollments",enrollments);
+  
   const { auth } = useContext(DataContext);
   const studentId = auth?.user?._id;
   const loadStudentEnrollments = async () => {
@@ -51,7 +53,7 @@ export default function EnrollmentView() {
             }}
           >
             <strong>
-        Payment for <em>{item?.courseId?.title}</em> was rejected.
+              Payment for <em>{item?.title}</em> was rejected.
             </strong>
             <br />
             Reason: {item.enrollment.remark}

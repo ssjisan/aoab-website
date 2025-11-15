@@ -102,7 +102,11 @@ export default function Body({
           if (!fileInputRefs.current[courseId]) {
             fileInputRefs.current[courseId] = createRef();
           }
-
+          const canUpload =
+            data.enrollment.paymentReceived !== "approved" &&
+            !["waitlist", "confirmed", "expired"].includes(
+              data.enrollment.status
+            );
           return (
             <TableRow key={data._id}>
               <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
@@ -154,18 +158,15 @@ export default function Body({
 
               {/* 🆙 Upload Button Cell */}
               <TableCell align="center" sx={{ border: "1px solid #ddd" }}>
-                {["enrolled", "rejected"].includes(data.enrollment.status) &&
-                  ["pending", "rejected"].includes(
-                    data.enrollment.paymentReceived?.toLowerCase()
-                  ) && (
-                    <button
-                      onClick={() => handleUploadClick(data.enrollment._id)}
-                    >
-                      {selectedFileNameMap[data.enrollment._id]
-                        ? "Uploading..."
-                        : "Upload"}
-                    </button>
-                  )}
+                {canUpload && (
+                  <button
+                    onClick={() => handleUploadClick(data.enrollment._id)}
+                  >
+                    {selectedFileNameMap[data.enrollment._id]
+                      ? "Uploading..."
+                      : "Upload"}
+                  </button>
+                )}
 
                 <input
                   type="file"
