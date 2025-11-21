@@ -23,8 +23,7 @@ export default function Body({
   const fileInputRefs = useRef({});
   const { auth } = useContext(DataContext);
   const [selectedFileNameMap, setSelectedFileNameMap] = useState({});
-  console.log(courseMap);
-
+  
   const studentId = auth?.user?._id;
 
   const handleUploadClick = (enrollmentId) => {
@@ -99,28 +98,32 @@ export default function Body({
         </TableRow>
       ) : (
         enrollmentDetails.map((data) => {
-          const courseId = data.courseId?._id;
+          const courseId = data.courseId;
           if (!fileInputRefs.current[courseId]) {
             fileInputRefs.current[courseId] = createRef();
           }
-
+          
           // 🟢 Dynamic expired logic
-          const course = courseMap?.[data.courseId];
-          let finalStatus = data.enrollment.status;
+          const course = courseMap?.[courseId];
+            let finalStatus = data.enrollment.status;
           const now = new Date();
 
           if (course) {
             const eventEnd = new Date(course.endDate);
             const paymentDeadline = new Date(course.paymentReceiveEndDate);
             const registrationEnd = new Date(course.registrationEndDate);
-
+            console.log("paymentDeadline",paymentDeadline);
+            console.log("eventEnd",eventEnd);
+            console.log("registrationEnd",registrationEnd);
+            
             if (now > eventEnd) {
               finalStatus = "expired";
             } else if (now > paymentDeadline && data.enrollment.paymentReceived !== "approved") {
               finalStatus = "expired";
-            } else if (now > registrationEnd) {
-              finalStatus = "expired";
-            }
+            } 
+            // else if (now > registrationEnd) {
+            //   finalStatus = "expired";
+            // }
           }
 
           // Upload button logic uses the same dynamic status
