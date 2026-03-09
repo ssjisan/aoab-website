@@ -63,7 +63,7 @@ export default function Details() {
       const reasons = err?.response?.data?.reasons;
       setEnrollmentSuccess(false);
       setModalMessage(
-        Array.isArray(reasons) ? reasons : ["Eligibility check failed."]
+        Array.isArray(reasons) ? reasons : ["Eligibility check failed."],
       );
       setModalOpen(true);
     }
@@ -165,7 +165,26 @@ export default function Details() {
                 </Typography>
               </Box>
             </Stack>
-
+            <Stack gap="8px" flexDirection="row">
+              <Fees color="#003258" size={24} />
+              <Box>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  component="span"
+                >
+                  Location:&nbsp;
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  fontWeight="600"
+                  component="span"
+                >
+                  {courseEvent.location}
+                </Typography>
+              </Box>
+            </Stack>
             <Stack gap="8px" flexDirection="row">
               <Fees color="#003258" size={24} />
               <Box>
@@ -188,16 +207,19 @@ export default function Details() {
             </Stack>
           </Stack>
 
-         {
-          courseEvent.registrationRequired &&  <Stack gap="16px">
-            <Button variant="soft" onClick={handleCheckEligibility}>
-              Check Eligibility
-            </Button>
-            <Button variant="contained" href={`/enrollment/${courseEvent._id}`}>
-              Register
-            </Button>
-          </Stack>
-         }
+          {courseEvent.registrationRequired && (
+            <Stack gap="16px">
+              <Button variant="soft" onClick={handleCheckEligibility}>
+                Check Eligibility
+              </Button>
+              <Button
+                variant="contained"
+                href={`/enrollment/${courseEvent._id}`}
+              >
+                Register
+              </Button>
+            </Stack>
+          )}
         </Stack>
 
         {courseEvent.contactPersons?.length > 0 && (

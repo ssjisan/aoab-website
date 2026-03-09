@@ -36,8 +36,8 @@ export default function UpcomingEvent() {
               ? "100px 16px 40px 16px" // top, right, bottom, left
               : "210px 0px 64px 0px"
             : forBelow767
-            ? "40px 16px"
-            : "64px 0px",
+              ? "40px 16px"
+              : "64px 0px",
       }}
     >
       {monthlyEvents && monthlyEvents.length > 0 ? (
@@ -112,6 +112,23 @@ export default function UpcomingEvent() {
                         fontWeight="600"
                       >
                         {start} &nbsp; - &nbsp; {end}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        component="span"
+                      >
+                        Location:&nbsp;
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.primary"
+                        component="span"
+                        fontWeight="600"
+                      >
+                        {data.location}
                       </Typography>
                     </Box>
                     {data.contactPersons && data.contactPersons.length > 0 && (
