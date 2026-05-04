@@ -40,7 +40,8 @@ export default function ForgotPassword() {
       if (error.response && error.response.data) {
         // Display the error message sent from the backend (e.g., account not found)
         toast.error(
-          error.response.data.message || "Failed to send OTP. Please try again."
+          error.response.data.message ||
+            "Failed to send OTP. Please try again.",
         );
       } else {
         toast.error("An error occurred. Please try again.");

@@ -44,15 +44,10 @@ export default function Body({ profile }) {
       {courseCategories.map((courseCategory) => {
         const courseData =
           profile.courses.find(
-            (c) => c.courseCategoryId === courseCategory._id
+            (c) => c.courseCategoryId === courseCategory._id,
           ) || {};
 
-        const courseStatus =
-          courseData && courseData.status != null
-            ? courseData.status === "yes"
-              ? "Yes"
-              : "No"
-            : "N/A";
+        const courseStatus = courseData.status === "yes" ? "Yes" : "No";
         const completionYear = courseData?.completionYear || "N/A";
         const hasDocument =
           courseData?.documents && courseData.documents.length > 0;
@@ -81,7 +76,7 @@ export default function Body({ profile }) {
                       doc.name?.toLowerCase().endsWith(".pdf") && doc.size > 0;
                     const previewUrl = isPdf
                       ? `https://docs.google.com/viewer?url=${encodeURIComponent(
-                          doc.url
+                          doc.url,
                         )}&embedded=true`
                       : doc.url;
                     return (
@@ -103,7 +98,7 @@ export default function Body({ profile }) {
                         doc.size > 0;
                       const previewUrl = isPdf
                         ? `https://docs.google.com/viewer?url=${encodeURIComponent(
-                            doc.url
+                            doc.url,
                           )}&embedded=true`
                         : doc.url;
 
@@ -137,7 +132,7 @@ export default function Body({ profile }) {
 
                   const matchedCourse = profile.courses.find(
                     (c) =>
-                      String(c.courseCategoryId) === String(courseCategory._id)
+                      String(c.courseCategoryId) === String(courseCategory._id),
                   );
 
                   if (matchedCourse) {
@@ -145,7 +140,7 @@ export default function Body({ profile }) {
                     setExistingCourseData(matchedCourse);
                   } else {
                     console.log(
-                      `Course Category ID "${courseCategory._id}" NOT present in profile.courses`
+                      `Course Category ID "${courseCategory._id}" NOT present in profile.courses`,
                     );
                     setExistingCourseData(null);
                   }
@@ -181,11 +176,11 @@ Body.propTypes = {
           PropTypes.shape({
             url: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
-          })
+          }),
         ),
         completionYear: PropTypes.string,
         systemUpload: PropTypes.bool,
-      })
+      }),
     ),
   }),
 };

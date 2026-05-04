@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 export default function Certificate({ profile }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [certificates, setCertificates] = useState(
-  profile?.postGraduationCertificates || []
-);
+    profile?.postGraduationCertificates || [],
+  );
 
   const handleUploadSuccess = (updatedCertificates) => {
     setCertificates(updatedCertificates); // ✅ Update live state
@@ -117,14 +117,14 @@ Certificate.propTypes = {
       PropTypes.shape({
         url: PropTypes.string,
         public_id: PropTypes.string,
-      })
+      }),
     ),
     postGraduationCertificates: PropTypes.arrayOf(
       PropTypes.shape({
         url: PropTypes.string,
         public_id: PropTypes.string,
         name: PropTypes.string,
-      })
+      }),
     ),
   }).isRequired,
 };

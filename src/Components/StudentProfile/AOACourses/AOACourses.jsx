@@ -39,7 +39,7 @@ AOACourses.propTypes = {
         courseName: PropTypes.string.isRequired,
         year: PropTypes.number.isRequired,
         status: PropTypes.string.isRequired,
-      })
+      }),
     ),
     otherDetails: PropTypes.object, // Adjust based on actual structure
   }),
