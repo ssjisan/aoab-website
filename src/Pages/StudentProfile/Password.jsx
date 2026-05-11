@@ -4,7 +4,7 @@ import ChangePassword from "../../Components/StudentProfile/ChangePassword";
 export default function Password() {
   return (
     <div>
-      <Container sx={{ pt: "120px", pb: "120px" }}>
+      <Container>
         <Sidebar />
         <Stack
           sx={{

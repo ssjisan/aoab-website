@@ -5,7 +5,7 @@ const navConfig = ({ pathname }) => [
     title: "Profile",
     icon: (
       <Profile
-        color={pathname === "/profile" ? "#072439" : "#637381"}
+        color={pathname === "/profile" ? "#792DF8" : "#637381"}
         size={20}
       />
     ),
@@ -20,7 +20,7 @@ const navConfig = ({ pathname }) => [
     title: "Password",
     icon: (
       <Password
-        color={pathname === "/password" ? "#072439" : "#637381"}
+        color={pathname === "/password" ? "#792DF8" : "#637381"}
         size={20}
       />
     ),
@@ -35,7 +35,7 @@ const navConfig = ({ pathname }) => [
     title: "Enrollment history",
     icon: (
       <EnrollHistory
-        color={pathname === "/enrollment-history" ? "#072439" : "#637381"}
+        color={pathname === "/enrollment-history" ? "#792DF8" : "#637381"}
         size={20}
       />
     ),

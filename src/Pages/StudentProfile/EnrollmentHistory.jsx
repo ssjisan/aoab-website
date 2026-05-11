@@ -4,7 +4,7 @@ import EnrollmentView from "../../Components/StudentProfile/EnrollmentHistory/En
 export default function EnrollmentHistory() {
   return (
     <div>
-      <Container sx={{ pt: "120px", pb: "120px" }}>
+      <Container>
         <Sidebar />
         <Stack
           sx={{

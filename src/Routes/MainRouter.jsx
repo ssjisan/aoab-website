@@ -1,4 +1,11 @@
+// MainRoute.jsx
 import { Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
+// Layouts
+import Layout from "./Layout"; // Main website layout
+
+// Pages
 import Home from "../Pages/Home";
 import ClinicalResearch from "../Pages/ClinicalResearch";
 import Videos from "../Pages/Videos";
@@ -10,22 +17,25 @@ import Links from "../Pages/Links";
 import Forms from "../Pages/Forms";
 import Gallery from "../Pages/Gallery";
 import Login from "../Pages/UserAuth/Login";
-import { Toaster } from "react-hot-toast";
-import PrivateRoute from "./PrivateRoute";
 import ForgotPassword from "../Pages/UserAuth/ForgotPassword";
 import OTPVerify from "../Pages/UserAuth/OTPVerify";
 import OTPVerifyForRestPassword from "../Pages/UserAuth/OTPVerifyForRestPassword";
 import ResetPassword from "../Pages/UserAuth/ResetPassword";
+import Registration from "../Pages/UserAuth/Registration";
+import AdminLoginAsStudent from "../Pages/AdminLoginAsStudent";
+import ByPassLogin from "../Pages/UserAuth/ByPassLogin";
+
+// Protected Pages
 import Profile from "../Pages/StudentProfile/Profile";
 import Certificates from "../Pages/StudentProfile/Certificates";
 import EnrollmentHistory from "../Pages/StudentProfile/EnrollmentHistory";
 import Password from "../Pages/StudentProfile/Password";
-import Registration from "../Pages/UserAuth/Registration";
 import EnrollmentCourse from "../Pages/EnrollmentCourse";
 import DocPreview from "../Pages/StudentProfile/DocPreview";
-import AdminLoginAsStudent from "../Pages/AdminLoginAsStudent";
-import ByPassLogin from "../Pages/UserAuth/ByPassLogin";
-import Layout from "./Layout";
+
+// Route Guards
+import PrivateRoute from "./PrivateRoute";
+import ProfileLayout from "./ProfileLayout";
 
 export default function MainRoute() {
   return (
@@ -54,7 +64,11 @@ export default function MainRoute() {
           },
         }}
       />
+
       <Routes>
+        {/* ========================================
+            PUBLIC WEBSITE ROUTES (Main Layout)
+        ======================================== */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/clinical-research" element={<ClinicalResearch />} />
@@ -79,12 +93,21 @@ export default function MainRoute() {
           />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin-access" element={<AdminLoginAsStudent />} />
-          <Route path="" element={<PrivateRoute />}>
+          <Route element={<PrivateRoute />}>
+            <Route path="/videos" element={<Videos />} />
+          </Route>
+        </Route>
+
+        {/* ========================================
+            PROTECTED PROFILE ROUTES
+            (Uses ProfileLayout instead of Layout)
+        ======================================== */}
+        <Route element={<PrivateRoute />}>
+          <Route element={<ProfileLayout />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/password" element={<Password />} />
             <Route path="/certificate" element={<Certificates />} />
             <Route path="/enrollment-history" element={<EnrollmentHistory />} />
-            <Route path="/videos" element={<Videos />} />
             <Route path="/enrollment/:id" element={<EnrollmentCourse />} />
             <Route path="/preview" element={<DocPreview />} />
           </Route>

@@ -14,7 +14,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 import { DataContext } from "../../DataProcessing/DataProcessing";
-import { Logout } from "../../assets/Icons";
+import { Logout, Profile } from "../../assets/Icons";
 
 export default function ProfileMenuPopover() {
   const { auth, setAuth } = useContext(DataContext);
@@ -91,8 +91,8 @@ export default function ProfileMenuPopover() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         sx={{
-          width: 40,
-          height: 40,
+          width: 48,
+          height: 48,
           p: "2px !important",
           borderRadius: "50%",
           border: "1px solid #DFDFDF",
@@ -174,16 +174,14 @@ export default function ProfileMenuPopover() {
             borderRadius: "8px",
             py: 1.25,
             px: 1.5,
-            gap: 1.5,
           }}
         >
           <ListItemIcon
             sx={{
-              minWidth: 0,
               color: "#637381",
             }}
           >
-            {/* <PersonOutlineIcon fontSize="small" /> */}
+            <Profile size="20px" color="#637381" />
           </ListItemIcon>
 
           <Typography
@@ -204,17 +202,15 @@ export default function ProfileMenuPopover() {
             borderRadius: "8px",
             py: 1.25,
             px: 1.5,
-            gap: 1.5,
             mt: 0.5,
           }}
         >
           <ListItemIcon
             sx={{
-              minWidth: 0,
               color: "#FF4842",
             }}
           >
-            <Logout size="18px" color="#FF4842" />
+            <Logout size="20px" color="#FF4842" />
           </ListItemIcon>
 
           <Typography

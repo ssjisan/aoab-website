@@ -1,13 +1,11 @@
 import {
   Box,
   Button,
-  Container,
   IconButton,
   Modal,
   Stack,
   Typography,
 } from "@mui/material";
-import Sidebar from "../../Layout/Sidebar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -71,66 +69,63 @@ export default function Profile() {
 
   return (
     <div>
-      <Container sx={{ pt: "120px", pb: "120px" }}>
-        <Sidebar />
-        <Stack
-          sx={{
-            width: "100%",
-            borderBottom: "1px solid rgba(145, 142, 175, 0.24)",
-            pb: "8px",
-            mt: "40px",
-            mb: "40px",
-          }}
-          gap="4px"
-        >
-          <Typography sx={{ fontWeight: "700" }}>Profile Update</Typography>
-          <Typography variant="subtitle2" color="text.secondary">
-            Keep your profile updated with all accurate information.
-          </Typography>
-        </Stack>
-        <Stack gap="24px">
-          <ProfileCard profile={profile} />
-          {profile?.accountVerificationStatus === "rejected" && (
-            <Stack
-              gap="8px"
-              alignItems="center"
-              justifyContent="space-between"
-              flexDirection={"row"}
-              sx={{
-                background: "#FFE9D5",
-                p: "8px 16px",
-                borderRadius: "12px",
-                textAlign: "center",
-              }}
-            >
-              <Typography variant="body1" sx={{ color: "#FF5630" }}>
-                Remarks:
-                <Box component="span" sx={{ fontWeight: 700 }}>
-                  {profile?.remarks}
-                </Box>{" "}
-                . Remember, without approved account you can&apos;t apply for
-                any course.
-              </Typography>
+      <Stack
+        sx={{
+          width: "100%",
+          borderBottom: "1px solid rgba(145, 142, 175, 0.24)",
+          pb: "8px",
+          mt: "40px",
+          mb: "40px",
+        }}
+        gap="4px"
+      >
+        <Typography sx={{ fontWeight: "700" }}>Profile Update</Typography>
+        <Typography variant="subtitle2" color="text.secondary">
+          Keep your profile updated with all accurate information.
+        </Typography>
+      </Stack>
+      <Stack gap="24px">
+        <ProfileCard profile={profile} />
+        {profile?.accountVerificationStatus === "rejected" && (
+          <Stack
+            gap="8px"
+            alignItems="center"
+            justifyContent="space-between"
+            flexDirection={"row"}
+            sx={{
+              background: "#FFE9D5",
+              p: "8px 16px",
+              borderRadius: "12px",
+              textAlign: "center",
+            }}
+          >
+            <Typography variant="body1" sx={{ color: "#FF5630" }}>
+              Remarks:
+              <Box component="span" sx={{ fontWeight: 700 }}>
+                {profile?.remarks}
+              </Box>{" "}
+              . Remember, without approved account you can&apos;t apply for any
+              course.
+            </Typography>
 
-              {/* Apply for Approval Button */}
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setOpenApprovalModal(true)}
-                sx={{ mt: 1 }}
-              >
-                Apply for Approval
-              </Button>
-            </Stack>
-          )}
-          <BasicInfo profile={profile} />
-          {profile?.postGraduationDegrees?.[0]?.isCompleted && (
-            <Certificate profile={profile} />
-          )}
-          <Signature profile={profile} />
-          <AOACourses profile={profile} />
-        </Stack>
-      </Container>
+            {/* Apply for Approval Button */}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setOpenApprovalModal(true)}
+              sx={{ mt: 1 }}
+            >
+              Apply for Approval
+            </Button>
+          </Stack>
+        )}
+        <BasicInfo profile={profile} />
+        {profile?.postGraduationDegrees?.[0]?.isCompleted && (
+          <Certificate profile={profile} />
+        )}
+        <Signature profile={profile} />
+        <AOACourses profile={profile} />
+      </Stack>
       <ProfileAlert profile={profile} />
       <Modal open={openApprovalModal} onClose={handleCloseModal}>
         <Box
