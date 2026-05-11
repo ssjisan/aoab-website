@@ -14,23 +14,20 @@ export default function ProfileCard({ profile }) {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [currentImage, setCurrentImage] = useState(
-    profile?.picture?.[0]?.url || ""
-  );
-  
+  const [currentImage, setCurrentImage] = useState(profile?.picture?.url ?? "");
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
   };
 
   // Reload image when profile changes
   useEffect(() => {
-    if (profile?.picture?.[0]?.url) {
+    if (profile?.picture?.url) {
       setLoading(true);
       const img = new Image();
-      img.src = profile.picture[0].url;
+      img.src = profile.picture.url;
       img.onload = () => {
         setImageLoaded(true);
-        setCurrentImage(profile.picture[0].url);
+        setCurrentImage(profile.picture.url);
         setLoading(false);
       };
       img.onerror = () => {
@@ -39,8 +36,7 @@ export default function ProfileCard({ profile }) {
     } else {
       setLoading(false);
     }
-  }, [profile?.picture]);
-
+  }, [profile?.picture?.url]);
   const handleUploadSuccess = (newImageUrl) => {
     setCurrentImage(newImageUrl);
     setImageLoaded(true);
@@ -168,10 +164,8 @@ ProfileCard.propTypes = {
     aoaNo: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     isAccountVerified: PropTypes.bool,
-    picture: PropTypes.arrayOf(
-      PropTypes.shape({
-        url: PropTypes.string,
-      })
-    ),
+    picture: PropTypes.shape({
+      url: PropTypes.string,
+    }),
   }).isRequired,
 };

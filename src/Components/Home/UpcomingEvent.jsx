@@ -26,7 +26,9 @@ export default function UpcomingEvent() {
       newTab.scrollTo(0, 0); // Ensure the new tab scrolls to the top
     }
   };
-
+  if (!monthlyEvents || monthlyEvents.length === 0) {
+    return null;
+  }
   return (
     <Container
       sx={{

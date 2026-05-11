@@ -1,11 +1,9 @@
-import Navbar from "../../Layout/Navbar/Navbar";
 import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
 import { NoCertificate } from "../../assets/NoCertificate";
 export default function Certificates() {
   return (
     <div>
-      <Navbar />
       <Container sx={{ pt: "120px", pb: "120px" }}>
         <Sidebar />
         <Stack
@@ -25,7 +23,7 @@ export default function Certificates() {
           </Typography>
         </Stack>
         <Stack
-          sx={{ widht: "100%", pt:"64px" }}
+          sx={{ widht: "100%", pt: "64px" }}
           justifyContent="center"
           alignItems="center"
         >

@@ -1,12 +1,22 @@
 import { Box, Container, useMediaQuery } from "@mui/material";
 import SectionContent from "../Common/SectionContent";
 import View from "./View";
+import { DataContext } from "../../DataProcessing/DataProcessing";
+import { useContext } from "react";
 
 export default function EducationTrainingView() {
   const forBelow767 = useMediaQuery("(max-width:767px)");
+  const { monthlyEvents } = useContext(DataContext);
 
   return (
-    <Box sx={{ p: "64px 0px 64px 0px" }}>
+    <Box
+      sx={{
+        p:
+          !monthlyEvents || monthlyEvents.length === 0
+            ? "180px 0px 64px 0px"
+            : "64px 0px 64px 0px",
+      }}
+    >
       <Container
         sx={{
           display: "flex",

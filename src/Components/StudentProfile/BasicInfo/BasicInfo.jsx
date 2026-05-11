@@ -83,10 +83,10 @@ export default function BasicInfo({ profile }) {
                   {profile?.isBmdcVerified === null
                     ? "🔄"
                     : profile?.isBmdcVerified === true
-                    ? "✅"
-                    : profile?.isBmdcVerified === false
-                    ? "❌"
-                    : null}
+                      ? "✅"
+                      : profile?.isBmdcVerified === false
+                        ? "❌"
+                        : null}
                 </InputAdornment>
               ),
             },

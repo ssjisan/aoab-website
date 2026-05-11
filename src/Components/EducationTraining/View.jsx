@@ -36,7 +36,7 @@ export default function View() {
           console.log(
             `Event: ${data.title}, Has Cover Photo: `,
             data?.coverPhoto?.length > 0,
-            data?.coverPhoto
+            data?.coverPhoto,
           );
           return (
             <Grid item xs={12} sm={12} md={4} lg={4} key={data._id}>

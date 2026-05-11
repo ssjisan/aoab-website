@@ -1,5 +1,4 @@
 import { Box, Button, Container, Typography } from "@mui/material";
-import Navbar from "../../Layout/Navbar/Navbar";
 import Sidebar from "../../Layout/Sidebar";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -76,7 +75,6 @@ export default function DocPreview() {
 
   return (
     <>
-      <Navbar />
       <Container sx={{ pt: "120px", pb: "120px" }}>
         <Sidebar />
         <Box p={4}>
@@ -88,12 +86,12 @@ export default function DocPreview() {
             {isPdf ? (
               isCloudinaryPdf ? (
                 <iframe
-  src={fileUrl}
-  width="100%"
-  height="600px"
-  style={{ border: "1px solid #ccc" }}
-  title="Cloudinary PDF Preview"
-/>
+                  src={fileUrl}
+                  width="100%"
+                  height="600px"
+                  style={{ border: "1px solid #ccc" }}
+                  title="Cloudinary PDF Preview"
+                />
               ) : (
                 <canvas
                   ref={canvasRef}

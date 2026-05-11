@@ -1,6 +1,5 @@
 import { Typography, Button, Container, Stack, TextField } from "@mui/material";
-import Footer from "../Components/Footer/Footer";
-import Navbar from "../Layout/Navbar/Navbar";
+
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../DataProcessing/DataProcessing";
@@ -57,7 +56,7 @@ export default function EnrollmentCourse() {
       const reasons = err?.response?.data?.reasons;
       setEnrollmentSuccess(false);
       setModalMessage(
-        Array.isArray(reasons) ? reasons : ["Enrollment failed. Try again."]
+        Array.isArray(reasons) ? reasons : ["Enrollment failed. Try again."],
       );
       setModalOpen(true);
     }
@@ -83,7 +82,7 @@ export default function EnrollmentCourse() {
         toast.success(
           status === "waitlist"
             ? "You have been waitlisted successfully."
-            : "Enrollment successful!"
+            : "Enrollment successful!",
         );
 
         navigate("/enrollment-history");
@@ -96,7 +95,6 @@ export default function EnrollmentCourse() {
 
   return (
     <>
-      <Navbar />
       <Container>
         <Stack
           sx={{ pt: "120px", px: 3, pb: "80px" }}
@@ -208,7 +206,6 @@ export default function EnrollmentCourse() {
         title={course?.title}
         onConfirm={handleConfirmEnrollment}
       />
-      <Footer />
     </>
   );
 }

@@ -1,11 +1,9 @@
-import Navbar from "../../Layout/Navbar/Navbar";
 import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
 import ChangePassword from "../../Components/StudentProfile/ChangePassword";
 export default function Password() {
   return (
     <div>
-      <Navbar />
       <Container sx={{ pt: "120px", pb: "120px" }}>
         <Sidebar />
         <Stack

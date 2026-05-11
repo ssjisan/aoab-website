@@ -14,8 +14,7 @@ export default function ProfileAlert({ profile }) {
     const missing = [];
 
     // ✅ 1. Profile picture
-    const hasPicture =
-      Array.isArray(profile.picture) && profile.picture.length > 0;
+    const hasPicture = !!profile?.picture?.url;
     if (!hasPicture) missing.push("Profile picture");
 
     // ✅ 2. Current working place
@@ -147,7 +146,7 @@ ProfileAlert.propTypes = {
       PropTypes.shape({
         name: PropTypes.string,
         designation: PropTypes.string,
-      })
+      }),
     ),
     postGraduationDegrees: PropTypes.arrayOf(
       PropTypes.shape({
@@ -156,7 +155,7 @@ ProfileAlert.propTypes = {
           PropTypes.string,
           PropTypes.number,
         ]),
-      })
+      }),
     ),
     postGraduationCertificates: PropTypes.arrayOf(PropTypes.string),
   }),

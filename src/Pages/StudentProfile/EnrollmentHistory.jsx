@@ -1,13 +1,9 @@
-import Navbar from "../../Layout/Navbar/Navbar";
 import { Container, Stack, Typography } from "@mui/material";
 import Sidebar from "../../Layout/Sidebar";
 import EnrollmentView from "../../Components/StudentProfile/EnrollmentHistory/EnrollmentView";
 export default function EnrollmentHistory() {
- 
-
   return (
     <div>
-      <Navbar />
       <Container sx={{ pt: "120px", pb: "120px" }}>
         <Sidebar />
         <Stack
@@ -25,7 +21,7 @@ export default function EnrollmentHistory() {
             The courses you have enrolled in on our platform.
           </Typography>
         </Stack>
-        <EnrollmentView/>
+        <EnrollmentView />
       </Container>
     </div>
   );

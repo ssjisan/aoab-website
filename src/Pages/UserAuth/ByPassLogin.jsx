@@ -15,17 +15,6 @@ export default function ByPassLogin() {
   // Configure Style End
   return (
     <div>
-      <Box sx={NavSx}>
-        <Box
-          sx={{
-            width: "56px",
-          }}
-          component="a"
-          href="/"
-        >
-          <Symbolic colorTwo={"#003258"} colorOne={"#91B512"} />
-        </Box>
-      </Box>
       <Form />
     </div>
   );

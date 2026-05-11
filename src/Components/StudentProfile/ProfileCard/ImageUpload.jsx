@@ -13,7 +13,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 
-export default function ImageUpload({ open, toggleDrawer, currentImage, onSuccess }) {
+export default function ImageUpload({
+  open,
+  toggleDrawer,
+  currentImage,
+  onSuccess,
+}) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -71,7 +76,7 @@ export default function ImageUpload({ open, toggleDrawer, currentImage, onSucces
       }
     } catch (error) {
       toast.error(
-        error.response?.data?.error || "Failed to upload profile image"
+        error.response?.data?.error || "Failed to upload profile image",
       );
     } finally {
       setLoading(false);
@@ -107,8 +112,8 @@ export default function ImageUpload({ open, toggleDrawer, currentImage, onSucces
           <label htmlFor="file-upload">
             <Box
               sx={{
-                width: "100%",
-                height: "240px",
+                width: "240px",
+                height: "280px",
                 border: "1px dashed grey",
                 borderRadius: "12px",
                 overflow: "hidden",

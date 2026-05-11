@@ -1,190 +1,233 @@
 import {
-  Box,
-  Typography,
-  List,
-  ListItemButton,
-  Drawer,
-  ListItemIcon,
   Avatar,
-  Stack,
+  Box,
+  Divider,
   IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Typography,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
-import navConfig from "../Navbar/ProfileMenu";
-import { DataContext } from "../../DataProcessing/DataProcessing";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { LeftArrow } from "../../assets/Icons";
 
-export default function ProfileMenuDrawer() {
-  const { auth, setAuth } = useContext(DataContext); // Use the auth context
+import { DataContext } from "../../DataProcessing/DataProcessing";
+import { Logout } from "../../assets/Icons";
+
+export default function ProfileMenuPopover() {
+  const { auth, setAuth } = useContext(DataContext);
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const { pathname } = useLocation();
-  const [profile, setProfile] = useState(null); // Set initial state to null to avoid .map on an empty array
+
+  const [profile, setProfile] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const open = Boolean(anchorEl);
 
   useEffect(() => {
-    // Function to load the profile data
     const loadProfileData = async () => {
       try {
         const { data } = await axios.get("/my-profile-data");
-        setProfile(data); // Assuming data is an object, not an array
+        setProfile(data);
       } catch (err) {
-        if (err) {
-          toast.error("Error loading profile: " + (err.response?.data?.message || err.message));
-        }
+        toast.error(
+          "Error loading profile: " +
+            (err.response?.data?.message || err.message),
+        );
       }
     };
 
-    // Call the function to load profile data
     loadProfileData();
   }, []);
 
-  const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
+  // Open popover
+  const handleOpen = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  // Handle logout functionality
+  // Close popover
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  // Logout
   const handleLogout = () => {
-    setAuth({ token: null, user: null }); // Clear auth state
-    localStorage.removeItem("auth"); // Remove stored token
+    setAuth({ token: null, user: null });
+    localStorage.removeItem("auth");
+    handleClose();
     navigate("/");
   };
 
-  const DrawerList = (
-    <Box sx={{ maxwidth:"100%",width: "380px" }} role="presentation" onClick={toggleDrawer(false)}>
-      {/* User Profile Section */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          textAlign: "center",
-          padding: "16px",
-          borderBottom: "1px solid #E0E0E0",
-        }}
-      >
-        <Stack sx={{width:"100%", mb:"40px" }} justifyContent={"flex-start"} flexDirection="row" gap="8px" alignItems="center" onClick={toggleDrawer(false)}>
-          <IconButton sx={{width:"40px", height:"40px"}}>
-            <LeftArrow size="20px" color="#000"/>
-          </IconButton>
-          <Typography sx={{fontSize:"16px"}}>Back</Typography>
-        </Stack>
-        <Box
-          sx={{
-            width: "70px",
-            height: "70px",
-            borderRadius: "50%",
-            overflow: "hidden",
-            mb: "8px",
-          }}
-        >
-          <Avatar
-            src={profile?.picture?.[0]?.url || ""} // Assuming the profile picture is the first image in the array
-            alt="Profile"
-            sx={{
-              width: "100%",
-              height: "100%",
-              fontSize: "32px",
-              color: "#FFF",
-              bgcolor: "#000",
-            }}
-          >
-            {profile?.name ? profile.name.charAt(0).toUpperCase() : "G"}{" "}
-          </Avatar>
-        </Box>
-        <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-          {auth?.user?.name}
-        </Typography>
-        <Typography sx={{ fontSize: "14px", color: "#6B7280" }}>
-          {auth?.user?.email}
-        </Typography>
-      </Box>
+  // Styles
+  const menuSx = {
+    mt: "12px",
+    "& .MuiPaper-root": {
+      overflow: "visible",
+      width: 280,
+      borderRadius: "12px",
+      border: "1px solid #E5E7EB",
+      boxShadow: "-20px 20px 40px -4px rgba(145, 158, 171, 0.24)",
+      padding: "8px",
+    },
+  };
 
-      {/* Navigation List */}
-      <List sx={{ p: "16px" }}>
-        {navConfig({ pathname }).map((data) => {
-          const isLogout = data.title === "Log out";
-
-          return (
-            <ListItemButton
-              component={Link}
-              to={!isLogout ? data.items[0].link : "#"}
-              key={data.items[0].title}
-              onClick={isLogout ? handleLogout : undefined}
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                borderRadius: "8px",
-                width: "100%",
-                padding: "8px 16px",
-                height: "44px",
-                mb: "4px",
-                background: isLogout
-                  ? "#FFEBEE"
-                  : pathname === data.items[0].link
-                  ? "#FCECFF"
-                  : "transparent",
-                color: isLogout
-                  ? "#D32F2F"
-                  : pathname === data.items[0].link
-                  ? "#9C27B0"
-                  : "#637381",
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: "36px" }}>{data.icon}</ListItemIcon>
-              <Typography
-                sx={{
-                  fontWeight: pathname === data.items[0].link ? 600 : 500,
-                  fontSize: "14px !important",
-                }}
-              >
-                {data.items[0].title}
-              </Typography>
-            </ListItemButton>
-          );
-        })}
-      </List>
-    </Box>
-  );
+  const avatarSx = {
+    width: "100%",
+    height: "100%",
+    fontSize: "18px",
+    color: "#FFF",
+    bgcolor: "#000",
+    transition: "transform 0.3s ease",
+    transform: isHovered ? "scale(1.1)" : "scale(1)",
+  };
 
   return (
-    <div>
-      <Box
+    <>
+      {/* Avatar Trigger */}
+      <IconButton
+        onClick={handleOpen}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         sx={{
-          width: "40px",
-          height: "40px",
-          borderRadius: "20px",
+          width: 40,
+          height: 40,
+          p: "2px !important",
+          borderRadius: "50%",
+          border: "1px solid #DFDFDF",
           overflow: "hidden",
-          cursor: "pointer",
-          border:"1px solid black"
         }}
-        onClick={toggleDrawer(true)}
       >
-        <Avatar
-          src={profile?.picture?.[0]?.url || ""} // Assuming the profile picture is the first image in the array
-          alt="Profile"
+        <Avatar src={profile?.picture?.url || ""} alt="Profile" sx={avatarSx}>
+          {profile?.name
+            ? profile.name.charAt(0).toUpperCase()
+            : auth?.user?.name?.charAt(0).toUpperCase() || "G"}
+        </Avatar>
+      </IconButton>
+
+      {/* Popover Menu */}
+      <Menu
+        id="profile-menu"
+        sx={menuSx}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        keepMounted
+        disableScrollLock
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        {/* User Info */}
+        <Box
           sx={{
-            width: "40px",
-            height: "40px",
-            fontSize: "32px",
-            color: "#FFF",
-            bgcolor: "#000",
+            px: 1,
+            py: 1.5,
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
           }}
         >
-          {profile?.name ? profile.name.charAt(0).toUpperCase() : "G"}{" "}
-        </Avatar>
-      </Box>
+          <Typography
+            sx={{
+              fontSize: "14px",
+              fontWeight: 600,
+              color: "#111827",
+            }}
+          >
+            {auth?.user?.name || "Guest User"}
+          </Typography>
 
-      <Drawer
-        open={open}
-        BackdropProps={{ sx: { backgroundColor: "transparent" } }}
-        onClose={toggleDrawer(false)}
-        anchor={"right"}
-      >
-        {DrawerList}
-      </Drawer>
-    </div>
+          <Typography
+            sx={{
+              fontSize: "13px",
+              fontWeight: 400,
+              color: "#6B7280",
+              wordBreak: "break-word",
+            }}
+          >
+            {auth?.user?.email || "No email available"}
+          </Typography>
+        </Box>
+
+        <Divider
+          variant="middle"
+          sx={{
+            borderStyle: "dashed",
+            my: 1,
+          }}
+        />
+
+        {/* My Profile */}
+        <MenuItem
+          component={Link}
+          to="/profile"
+          onClick={handleClose}
+          sx={{
+            borderRadius: "8px",
+            py: 1.25,
+            px: 1.5,
+            gap: 1.5,
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              color: "#637381",
+            }}
+          >
+            {/* <PersonOutlineIcon fontSize="small" /> */}
+          </ListItemIcon>
+
+          <Typography
+            sx={{
+              fontSize: "14px",
+              fontWeight: 500,
+              color: "#111827",
+            }}
+          >
+            My Profile
+          </Typography>
+        </MenuItem>
+
+        {/* Logout */}
+        <MenuItem
+          onClick={handleLogout}
+          sx={{
+            borderRadius: "8px",
+            py: 1.25,
+            px: 1.5,
+            gap: 1.5,
+            mt: 0.5,
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              color: "#FF4842",
+            }}
+          >
+            <Logout size="18px" color="#FF4842" />
+          </ListItemIcon>
+
+          <Typography
+            sx={{
+              fontSize: "14px",
+              fontWeight: 500,
+              color: "#FF4842",
+            }}
+          >
+            Logout
+          </Typography>
+        </MenuItem>
+      </Menu>
+    </>
   );
 }

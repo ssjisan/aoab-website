@@ -25,6 +25,7 @@ import EnrollmentCourse from "../Pages/EnrollmentCourse";
 import DocPreview from "../Pages/StudentProfile/DocPreview";
 import AdminLoginAsStudent from "../Pages/AdminLoginAsStudent";
 import ByPassLogin from "../Pages/UserAuth/ByPassLogin";
+import Layout from "./Layout";
 
 export default function MainRoute() {
   return (
@@ -54,37 +55,39 @@ export default function MainRoute() {
         }}
       />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/clinical-research" element={<ClinicalResearch />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/online-learning" element={<OnlineLearning />} />
-        <Route
-          path="/educations&training/aoa-bangladesh"
-          element={<EducationTraining />}
-        />
-        <Route path="/course_event/:id" element={<EventDetails />} />
-        <Route path="/links&forms/forms" element={<Forms />} />
-        <Route path="/links&forms/links" element={<Links />} />
-        <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/registration" element={<Registration />} />
-        <Route path="/verify-otp" element={<OTPVerify />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/bypass-login" element={<ByPassLogin />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route
-          path="/verify-for-reset"
-          element={<OTPVerifyForRestPassword />}
-        />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/admin-access" element={<AdminLoginAsStudent />} />
-        <Route path="" element={<PrivateRoute />}>
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/password" element={<Password />} />
-          <Route path="/certificate" element={<Certificates />} />
-          <Route path="/enrollment-history" element={<EnrollmentHistory />} />
-          <Route path="/videos" element={<Videos />} />
-          <Route path="/enrollment/:id" element={<EnrollmentCourse/>}/>
-          <Route path="/preview" element={<DocPreview />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/clinical-research" element={<ClinicalResearch />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/online-learning" element={<OnlineLearning />} />
+          <Route
+            path="/educations&training/aoa-bangladesh"
+            element={<EducationTraining />}
+          />
+          <Route path="/course_event/:id" element={<EventDetails />} />
+          <Route path="/links&forms/forms" element={<Forms />} />
+          <Route path="/links&forms/links" element={<Links />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/registration" element={<Registration />} />
+          <Route path="/verify-otp" element={<OTPVerify />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/bypass-login" element={<ByPassLogin />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/verify-for-reset"
+            element={<OTPVerifyForRestPassword />}
+          />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/admin-access" element={<AdminLoginAsStudent />} />
+          <Route path="" element={<PrivateRoute />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/password" element={<Password />} />
+            <Route path="/certificate" element={<Certificates />} />
+            <Route path="/enrollment-history" element={<EnrollmentHistory />} />
+            <Route path="/videos" element={<Videos />} />
+            <Route path="/enrollment/:id" element={<EnrollmentCourse />} />
+            <Route path="/preview" element={<DocPreview />} />
+          </Route>
         </Route>
       </Routes>
     </>

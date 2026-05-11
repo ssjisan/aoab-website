@@ -21,7 +21,7 @@ export default function Sidebar() {
   useEffect(() => {
     // Find the active index based on the pathname
     const activeIndex = navConfig({ pathname }).findIndex(
-      (item) => item.items[0].link === pathname
+      (item) => item.items[0].link === pathname,
     );
 
     // Scroll to the active item if exists

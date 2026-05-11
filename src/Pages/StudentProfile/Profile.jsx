@@ -1,4 +1,3 @@
-import Navbar from "../../Layout/Navbar/Navbar";
 import {
   Box,
   Button,
@@ -72,7 +71,6 @@ export default function Profile() {
 
   return (
     <div>
-      <Navbar />
       <Container sx={{ pt: "120px", pb: "120px" }}>
         <Sidebar />
         <Stack
@@ -106,8 +104,12 @@ export default function Profile() {
               }}
             >
               <Typography variant="body1" sx={{ color: "#FF5630" }}>
-                Remarks:<Box component="span" sx={{fontWeight:700}}>{profile?.remarks}</Box> . Remember, without approved account you
-                can&apos;t apply for any course.
+                Remarks:
+                <Box component="span" sx={{ fontWeight: 700 }}>
+                  {profile?.remarks}
+                </Box>{" "}
+                . Remember, without approved account you can&apos;t apply for
+                any course.
               </Typography>
 
               {/* Apply for Approval Button */}
@@ -156,7 +158,7 @@ export default function Profile() {
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
-    Are you sure you want to send approval for your account?
+              Are you sure you want to send approval for your account?
             </Typography>
             <IconButton onClick={handleCloseModal} size="small">
               <Cross size="24" color="black" />
@@ -194,7 +196,7 @@ export default function Profile() {
               Cancel
             </Button>
             <Button
-            onClick={handleApplyForApproval}
+              onClick={handleApplyForApproval}
               variant="contained"
               color="success"
               disabled={loading}

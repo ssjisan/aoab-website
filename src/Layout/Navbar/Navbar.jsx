@@ -40,10 +40,6 @@ export default function Navbar() {
     };
   }, []);
 
-  const handleTouchItem = (itemId) => {
-    setTouchedItem((prev) => (prev === itemId ? null : itemId));
-  };
-
   const toggleDrawer = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
 
@@ -189,8 +185,8 @@ export default function Navbar() {
                                 : "#000"
                               : "#FFF"
                             : pathname === data.link
-                            ? "#003258"
-                            : "#000",
+                              ? "#003258"
+                              : "#000",
                         textDecoration: "none",
                       }}
                       variant="subtitle2"
@@ -208,8 +204,8 @@ export default function Navbar() {
                                 : "#000"
                               : "#FFF"
                             : pathname === data.link
-                            ? "#003258"
-                            : "#000"
+                              ? "#003258"
+                              : "#000"
                         }
                       />
                     )}
