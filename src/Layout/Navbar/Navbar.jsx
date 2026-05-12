@@ -7,7 +7,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import MenuDrawer from "./MenuDrawer";
 import { Menu, Plus, RightArrow } from "../../assets/Icons";
 import Logo from "../../assets/Logo";
@@ -23,7 +23,7 @@ export default function Navbar() {
   const forBelow1100 = useMediaQuery("(max-width:1100px)");
   const forBelow767 = useMediaQuery("(max-width:767px)");
   const [open, setOpen] = useState(false);
-  const { auth } = useContext(DataContext); // Auth context
+  const { auth } = useContext(DataContext);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,8 +69,8 @@ export default function Navbar() {
             width: forBelow767 ? "120px" : isScrolled ? "140px" : "180px",
             transition: "all 0.3s ease-in-out",
           }}
-          component="a"
-          href="/"
+          component={Link}
+          to="/"
         >
           <Logo
             colorOne={
@@ -87,8 +87,8 @@ export default function Navbar() {
               <ProfileMenuDrawer isScrolled={isScrolled} />
             ) : (
               <Button
-                component="a"
-                href="/login"
+                component={Link}
+                to="/login"
                 rel="noopener noreferrer"
                 sx={{
                   backgroundColor:
@@ -149,10 +149,12 @@ export default function Navbar() {
                 <Stack
                   key={data.id}
                   sx={{ height: "100%", textDecoration: "none" }}
-                  component="a"
-                  href={hasSubmenu ? null : data.link}
+                  component={hasSubmenu ? "div" : Link}
+                  to={!hasSubmenu ? data.link : undefined}
                   onMouseEnter={() => setHoveredItem(data.id)}
                   onMouseLeave={() => setHoveredItem(null)}
+                  onTouchStart={() => setTouchedItem(data.id)}
+                  onTouchEnd={() => setTouchedItem(null)}
                   justifyContent="center"
                 >
                   <Stack

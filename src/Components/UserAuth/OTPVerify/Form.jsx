@@ -12,7 +12,7 @@ import { useContext, useState, useEffect } from "react";
 import { DataContext } from "../../../DataProcessing/DataProcessing";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "../../../lib/api/axios";
 
 export default function Form() {
   const { setAuth } = useContext(DataContext);
@@ -39,7 +39,7 @@ export default function Form() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post("/verify-otp", { email, otp });
+      const { data } = await api.post("/verify-otp", { email, otp });
 
       // Log the response data to see its structure
       console.log("OTP Response Data: ", data);
@@ -68,7 +68,7 @@ export default function Form() {
 
       if (err.response && err.response.data) {
         toast.error(
-          err.response.data.message || "An error occurred. Please try again."
+          err.response.data.message || "An error occurred. Please try again.",
         );
       } else {
         toast.error("Something went wrong. Please try again.");
@@ -81,7 +81,7 @@ export default function Form() {
     setResendLoading(true); // Show loader
 
     try {
-      await axios.post("/resend-otp", { email });
+      await api.post("/resend-otp", { email });
       toast.success("OTP sent again. Check your email.");
       setTimeLeft(120); // Restart countdown timer
     } catch (error) {
@@ -167,9 +167,11 @@ export default function Form() {
               {timeLeft > 0 ? (
                 <>
                   OTP will expire in{" "}
-                  <strong style={{color:"#000"}}>{`${String(Math.floor(timeLeft / 60)).padStart(
+                  <strong style={{ color: "#000" }}>{`${String(
+                    Math.floor(timeLeft / 60),
+                  ).padStart(
                     2,
-                    "0"
+                    "0",
                   )}:${String(timeLeft % 60).padStart(2, "0")}`}</strong>
                 </>
               ) : (

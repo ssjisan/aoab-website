@@ -10,11 +10,12 @@ import {
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import toast from "react-hot-toast";
 
 import { DataContext } from "../../DataProcessing/DataProcessing";
 import { Logout, Profile } from "../../assets/Icons";
+import api from "../../lib/api/axios";
 
 export default function ProfileMenuPopover() {
   const { auth, setAuth } = useContext(DataContext);
@@ -29,7 +30,7 @@ export default function ProfileMenuPopover() {
   useEffect(() => {
     const loadProfileData = async () => {
       try {
-        const { data } = await axios.get("/my-profile-data");
+        const { data } = await api.get("/my-profile-data");
         setProfile(data);
       } catch (err) {
         toast.error(

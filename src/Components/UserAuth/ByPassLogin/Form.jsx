@@ -14,9 +14,10 @@ import { useContext, useState } from "react";
 import { EyeOff, EyeOn } from "../../../assets/Icons";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import axios from "axios";
+
 import { DataContext } from "../../../DataProcessing/DataProcessing";
 import CircularProgress from "@mui/material/CircularProgress";
+import api from "../../../lib/api/axios";
 
 export default function Form() {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +37,7 @@ export default function Form() {
 
     try {
       // call bypass-login endpoint with { email, bypassPassword }
-      const { data } = await axios.post("/student/bypass-login", {
+      const { data } = await api.post("/student/bypass-login", {
         email,
         bypassPassword: password,
       });
@@ -67,7 +68,9 @@ export default function Form() {
     } catch (err) {
       console.error("Bypass login error:", err);
       if (err.response && err.response.data) {
-        toast.error(err.response.data.error || "An error occurred. Please try again.");
+        toast.error(
+          err.response.data.error || "An error occurred. Please try again.",
+        );
       } else {
         toast.error("Something went wrong. Please try again.");
       }
@@ -108,7 +111,9 @@ export default function Form() {
             />
           </Stack>
           <Stack gap="8px">
-            <Typography sx={{ fontWeight: "600" }}>Bypass Password *</Typography>
+            <Typography sx={{ fontWeight: "600" }}>
+              Bypass Password *
+            </Typography>
             <Stack gap="8px">
               <FormControl
                 sx={{ width: "100%" }}

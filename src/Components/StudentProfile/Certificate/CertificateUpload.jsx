@@ -12,8 +12,7 @@ import PropTypes from "prop-types";
 import Upload from "../../../assets/Upload";
 import PDF from "../../../assets/PDF";
 import { Cross } from "../../../assets/Icons";
-import axios from "axios";
-
+import api from "../../../lib/api/axios";
 export default function CertificateUpload({
   open,
   onClose,
@@ -27,7 +26,7 @@ export default function CertificateUpload({
 
   const fileInputRef = useRef(null);
 
-   useEffect(() => {
+  useEffect(() => {
     if (open && certificates) {
       setExistingCertificates(certificates); // ✅ use live certificates
       setNewFiles([]);
@@ -81,38 +80,37 @@ export default function CertificateUpload({
     setNewFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-const handleSubmit = async () => {
-  const toastId = toast.loading("Updating certificates...");
+  const handleSubmit = async () => {
+    const toastId = toast.loading("Updating certificates...");
 
-  try {
-    setIsUploading(true);
-    const formData = new FormData();
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
 
-    newFiles.forEach((file) => {
-      formData.append("postGradCertificate", file);
-    });
+      newFiles.forEach((file) => {
+        formData.append("postGradCertificate", file);
+      });
 
-    removedIds.forEach((id) => {
-      formData.append("removeCertificateIds", id);
-    });
+      removedIds.forEach((id) => {
+        formData.append("removeCertificateIds", id);
+      });
 
-    const { data } = await axios.post("/upload-postgrad-certificate", formData);
+      const { data } = await api.post("/upload-postgrad-certificate", formData);
 
-    toast.success("Certificate updated successfully", { id: toastId });
+      toast.success("Certificate updated successfully", { id: toastId });
 
-    if (typeof onUploadSuccess === "function") {
-      onUploadSuccess(data.postGraduationCertificates); // ✅ pass updated list
+      if (typeof onUploadSuccess === "function") {
+        onUploadSuccess(data.postGraduationCertificates); // ✅ pass updated list
+      }
+
+      onClose();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update certificates.", { id: toastId });
+    } finally {
+      setIsUploading(false);
     }
-
-    onClose();
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to update certificates.", { id: toastId });
-  } finally {
-    setIsUploading(false);
-  }
-};
-
+  };
 
   return (
     <Drawer open={open} onClose={onClose} anchor="right">
@@ -239,7 +237,7 @@ CertificateUpload.propTypes = {
       url: PropTypes.string,
       public_id: PropTypes.string,
       name: PropTypes.string,
-    })
+    }),
   ).isRequired,
   onUploadSuccess: PropTypes.func,
 };

@@ -1,7 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
+import api from "../../lib/api/axios";
 export default function EventData() {
   const [runningEvents, setRunningEvents] = useState([]); // For storing all running events except the monthly event
   const [monthlyEvents, setMonthlyEvents] = useState([]); // For storing the nearest upcoming event
@@ -23,7 +22,7 @@ export default function EventData() {
       const currentSkip = initial ? 0 : skip; // Reset skip for initial load or use the current skip value for further loads
 
       // Fetch data from API with query params for pagination
-      const { data } = await axios.get("/courses_events", {
+      const { data } = await api.get("/courses_events", {
         params: {
           limit,
           skip: currentSkip,
@@ -33,7 +32,9 @@ export default function EventData() {
 
       if (initial) {
         // Reset state on initial load
-        const { monthlyEvent, otherEvents } = filterMonthlyEvents(data.coursesEvents);
+        const { monthlyEvent, otherEvents } = filterMonthlyEvents(
+          data.coursesEvents,
+        );
         setMonthlyEvents(monthlyEvent ? [monthlyEvent] : []); // Nearest upcoming event
         setRunningEvents(otherEvents); // All other running events
         setSkip(limit); // Reset skip for next batch
@@ -44,7 +45,6 @@ export default function EventData() {
       }
 
       setHasMore(data.hasMore); // Update hasMore flag based on the response
-
     } catch (err) {
       toast.error("Error loading running events: " + err.message);
     } finally {
@@ -75,7 +75,7 @@ export default function EventData() {
 
     // Return the monthly event and the remaining events
     const remainingEvents = events.filter(
-      (event) => event._id !== nextEvent?._id
+      (event) => event._id !== nextEvent?._id,
     );
     return { monthlyEvent: nextEvent, otherEvents: remainingEvents };
   };

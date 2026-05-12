@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../DataProcessing/DataProcessing";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
-import axios from "axios";
+
 import Loading from "./Loading";
+import api from "../lib/api/axios";
 
 export default function PrivateRoute() {
   const { auth } = useContext(DataContext);
@@ -13,7 +14,7 @@ export default function PrivateRoute() {
   useEffect(() => {
     const authCheck = async () => {
       try {
-        const { data } = await axios.get("/auth-check");
+        const { data } = await api.get("/auth-check");
         setIsUserLoggedIn(data?.ok);
       } catch (error) {
         setIsUserLoggedIn(false);

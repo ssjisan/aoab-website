@@ -1,28 +1,23 @@
-import {
-  AppBar,
-  Button,
-  Icon,
-  IconButton,
-  Stack,
-  Toolbar,
-} from "@mui/material";
-import ProfileMenuPopover from "./Navbar/ProfileMenuDrawer";
+import { AppBar, Button, IconButton, Stack, Toolbar } from "@mui/material";
 import { Link } from "react-router-dom";
+import ProfileMenuPopover from "./Navbar/ProfileMenuDrawer";
 import { Menu } from "../assets/Icons";
+import PropTypes from "prop-types";
 
 const drawerWidth = 260;
+
 export default function ProfileNavbar({ handleDrawerToggle }) {
   return (
     <AppBar
       position="fixed"
+      elevation={0}
       sx={{
         width: { lg: `calc(100% - ${drawerWidth}px)` },
         ml: { lg: `${drawerWidth}px` },
-      }}
-      style={{
-        backgroundColor: "rgba(249, 250, 251, 0.8)",
-        boxShadow: "none",
+        bgcolor: "rgba(249, 250, 251, 0.8)",
         backdropFilter: "blur(6px)",
+        borderBottom: "1px dashed rgba(145, 158, 171, 0.24)",
+        boxShadow: "none",
       }}
     >
       <Toolbar
@@ -30,33 +25,33 @@ export default function ProfileNavbar({ handleDrawerToggle }) {
           display: "flex",
           justifyContent: {
             xs: "space-between",
-            sm: "space-between",
-            md: "space-between",
             lg: "flex-end",
           },
         }}
       >
         <IconButton
           color="default"
-          aria-label="open drawer"
           edge="start"
           onClick={handleDrawerToggle}
-          sx={{ mr: 2, display: { lg: "none" } }}
+          sx={{
+            mr: 2,
+            display: { lg: "none" },
+          }}
         >
           <Menu color="#031E21" size={24} />
         </IconButton>
-        <Stack
-          direction="row"
-          justifyContent="center"
-          gap="16px"
-          alignItems={"center"}
-        >
+
+        <Stack direction="row" spacing={2} alignItems="center">
           <Button component={Link} to="/" variant="outlined" size="small">
             Visit Website
           </Button>
+
           <ProfileMenuPopover />
         </Stack>
       </Toolbar>
     </AppBar>
   );
 }
+ProfileNavbar.propTypes = {
+  handleDrawerToggle: PropTypes.func.isRequired,
+};

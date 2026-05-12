@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import toast from "react-hot-toast";
 import ProfileAlert from "../../Components/StudentProfile/ProfileAlert";
 import BasicInfo from "../../Components/StudentProfile/BasicInfo/BasicInfo";
@@ -16,6 +16,7 @@ import ProfileCard from "../../Components/StudentProfile/ProfileCard/ProfileCard
 import Signature from "../../Components/StudentProfile/Signature/Signature";
 import Certificate from "../../Components/StudentProfile/Certificate/Certificate";
 import { Cross, Warning } from "../../assets/Icons";
+import api from "../../lib/api/axios";
 
 export default function Profile() {
   const [profile, setProfile] = useState(null); // Set initial state to null to avoid .map on an empty array
@@ -28,7 +29,7 @@ export default function Profile() {
     // Function to load the profile data
     const loadProfileData = async () => {
       try {
-        const { data } = await axios.get("/my-profile-data");
+        const { data } = await api.get("/my-profile-data");
         setProfile(data); // Assuming data is an object, not an array
       } catch (err) {
         toast.error("Error loading profile:", err);
@@ -49,7 +50,7 @@ export default function Profile() {
         return;
       }
 
-      const response = await axios.put(`/apply-for-approval/${studentId}`);
+      const response = await api.put(`/apply-for-approval/${studentId}`);
 
       if (response.status === 200) {
         toast.success("Your account is now under review.");

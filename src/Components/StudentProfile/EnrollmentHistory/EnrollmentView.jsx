@@ -1,15 +1,16 @@
 import { Box, Table, TableContainer } from "@mui/material";
 import { useEffect, useState, useContext } from "react";
-import axios from "axios";
+
 import toast from "react-hot-toast";
 import Body from "./Table/Body";
 import { DataContext } from "../../../DataProcessing/DataProcessing";
 import Header from "./Table/Header";
+import api from "../../../lib/api/axios";
 
 export default function EnrollmentView() {
   const [loading, setLoading] = useState(false);
   const [enrollments, setEnrollments] = useState([]);
-const [courseMap, setCourseMap] = useState({});
+  const [courseMap, setCourseMap] = useState({});
 
   const { auth } = useContext(DataContext);
   const studentId = auth?.user?._id;
@@ -17,7 +18,7 @@ const [courseMap, setCourseMap] = useState({});
     if (loading) return;
     try {
       setLoading(true);
-      const res = await axios.get(`/enrollment-history/student/${studentId}`);
+      const res = await api.get(`/enrollment-history/student/${studentId}`);
       setEnrollments(res.data);
     } catch (err) {
       toast.error("Failed to load student's enrollment history", err);
@@ -33,29 +34,29 @@ const [courseMap, setCourseMap] = useState({});
   }, [studentId]);
 
   const loadCoursesByIds = async () => {
-  try {
-    const ids = [...new Set(enrollments.map(e => e.courseId))];
+    try {
+      const ids = [...new Set(enrollments.map((e) => e.courseId))];
 
-    const responses = await Promise.all(
-      ids.map(id => axios.get(`/courses_events/${id}`))
-    );
+      const responses = await Promise.all(
+        ids.map((id) => api.get(`/courses_events/${id}`)),
+      );
 
-    const map = {};
-    responses.forEach((res, i) => {
-      map[ids[i]] = res.data; // courseEvent data
-    });
+      const map = {};
+      responses.forEach((res, i) => {
+        map[ids[i]] = res.data; // courseEvent data
+      });
 
-    setCourseMap(map);
-  } catch (err) {
-    toast.error("Failed to load course details",err.message);
-  }
-};
- 
+      setCourseMap(map);
+    } catch (err) {
+      toast.error("Failed to load course details", err.message);
+    }
+  };
+
   useEffect(() => {
-  if (enrollments.length > 0) {
-    loadCoursesByIds();
-  }
-}, [enrollments]);
+    if (enrollments.length > 0) {
+      loadCoursesByIds();
+    }
+  }, [enrollments]);
 
   return (
     <Box

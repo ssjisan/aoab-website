@@ -2,8 +2,9 @@ import PropTypes from "prop-types";
 import { Button, TableBody, TableCell, TableRow } from "@mui/material";
 import CourseDataDrawer from "../CourseDataDrawer";
 import { useState, useEffect } from "react";
-import axios from "axios";
+
 import toast from "react-hot-toast";
+import api from "../../../../lib/api/axios";
 
 export default function Body({ profile }) {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -14,7 +15,7 @@ export default function Body({ profile }) {
   useEffect(() => {
     const fetchCourseCategories = async () => {
       try {
-        const response = await axios.get("/category_list");
+        const response = await api.get("/category_list");
         setCourseCategories(response.data);
       } catch (error) {
         toast.error("Error fetching courses", error.message);

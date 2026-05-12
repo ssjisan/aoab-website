@@ -9,10 +9,10 @@ import {
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import toast from "react-hot-toast";
-import axios from "axios";
 import { CalenderDualTone, Fees } from "../../assets/Icons";
 import { DataContext } from "../../DataProcessing/DataProcessing";
 import EligibilityListModal from "./EligibilityListModal"; // Adjust if path differs
+import api from "../../lib/api/axios";
 
 export default function Details() {
   const { id } = useParams();
@@ -31,7 +31,7 @@ export default function Details() {
 
   const loadCourseEvent = async () => {
     try {
-      const { data } = await axios.get(`/courses_events/${id}`);
+      const { data } = await api.get(`/courses_events/${id}`);
       setCourseEvent(data);
     } catch (err) {
       toast.error("Error loading course details", err.message);
@@ -46,7 +46,7 @@ export default function Details() {
       }
 
       const payload = { studentId, courseId: courseEvent._id };
-      const res = await axios.post("/eligibility-check", payload);
+      const res = await api.post("/eligibility-check", payload);
 
       if (res.data.success) {
         setEnrollmentSuccess(true);

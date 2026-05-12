@@ -14,8 +14,9 @@ import { useState } from "react";
 import { EyeOff, EyeOn } from "../../../assets/Icons";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import axios from "axios";
+
 import CircularProgress from "@mui/material/CircularProgress";
+import api from "../../../lib/api/axios";
 
 export default function Form() {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +39,7 @@ export default function Form() {
     setRegistrationLoading(true);
 
     try {
-      const { data } = await axios.post("/registration", {
+      const { data } = await api.post("/registration", {
         name,
         bmdcNo,
         email,
@@ -58,7 +59,7 @@ export default function Form() {
       setRegistrationLoading(false);
       if (err.response && err.response.data) {
         toast.error(
-          err.response.data.error || "An error occurred. Please try again."
+          err.response.data.error || "An error occurred. Please try again.",
         );
       } else {
         toast.error("Something went wrong. Please try again.");
@@ -68,11 +69,11 @@ export default function Form() {
 
   return (
     <Container
-      sx={{ display: "flex", alignItems: "center", justifyContent:"center"}}
+      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
     >
       <Stack
         sx={{
-          pt:"80px",
+          pt: "80px",
           width: "480px",
           maxWidth: "100%",
           pb: "48px",

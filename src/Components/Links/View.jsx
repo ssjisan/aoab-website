@@ -1,7 +1,8 @@
 import { Stack, Typography, Button, TextField, Skeleton } from "@mui/material";
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import api from "../../lib/api/axios";
 
 export default function View() {
   const [onlineLearning, setOnlineLearning] = useState([]); // Stores the videos
@@ -29,7 +30,7 @@ export default function View() {
       const currentSkip = initial ? 0 : skip;
 
       // Fetch data from the server
-      const { data } = await axios.get("/search-links", {
+      const { data } = await api.get("/search-links", {
         params: {
           searchQuery: query, // Use the provided query
           limit,
@@ -74,7 +75,7 @@ export default function View() {
         </span>
       ) : (
         part
-      )
+      ),
     );
   };
 

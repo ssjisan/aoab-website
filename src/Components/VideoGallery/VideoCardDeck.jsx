@@ -1,9 +1,10 @@
 import { Button, Grid, Skeleton, Stack, Typography } from "@mui/material";
 import VideoCard from "./VideoCard";
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import toast from "react-hot-toast";
 import NoData from "../../assets/NoData";
+import api from "../../lib/api/axios";
 
 export default function VideoCardDeck() {
   const [allVideos, setAllVideos] = useState([]);
@@ -11,12 +12,12 @@ export default function VideoCardDeck() {
   const [hasMore, setHasMore] = useState(true); // Whether there are more videos to load
   const [loading, setLoading] = useState(false); // Track loading state
   const limit = 5; // Number of videos to load per request
-  const [profile, setProfile] = useState(null)
+  const [profile, setProfile] = useState(null);
   useEffect(() => {
     // Fetch profile data when component mounts
     const loadProfileData = async () => {
       try {
-        const { data } = await axios.get("/my-profile-data");
+        const { data } = await api.get("/my-profile-data");
         setProfile(data); // Set the profile data
       } catch (err) {
         toast.error("Error loading profile", err.message);
@@ -45,7 +46,7 @@ export default function VideoCardDeck() {
       const currentSkip = initial ? 0 : skip;
 
       // Call the server with limit and skip as query parameters
-      const { data } = await axios.get("/videos", {
+      const { data } = await api.get("/videos", {
         params: { limit, skip: currentSkip },
       });
 

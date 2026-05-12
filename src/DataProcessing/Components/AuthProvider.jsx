@@ -1,48 +1,49 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-// Helper function to check if token is expired
 const isTokenExpired = (exp) => {
-  const currentTime = Math.floor(Date.now() / 1000); // Current time in Unix timestamp format (seconds)
-  return exp < currentTime; // Return true if token is expired
+  const currentTime = Math.floor(Date.now() / 1000);
+  return exp < currentTime;
 };
 
 export default function AuthProvider() {
-  const [auth, setAuth] = useState({
-    user: null,
-    token: "",
-  });
-
-  useEffect(() => {
+  const [auth, setAuth] = useState(() => {
     const data = localStorage.getItem("auth");
-    if (data) {
+
+    if (!data) {
+      return {
+        user: null,
+        token: "",
+      };
+    }
+
+    try {
       const parsedData = JSON.parse(data);
       const { token, user } = parsedData;
 
-      try {
-        // Decode the token to extract `exp`
-        const decodedToken = JSON.parse(atob(token.split(".")[1])); // Decode JWT token
-        const { exp } = decodedToken; // Extract expiry timestamp
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
 
-        // Check if the token has expired
-        if (isTokenExpired(exp)) {
-          // Token expired, remove auth data from localStorage and update state
-          localStorage.removeItem("auth");
-          setAuth({ user: null, token: "" });
-        } else {
-          // Token is valid, set the auth state
-          setAuth({
-            token,
-            user,
-          });
-        }
-      } catch (error) {
-        // Handle any errors in decoding or processing the token
-        console.error("Error decoding token:", error);
+      if (isTokenExpired(decodedToken.exp)) {
         localStorage.removeItem("auth");
-        setAuth({ user: null, token: "" });
+        return {
+          user: null,
+          token: "",
+        };
       }
+
+      return {
+        user,
+        token,
+      };
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      localStorage.removeItem("auth");
+
+      return {
+        user: null,
+        token: "",
+      };
     }
-  }, []); // Run this effect once on initial render
+  });
 
   return {
     auth,

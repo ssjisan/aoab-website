@@ -8,11 +8,12 @@ import {
 import TableCell from "@mui/material/TableCell";
 import PropTypes from "prop-types";
 import { NoEnrollment } from "../../../../assets/NoEnrollment";
-import axios from "axios";
+
 import { createRef, useContext, useRef, useState } from "react";
 import { DataContext } from "../../../../DataProcessing/DataProcessing";
 import toast from "react-hot-toast";
 import Badge from "../../../Common/Badge";
+import api from "../../../../lib/api/axios";
 
 export default function Body({
   loading,
@@ -23,7 +24,7 @@ export default function Body({
   const fileInputRefs = useRef({});
   const { auth } = useContext(DataContext);
   const [selectedFileNameMap, setSelectedFileNameMap] = useState({});
-  
+
   const studentId = auth?.user?._id;
 
   const handleUploadClick = (enrollmentId) => {
@@ -44,7 +45,7 @@ export default function Body({
     const toastId = toast.loading("Uploading...");
 
     try {
-      await axios.post("/enrollment/upload-payment-proof", formData, {
+      await api.post("/enrollment/upload-payment-proof", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -102,25 +103,28 @@ export default function Body({
           if (!fileInputRefs.current[courseId]) {
             fileInputRefs.current[courseId] = createRef();
           }
-          
+
           // 🟢 Dynamic expired logic
           const course = courseMap?.[courseId];
-            let finalStatus = data.enrollment.status;
+          let finalStatus = data.enrollment.status;
           const now = new Date();
 
           if (course) {
             const eventEnd = new Date(course.endDate);
             const paymentDeadline = new Date(course.paymentReceiveEndDate);
             const registrationEnd = new Date(course.registrationEndDate);
-            console.log("paymentDeadline",paymentDeadline);
-            console.log("eventEnd",eventEnd);
-            console.log("registrationEnd",registrationEnd);
-            
+            console.log("paymentDeadline", paymentDeadline);
+            console.log("eventEnd", eventEnd);
+            console.log("registrationEnd", registrationEnd);
+
             if (now > eventEnd) {
               finalStatus = "expired";
-            } else if (now > paymentDeadline && data.enrollment.paymentReceived !== "approved") {
+            } else if (
+              now > paymentDeadline &&
+              data.enrollment.paymentReceived !== "approved"
+            ) {
               finalStatus = "expired";
-            } 
+            }
             // else if (now > registrationEnd) {
             //   finalStatus = "expired";
             // }
@@ -147,7 +151,7 @@ export default function Body({
                     hour: "2-digit",
                     minute: "2-digit",
                     hour12: true,
-                  }
+                  },
                 )}
               </TableCell>
 

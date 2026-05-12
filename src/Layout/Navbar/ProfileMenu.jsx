@@ -1,4 +1,4 @@
-import { EnrollHistory, Logout, Password, Profile } from "../../assets/Icons";
+import { EnrollHistory, Password, Profile } from "../../assets/Icons";
 
 const navConfig = ({ pathname }) => [
   {
@@ -43,16 +43,6 @@ const navConfig = ({ pathname }) => [
       {
         title: "Enrollment history",
         link: "/enrollment-history",
-      },
-    ],
-  },
-  {
-    title: "Log out",
-    icon: <Logout color="#D32F2F" size={20} />,
-    items: [
-      {
-        title: "Log Out",
-        link: "/logout",
       },
     ],
   },

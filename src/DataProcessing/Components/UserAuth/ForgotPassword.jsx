@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import api from "../../../lib/api/axios";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -21,7 +21,7 @@ export default function ForgotPassword() {
 
     try {
       // Call the forgot password API
-      const response = await axios.post("/forgot-password", { email });
+      const response = await api.post("/forgot-password", { email });
 
       // If OTP is sent successfully, show success and navigate to OTP verification page
       if (

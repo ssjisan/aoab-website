@@ -9,11 +9,17 @@ import {
   Typography,
 } from "@mui/material";
 import { Cross } from "../../../assets/Icons";
-import axios from "axios";
+
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
+import api from "../../../lib/api/axios";
 
-export default function SignatureUpload({ open, toggleDrawer, currentImage, onSuccess }) {
+export default function SignatureUpload({
+  open,
+  toggleDrawer,
+  currentImage,
+  onSuccess,
+}) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -55,7 +61,7 @@ export default function SignatureUpload({ open, toggleDrawer, currentImage, onSu
     formData.append("signature", imageFile); // use "signature" as key
 
     try {
-      const response = await axios.post("/update-signature", formData, {
+      const response = await api.post("/update-signature", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -72,7 +78,7 @@ export default function SignatureUpload({ open, toggleDrawer, currentImage, onSu
       toggleDrawer(false)();
     } catch (error) {
       toast.error(
-        error.response?.data?.error || "Failed to upload signature image"
+        error.response?.data?.error || "Failed to upload signature image",
       );
     } finally {
       setLoading(false);
@@ -126,7 +132,11 @@ export default function SignatureUpload({ open, toggleDrawer, currentImage, onSu
                 <img
                   src={selectedImage}
                   alt="Signature preview"
-                  style={{ width: "100%", height: "100%", objectFit:"contain" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
                 />
               ) : (
                 <Typography color="textSecondary">

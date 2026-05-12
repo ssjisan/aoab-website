@@ -9,9 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 import { Cross } from "../../../assets/Icons";
-import axios from "axios";
+
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
+import api from "../../../lib/api/axios";
 
 export default function ImageUpload({
   open,
@@ -60,7 +61,7 @@ export default function ImageUpload({
     formData.append("picture", imageFile);
 
     try {
-      const response = await axios.post("/update-profile-image", formData, {
+      const response = await api.post("/update-profile-image", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

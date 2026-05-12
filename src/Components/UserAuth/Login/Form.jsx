@@ -14,9 +14,10 @@ import { useContext, useState } from "react";
 import { EyeOff, EyeOn } from "../../../assets/Icons";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import axios from "axios";
+
 import { DataContext } from "../../../DataProcessing/DataProcessing";
 import CircularProgress from "@mui/material/CircularProgress";
+import api from "../../../lib/api/axios";
 
 export default function Form() {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +35,7 @@ export default function Form() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post("/student-login", { email, password });
+      const { data } = await api.post("/student-login", { email, password });
 
       if (data?.error) {
         setLoading(false);
@@ -60,7 +61,7 @@ export default function Form() {
       setLoading(false);
       if (err.response && err.response.data) {
         toast.error(
-          err.response.data.error || "An error occurred. Please try again."
+          err.response.data.error || "An error occurred. Please try again.",
         );
       } else {
         toast.error("Something went wrong. Please try again.");

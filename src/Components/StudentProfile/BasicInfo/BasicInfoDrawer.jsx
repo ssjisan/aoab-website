@@ -12,9 +12,9 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Cross } from "../../../assets/Icons";
-import axios from "axios";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
+import api from "../../../lib/api/axios";
 
 export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
   //  *************************************************************Calling all data from db ************************************************************* //
@@ -27,21 +27,21 @@ export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
       setContactNumber(profile.contactNumber || "N/A");
       setCurrentWorkingPlace(profile?.currentWorkingPlace?.[0]?.name || "N/A");
       setCurrentDesignation(
-        profile?.currentWorkingPlace?.[0]?.designation || "N/A"
+        profile?.currentWorkingPlace?.[0]?.designation || "N/A",
       );
 
       const degree = profile?.postGraduationDegrees?.[0];
 
       setPostGraduationDegreeName(
-        degree?.degreeName ? degree.degreeName : "N/A"
+        degree?.degreeName ? degree.degreeName : "N/A",
       );
       setPostGraduationYear(
-        degree?.yearOfGraduation ? degree.yearOfGraduation.toString() : "N/A"
+        degree?.yearOfGraduation ? degree.yearOfGraduation.toString() : "N/A",
       );
       setPostGraduationIsComplete(
         typeof degree?.isCompleted === "boolean"
           ? degree.isCompleted.toString()
-          : null
+          : null,
       );
     }
   }, [profile]);
@@ -52,19 +52,18 @@ export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
   const [bmdcNo, setBmdcNo] = useState(profile?.bmdcNo || "");
   const [email, setEmail] = useState(profile?.email || "");
   const [contactNumber, setContactNumber] = useState(
-    profile?.contactNumber || ""
+    profile?.contactNumber || "",
   );
   const [currentWorkingPlace, setCurrentWorkingPlace] = useState(
-    profile?.currentWorkingPlace?.[0]?.name || ""
+    profile?.currentWorkingPlace?.[0]?.name || "",
   );
   const [currentDesignation, setCurrentDesignation] = useState(
-    profile?.currentWorkingPlace?.[0]?.designation || ""
+    profile?.currentWorkingPlace?.[0]?.designation || "",
   );
   const [postGraduationDegreeName, setPostGraduationDegreeName] = useState(""); // State for degree name
   const [postGraduationYear, setPostGraduationYear] = useState(""); // State for year of graduation
   const [postGraduationIsComplete, setPostGraduationIsComplete] =
     useState(null);
-
 
   const handleSubmit = async () => {
     const isCompleted = postGraduationIsComplete === "true";
@@ -127,7 +126,7 @@ export default function BasicInfoDrawer({ open, toggleDrawer, profile }) {
     };
 
     try {
-      const response = await axios.put("/update-basic-info", updatedData);
+      const response = await api.put("/update-basic-info", updatedData);
       if (response.status === 200) {
         window.location.reload();
         toast.success("Profile updated successfully!");
@@ -358,7 +357,7 @@ BasicInfoDrawer.propTypes = {
       PropTypes.shape({
         name: PropTypes.string,
         designation: PropTypes.string,
-      })
+      }),
     ),
     postGraduationDegrees: PropTypes.arrayOf(
       PropTypes.shape({
@@ -368,7 +367,7 @@ BasicInfoDrawer.propTypes = {
           PropTypes.number,
         ]),
         isCompleted: PropTypes.bool,
-      })
+      }),
     ),
   }).isRequired,
 };

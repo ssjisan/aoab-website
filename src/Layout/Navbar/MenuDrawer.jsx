@@ -15,7 +15,7 @@ export default function MenuDrawer({ toggleDrawer, handleDrawerClose, open }) {
     main.forEach((menu) => {
       if (menu.submenu) {
         const matchedSubmenu = menu.submenu.some(
-          (submenu) => submenu.link === pathname
+          (submenu) => submenu.link === pathname,
         );
         if (matchedSubmenu) {
           setExpandedMenu(menu.id);

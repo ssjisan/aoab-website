@@ -17,7 +17,8 @@ import { Cross } from "../../../assets/Icons";
 import toast from "react-hot-toast";
 import Upload from "../../../assets/Upload";
 import PDF from "../../../assets/PDF";
-import axios from "axios";
+
+import api from "../../../lib/api/axios";
 
 export default function CourseDataDrawer({
   open,
@@ -58,7 +59,7 @@ export default function CourseDataDrawer({
   }, [open, selectedCourseCategory, existingCourseData]);
 
   const selectedTypeOfParticipation = courseCategories?.find(
-    (cat) => cat._id === selectedCourseCategory?._id
+    (cat) => cat._id === selectedCourseCategory?._id,
   )?.typeOfParticipation;
 
   const fileInputRef = useRef(null);
@@ -94,7 +95,7 @@ export default function CourseDataDrawer({
     }
 
     setSelectedFiles((prev) =>
-      selectedTypeOfParticipation === 0 ? validFiles : [...prev, ...validFiles]
+      selectedTypeOfParticipation === 0 ? validFiles : [...prev, ...validFiles],
     );
 
     // ✅ Clear file input value so same file can be reselected later
@@ -158,9 +159,9 @@ export default function CourseDataDrawer({
 
       if (isUpdate) {
         formData.append("courseId", existingCourseData._id);
-        await axios.put(`/course_document/${existingCourseData._id}`, formData);
+        await api.put(`/course_document/${existingCourseData._id}`, formData);
       } else {
-        await axios.post("/course_document", formData);
+        await api.post("/course_document", formData);
       }
       window.location.reload();
       toast.success("Saved successfully!", { id: toastId });
@@ -169,7 +170,7 @@ export default function CourseDataDrawer({
       console.error(error);
       toast.error(
         error?.response?.data?.error || "Failed to save course data.",
-        { id: toastId }
+        { id: toastId },
       );
     } finally {
       setIsUploading(false);
@@ -284,7 +285,7 @@ export default function CourseDataDrawer({
                         sx={{ width: "40px", height: "40px" }}
                         onClick={() =>
                           setSelectedFiles((prev) =>
-                            prev.filter((_, i) => i !== index)
+                            prev.filter((_, i) => i !== index),
                           )
                         }
                       >
@@ -361,7 +362,7 @@ CourseDataDrawer.propTypes = {
       _id: PropTypes.string.isRequired,
       courseName: PropTypes.string,
       typeOfParticipation: PropTypes.number,
-    })
+    }),
   ),
   existingCourseData: PropTypes.shape({
     _id: PropTypes.string,
@@ -373,7 +374,7 @@ CourseDataDrawer.propTypes = {
         name: PropTypes.string,
         url: PropTypes.string,
         size: PropTypes.number,
-      })
+      }),
     ),
   }),
 };

@@ -3,9 +3,10 @@ import { Typography, Button, Container, Stack, TextField } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../DataProcessing/DataProcessing";
-import axios from "axios";
+
 import toast from "react-hot-toast";
 import EligibilityModal from "./EligibilityModal";
+import api from "../lib/api/axios";
 
 export default function EnrollmentCourse() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function EnrollmentCourse() {
   useEffect(() => {
     const loadCourse = async () => {
       try {
-        const { data } = await axios.get(`/courses_events/${courseId}`);
+        const { data } = await api.get(`/courses_events/${courseId}`);
         setCourse(data);
       } catch (err) {
         toast.error("Failed to load course data", err.message);
@@ -39,7 +40,7 @@ export default function EnrollmentCourse() {
       }
 
       const payload = { studentId, courseId };
-      const res = await axios.post("/eligibility-check", payload);
+      const res = await api.post("/eligibility-check", payload);
 
       if (res.data.success) {
         setEnrollmentSuccess(true);
@@ -74,7 +75,7 @@ export default function EnrollmentCourse() {
     };
 
     try {
-      const res = await axios.post("/enrollment", payload);
+      const res = await api.post("/enrollment", payload);
 
       if (res.status === 201) {
         const status = res.data?.data?.status;

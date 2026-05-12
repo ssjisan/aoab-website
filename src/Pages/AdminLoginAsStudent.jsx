@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../lib/api/axios";
 
 export default function AdminLoginAsStudent() {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function AdminLoginAsStudent() {
 
     const validateAdmin = async () => {
       try {
-        const res = await axios.post("/api/admin/validate", { email, password });
+        const res = await api.post("/api/admin/validate", { email, password });
         if (res.data.success) {
           setAuthorized(true);
         } else {
@@ -37,7 +37,9 @@ export default function AdminLoginAsStudent() {
 
     try {
       setLoading(true);
-      const res = await axios.post("/api/admin/login-as", { email: studentEmail });
+      const res = await api.post("/api/admin/login-as", {
+        email: studentEmail,
+      });
       localStorage.setItem("token", res.data.token);
       navigate("/student-dashboard");
     } catch (err) {
@@ -51,7 +53,9 @@ export default function AdminLoginAsStudent() {
   if (!authorized) return <p>Validating admin access...</p>;
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
+    <div
+      style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}
+    >
       <h2>Admin Student Access</h2>
       <input
         type="email"
@@ -60,7 +64,11 @@ export default function AdminLoginAsStudent() {
         onChange={(e) => setStudentEmail(e.target.value)}
         style={{ padding: "10px", width: "100%", marginBottom: "10px" }}
       />
-      <button onClick={handleStudentLogin} disabled={loading} style={{ padding: "10px 20px" }}>
+      <button
+        onClick={handleStudentLogin}
+        disabled={loading}
+        style={{ padding: "10px 20px" }}
+      >
         {loading ? "Logging in..." : "Login as Student"}
       </button>
     </div>

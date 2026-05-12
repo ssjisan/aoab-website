@@ -12,9 +12,10 @@ import { useContext, useState } from "react";
 import { DataContext } from "../../../DataProcessing/DataProcessing";
 import CircularProgress from "@mui/material/CircularProgress";
 import { EyeOff, EyeOn } from "../../../assets/Icons";
-import axios from "axios"; // Make sure axios is installed
+// Make sure axios is installed
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import api from "../../../lib/api/axios";
 
 export default function Form() {
   const { email, sendingOtp, setEmail } = useContext(DataContext); // You may need to adjust `sendingOtp` if it's not available.
@@ -46,7 +47,7 @@ export default function Form() {
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
     if (!passwordRegex.test(password)) {
       toast.error(
-        "Password must be at least 8 characters long and contain at least one letter, one number, and one special character."
+        "Password must be at least 8 characters long and contain at least one letter, one number, and one special character.",
       ); // Show toast for error
       return;
     }
@@ -54,7 +55,7 @@ export default function Form() {
     setLoading(true);
 
     try {
-      const response = await axios.post("/reset-password", {
+      const response = await api.post("/reset-password", {
         email,
         newPassword: password,
         confirmPassword,
@@ -89,7 +90,7 @@ export default function Form() {
         onSubmit={handleSubmit} // Bind handleSubmit to form submission
       >
         <Stack justifyContent="center" sx={{ textAlign: "center" }} gap="8px">
-          <Typography  variant="h4">Reset Password</Typography>
+          <Typography variant="h4">Reset Password</Typography>
           <Typography color="text.secondary" variant="h6">
             Please enter your new password.
           </Typography>

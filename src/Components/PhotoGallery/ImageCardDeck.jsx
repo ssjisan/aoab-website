@@ -1,9 +1,10 @@
 import { Box, Typography, Grid, Skeleton } from "@mui/material";
 import { AlbumIcon } from "../../assets/Icons";
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import toast from "react-hot-toast";
 import GalleryView from "./GalleryView";
+import api from "../../lib/api/axios";
 
 export default function ImageCardDeck() {
   const IconBoxSx = {
@@ -46,9 +47,7 @@ export default function ImageCardDeck() {
 
   const loadAlbums = async () => {
     try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_SERVER_API}/albums`
-      );
+      const { data } = await api.get("/albums");
       setAlbums(data);
       setLoading(false);
     } catch (err) {

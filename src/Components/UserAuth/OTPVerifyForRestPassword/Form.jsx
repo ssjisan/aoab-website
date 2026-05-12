@@ -12,7 +12,7 @@ import { useContext, useState, useEffect } from "react";
 import { DataContext } from "../../../DataProcessing/DataProcessing";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "../../../lib/api/axios";
 
 export default function Form() {
   const { email } = useContext(DataContext);
@@ -48,7 +48,7 @@ export default function Form() {
     setLoading(true);
 
     try {
-      const response = await axios.post("/verify-otp-for-reset", {
+      const response = await api.post("/verify-otp-for-reset", {
         email,
         otp,
       });
@@ -64,7 +64,7 @@ export default function Form() {
       }
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Server error. Please try again."
+        error.response?.data?.message || "Server error. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -77,7 +77,7 @@ export default function Form() {
     setResendDisabled(true); // Prevent multiple clicks
 
     try {
-      await axios.post("/resend-otp", { email });
+      await api.post("/resend-otp", { email });
       toast.success("OTP sent again. Check your email.");
       setTimeLeft(120); // Restart countdown timer
     } catch (error) {
@@ -118,13 +118,24 @@ export default function Form() {
               {email}
             </Box>
           </Typography>
-          <Stack sx={{p:"8px", background:'#d7e6fc', textAlign:"center", borderRadius:"12px", color:"#003768"}}>
+          <Stack
+            sx={{
+              p: "8px",
+              background: "#d7e6fc",
+              textAlign: "center",
+              borderRadius: "12px",
+              color: "#003768",
+            }}
+          >
             <Typography>
-            Please check your Spam or Other folder if you don't see the OTP in your inbox.
+              Please check your Spam or Other folder if you don't see the OTP in
+              your inbox.
             </Typography>
           </Stack>
           <Stack gap="8px">
-            <Typography sx={{fontWeight:"600"}}>One Time Password (OTP)</Typography>
+            <Typography sx={{ fontWeight: "600" }}>
+              One Time Password (OTP)
+            </Typography>
             <TextField
               variant="outlined"
               size="small"
@@ -157,7 +168,7 @@ export default function Form() {
                   OTP will expire in{" "}
                   <strong>{`${String(Math.floor(timeLeft / 60)).padStart(
                     2,
-                    "0"
+                    "0",
                   )}:${String(timeLeft % 60).padStart(2, "0")}`}</strong>
                 </>
               ) : (
