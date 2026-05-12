@@ -80,21 +80,20 @@ function Sidebar({ mobileOpen, handleDrawerToggle, window }) {
                   height: 44,
                   borderRadius: "10px",
                   px: 2,
-                  color: active ? "#792DF8" : "#637381",
-
+                  color: active ? "#003258" : "#637381",
                   "&.Mui-selected": {
-                    backgroundColor: "rgba(239, 229, 255, 1)",
-                    color: "#792DF8",
+                    backgroundColor: "#00325818",
+                    color: "#003258",
                   },
 
                   "&.Mui-selected:hover": {
-                    backgroundColor: "rgba(239, 229, 255, 1)",
+                    backgroundColor: "#00325822",
                   },
 
                   "&:hover": {
                     backgroundColor: active
-                      ? "rgba(239, 229, 255, 1)"
-                      : "rgba(145, 158, 171, 0.08)",
+                      ? "#00325822" // slightly stronger than active bg
+                      : "rgba(0, 50, 88, 0.06)", // soft brand tint for inactive items
                   },
                 }}
               >

@@ -1,7 +1,7 @@
 import { AppBar, Button, IconButton, Stack, Toolbar } from "@mui/material";
 import { Link } from "react-router-dom";
 import ProfileMenuPopover from "./Navbar/ProfileMenuDrawer";
-import { Menu } from "../assets/Icons";
+import { Menu, VisitArrow } from "../assets/Icons";
 import PropTypes from "prop-types";
 
 const drawerWidth = 260;
@@ -42,7 +42,13 @@ export default function ProfileNavbar({ handleDrawerToggle }) {
         </IconButton>
 
         <Stack direction="row" spacing={2} alignItems="center">
-          <Button component={Link} to="/" variant="outlined" size="small">
+          <Button
+            component={Link}
+            to="/"
+            variant="outlined"
+            size="medium"
+            startIcon={<VisitArrow size={20} color={"#003258"} />}
+          >
             Visit Website
           </Button>
 
