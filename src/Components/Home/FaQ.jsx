@@ -47,19 +47,23 @@ export default function FaQ() {
                   aria-controls="panel-content"
                   id={`panel-${data.id}`}
                 >
-                  <Typography variant="h5">{data.question}</Typography>
+                  <Typography variant="h6" fontWeight={700}>
+                    {data.question}
+                  </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   {Array.isArray(data.answer) ? (
                     <ul style={{ paddingLeft: "16px", margin: "0" }}>
                       {data.answer.map((ans, index) => (
                         <li key={index}>
-                          <Typography color="text.secondary">{ans}</Typography>
+                          <Typography color="text.secondary" variant="h6">
+                            {ans}
+                          </Typography>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <Typography color="text.secondary">
+                    <Typography color="text.secondary" variant="h6">
                       {data.answer}
                     </Typography>
                   )}

@@ -63,8 +63,8 @@ export default function ProfileCard({ profile }) {
     >
       <Box
         sx={{
-          width: "80px",
-          height: "80px",
+          width: "120px",
+          height: "120px",
           borderRadius: "8px",
           display: "flex",
           justifyContent: "center",
@@ -79,8 +79,8 @@ export default function ProfileCard({ profile }) {
             src={imageLoaded ? currentImage : ""}
             alt="Profile"
             sx={{
-              width: "80px",
-              height: "80px",
+              width: "120px",
+              height: "120px",
               fontSize: "32px",
               color: "#FFF",
               bgcolor: "#000",
@@ -116,7 +116,7 @@ export default function ProfileCard({ profile }) {
             sx={{
               border:
                 !profile.isAccountVerified === true && "1px dashed #919EAB",
-              background: profile.isAccountVerified === true && "#004182",
+              background: profile.isAccountVerified === true && "#00418232",
               color: profile.isAccountVerified === true && "#fff",
               p: "4px 8px",
               borderRadius: "20px",
@@ -124,7 +124,11 @@ export default function ProfileCard({ profile }) {
           >
             {profile.isAccountVerified === true ? (
               <Typography
-                sx={{ fontSize: "12px !important", fontWeight: "600" }}
+                sx={{
+                  fontSize: "12px !important",
+                  fontWeight: "600",
+                  color: "#004182",
+                }}
               >
                 Verified
               </Typography>

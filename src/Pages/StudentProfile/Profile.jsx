@@ -75,7 +75,6 @@ export default function Profile() {
           width: "100%",
           borderBottom: "1px solid rgba(145, 142, 175, 0.24)",
           pb: "8px",
-          mt: "40px",
           mb: "40px",
         }}
         gap="4px"
