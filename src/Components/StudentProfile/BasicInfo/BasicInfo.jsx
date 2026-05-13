@@ -1,13 +1,10 @@
-import {
-  Button,
-  InputAdornment,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import PropTypes from "prop-types"; // Import PropTypes for prop validation
 import { useState } from "react";
 import BasicInfoDrawer from "./BasicInfoDrawer";
+import Basic from "./Basic/Basic";
+import ProfessionalInfo from "./ProfessionalInfo/ProfessionalInfo";
+import AcademicInfo from "./AcademicInfo/AcademicInfo";
 
 export default function BasicInfo({ profile }) {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -16,16 +13,19 @@ export default function BasicInfo({ profile }) {
   };
 
   return (
-    <Stack
-      sx={{
-        borderRadius: "12px",
-        border: "1px solid #05060f08",
-        boxShadow:
-          "0px 0px 2px rgba(145, 158, 171, 0.2), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
-        p: "16px",
-      }}
-      gap="16px"
-    >
+    <Stack>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6} md={6} lg={4}>
+          <Basic profile={profile} />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6} lg={4}>
+          <ProfessionalInfo profile={profile} />
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={4}>
+          <AcademicInfo profile={profile} />
+        </Grid>
+      </Grid>
+
       <Stack
         sx={{ p: "8px" }}
         flexDirection="row"
@@ -38,110 +38,6 @@ export default function BasicInfo({ profile }) {
         <Button variant="soft" onClick={toggleDrawer(true)}>
           Edit
         </Button>
-      </Stack>
-      <Stack gap="8px">
-        <Typography
-          variant="body1"
-          sx={{ fontWeight: "600" }}
-          color="text.secondary"
-        >
-          Name
-        </Typography>
-        <TextField
-          variant="outlined"
-          sx={{
-            width: { sm: "100%", lg: "calc(50% - 32px)" }, // 100% on small screens and 50% on larger screens
-          }}
-          size="small"
-          value={profile?.name}
-          disabled
-        />
-      </Stack>
-      <Stack gap="8px">
-        <Typography
-          variant="body1"
-          sx={{ fontWeight: "600" }}
-          color="text.secondary"
-        >
-          BM&DC Registration No
-        </Typography>
-        <TextField
-          sx={{
-            width: { sm: "100%", lg: "calc(50% - 32px)" }, // 100% on small screens and 50% on larger screens
-          }}
-          variant="outlined"
-          size="small"
-          value={profile?.bmdcNo}
-          disabled
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">A-</InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  {profile?.isBmdcVerified === null
-                    ? "🔄"
-                    : profile?.isBmdcVerified === true
-                      ? "✅"
-                      : profile?.isBmdcVerified === false
-                        ? "❌"
-                        : null}
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-      </Stack>
-      <Stack gap="8px">
-        <Typography
-          variant="body1"
-          sx={{ fontWeight: "600" }}
-          color="text.secondary"
-        >
-          Email
-        </Typography>
-        <TextField
-          sx={{
-            width: { sm: "100%", lg: "calc(50% - 32px)" }, // 100% on small screens and 50% on larger screens
-          }}
-          variant="outlined"
-          size="small"
-          value={profile?.email}
-          disabled
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {profile?.isEmailVerified === true ? "✅" : "❌"}
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Stack>
-      <Stack gap="8px">
-        <Typography
-          variant="body1"
-          sx={{ fontWeight: "600" }}
-          color="text.secondary"
-        >
-          Contact Number
-        </Typography>
-        <TextField
-          sx={{
-            width: { sm: "100%", lg: "calc(50% - 32px)" }, // 100% on small screens and 50% on larger screens
-          }}
-          variant="outlined"
-          size="small"
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">+880</InputAdornment>
-              ),
-            },
-          }}
-          value={profile?.contactNumber}
-          disabled
-        />
       </Stack>
 
       <Stack
