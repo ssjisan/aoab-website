@@ -85,7 +85,7 @@ export default function Profile() {
         </Typography>
       </Stack>
       <Stack gap="24px">
-        <ProfileCard profile={profile} />
+        <ProfileCard />
         {profile?.accountVerificationStatus === "rejected" && (
           <Stack
             gap="8px"

@@ -1,5 +1,6 @@
 import { Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
+import { BasicInfo } from "../../../../assets/Icons";
 
 export default function Basic({ profile }) {
   const getVerificationIcon = (status) => {
@@ -79,7 +80,11 @@ export default function Basic({ profile }) {
               background: "#EAF7EA",
               borderRadius: "8px",
             }}
-          />
+            justifyContent="center"
+            alignItems="center"
+          >
+            <BasicInfo color="#4F985C" size="24px" />
+          </Stack>
           <Typography variant="h6" sx={{ fontWeight: 700, color: "#4F985C" }}>
             Basic Info
           </Typography>

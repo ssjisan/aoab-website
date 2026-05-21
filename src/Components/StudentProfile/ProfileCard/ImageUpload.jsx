@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
   CircularProgress,
-  Drawer,
   IconButton,
+  Modal,
   Stack,
   Typography,
 } from "@mui/material";
 import { Cross } from "../../../assets/Icons";
-
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import api from "../../../lib/api/axios";
+import { DataContext } from "../../../DataProcessing/DataProcessing";
 
 export default function ImageUpload({
   open,
@@ -24,6 +24,8 @@ export default function ImageUpload({
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const { updateProfileImage } = useContext(DataContext);
+
   useEffect(() => {
     setSelectedImage(currentImage || null);
   }, [currentImage]);
@@ -33,7 +35,7 @@ export default function ImageUpload({
     if (!file) return;
 
     const validFormats = ["image/jpeg", "image/png", "image/jpg"];
-    const maxSize = 1 * 1024 * 1024; // 1MB
+    const maxSize = 1 * 1024 * 1024;
 
     if (!validFormats.includes(file.type)) {
       toast.error("Only JPG, JPEG, and PNG formats are supported.");
@@ -65,19 +67,22 @@ export default function ImageUpload({
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const uploadedUrl = response.data.picture?.[0]?.url || selectedImage;
+      const uploadedUrl = response.data.picture?.url || selectedImage;
 
       toast.success("Profile image updated successfully!");
+
+      updateProfileImage(uploadedUrl);
+
       setSelectedImage(uploadedUrl);
       setImageFile(null);
       toggleDrawer(false)();
 
-      if (onSuccess && typeof onSuccess === "function") {
-        onSuccess(uploadedUrl); // Notify parent
-      }
+      if (onSuccess) onSuccess(uploadedUrl);
     } catch (error) {
       toast.error(
-        error.response?.data?.error || "Failed to upload profile image",
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          "Failed to upload profile image",
       );
     } finally {
       setLoading(false);
@@ -85,23 +90,41 @@ export default function ImageUpload({
   };
 
   return (
-    <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
-      <Stack sx={{ width: "380px" }}>
+    <Modal open={open} onClose={toggleDrawer(false)}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 420,
+          bgcolor: "#fff",
+          borderRadius: "16px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+          overflow: "hidden",
+          outline: "none",
+        }}
+      >
+        {/* Header */}
         <Stack
-          sx={{ p: 2, borderBottom: "1px solid rgba(145, 142, 175, 0.24)" }}
-          flexDirection="row"
+          direction="row"
           alignItems="center"
           justifyContent="space-between"
+          sx={{
+            px: 2,
+            py: 1.5,
+            borderBottom: "1px solid #eee",
+          }}
         >
-          <Typography variant="h6" sx={{ fontWeight: "600" }}>
-            Upload Image
-          </Typography>
+          <Typography sx={{ fontWeight: 600 }}>Upload Profile Image</Typography>
+
           <IconButton onClick={toggleDrawer(false)}>
-            <Cross color="black" size="20px" />
+            <Cross size="20px" color="#333" />
           </IconButton>
         </Stack>
 
-        <Stack sx={{ p: 3 }} gap={3}>
+        {/* Body */}
+        <Stack spacing={2} sx={{ p: 3 }}>
           <input
             type="file"
             accept="image/jpeg, image/png, image/jpg"
@@ -110,37 +133,48 @@ export default function ImageUpload({
             onChange={handleFileChange}
           />
 
-          <label htmlFor="file-upload">
+          <label htmlFor="file-upload" style={{ margin: "auto" }}>
             <Box
               sx={{
-                width: "240px",
-                height: "280px",
-                border: "1px dashed grey",
+                height: 260,
+                width: 240,
+                border: "2px dashed #d0d0d0",
                 borderRadius: "12px",
-                overflow: "hidden",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                backgroundColor: selectedImage ? "transparent" : "#f1f1f1",
+                background: selectedImage ? "transparent" : "#f8f9fa",
+                overflow: "hidden",
+                transition: "0.2s",
+                "&:hover": {
+                  borderColor: "#999",
+                },
               }}
             >
               {selectedImage ? (
                 <img
                   src={selectedImage}
-                  alt="Profile preview"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  alt="preview"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
                 />
               ) : (
-                <Typography color="textSecondary">
-                  Click to upload an image
+                <Typography color="text.secondary">
+                  Click to upload image
                 </Typography>
               )}
             </Box>
           </label>
 
-          <Typography sx={{ fontSize: "12px" }} color="textSecondary">
-            Supported formats: JPG, JPEG, PNG | Max size: 1MB
+          <Typography
+            sx={{ fontSize: 12, textAlign: "center" }}
+            color="text.secondary"
+          >
+            JPG, JPEG, PNG — Max 1MB
           </Typography>
 
           <Button
@@ -148,16 +182,21 @@ export default function ImageUpload({
             fullWidth
             onClick={handleUpload}
             disabled={loading || !imageFile}
+            sx={{
+              py: 1.2,
+              borderRadius: "10px",
+              fontWeight: 600,
+            }}
           >
             {loading ? (
-              <CircularProgress size={24} color="inherit" />
+              <CircularProgress size={22} color="inherit" />
             ) : (
               "Upload Image"
             )}
           </Button>
         </Stack>
-      </Stack>
-    </Drawer>
+      </Box>
+    </Modal>
   );
 }
 
@@ -165,5 +204,5 @@ ImageUpload.propTypes = {
   open: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   currentImage: PropTypes.string,
-  onSuccess: PropTypes.func, // New prop
+  onSuccess: PropTypes.func,
 };

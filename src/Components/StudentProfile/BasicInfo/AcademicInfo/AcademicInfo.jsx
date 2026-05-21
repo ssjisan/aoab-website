@@ -1,5 +1,6 @@
 import { Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
+import { Certificate } from "../../../../assets/Icons";
 
 export default function AcademicInfo({ profile }) {
   const InfoRow = ({ label, value }) => (
@@ -60,7 +61,11 @@ export default function AcademicInfo({ profile }) {
               background: "#f0ecff",
               borderRadius: "8px",
             }}
-          />
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Certificate size="24px" color="#7C66CE" />
+          </Stack>
           <Typography variant="h6" sx={{ fontWeight: 700, color: "#7C66CE" }}>
             Academic Info
           </Typography>

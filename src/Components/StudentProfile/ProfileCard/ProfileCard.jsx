@@ -1,45 +1,26 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Stack,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
+import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import ImageUpload from "./ImageUpload";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { DataContext } from "../../../DataProcessing/DataProcessing";
 
-export default function ProfileCard({ profile }) {
+export default function ProfileCard() {
+  const { profile } = useContext(DataContext);
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [imageLoaded, setImageLoaded] = useState(false);
+
   const [currentImage, setCurrentImage] = useState(profile?.picture?.url ?? "");
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
   };
 
-  // Reload image when profile changes
   useEffect(() => {
     if (profile?.picture?.url) {
-      setLoading(true);
-      const img = new Image();
-      img.src = profile.picture.url;
-      img.onload = () => {
-        setImageLoaded(true);
-        setCurrentImage(profile.picture.url);
-        setLoading(false);
-      };
-      img.onerror = () => {
-        setLoading(false);
-      };
-    } else {
-      setLoading(false);
+      setCurrentImage(profile.picture.url);
     }
-  }, [profile?.picture?.url]);
+  }, [profile]);
+
   const handleUploadSuccess = (newImageUrl) => {
-    setCurrentImage(newImageUrl);
-    setImageLoaded(true);
+    setCurrentImage(`${newImageUrl}?t=${Date.now()}`);
     setOpenDrawer(false);
   };
 
@@ -72,23 +53,19 @@ export default function ProfileCard({ profile }) {
           position: "relative",
         }}
       >
-        {loading ? (
-          <CircularProgress size={40} />
-        ) : (
-          <Avatar
-            src={imageLoaded ? currentImage : ""}
-            alt="Profile"
-            sx={{
-              width: "120px",
-              height: "120px",
-              fontSize: "32px",
-              color: "#FFF",
-              bgcolor: "#000",
-            }}
-          >
-            {profile?.name ? profile.name.charAt(0).toUpperCase() : "G"}
-          </Avatar>
-        )}
+        <Avatar
+          src={currentImage || ""}
+          alt="Profile"
+          sx={{
+            width: "120px",
+            height: "120px",
+            fontSize: "32px",
+            color: "#FFF",
+            bgcolor: "#000",
+          }}
+        >
+          {profile?.name ? profile.name.charAt(0).toUpperCase() : "G"}
+        </Avatar>
       </Box>
       <Stack
         gap="2px"
@@ -147,7 +124,7 @@ export default function ProfileCard({ profile }) {
       </Stack>
       <Button
         sx={{ width: "180px" }}
-        variant="soft"
+        variant="contained"
         onClick={toggleDrawer(true)}
       >
         Upload Image

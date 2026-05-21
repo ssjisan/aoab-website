@@ -8,40 +8,20 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-import toast from "react-hot-toast";
 
 import { DataContext } from "../../DataProcessing/DataProcessing";
 import { Logout, Profile } from "../../assets/Icons";
-import api from "../../lib/api/axios";
 
 export default function ProfileMenuPopover() {
-  const { auth, setAuth } = useContext(DataContext);
+  const { auth, setAuth, profile } = useContext(DataContext);
   const navigate = useNavigate();
 
-  const [profile, setProfile] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
 
   const open = Boolean(anchorEl);
-
-  useEffect(() => {
-    const loadProfileData = async () => {
-      try {
-        const { data } = await api.get("/my-profile-data");
-        setProfile(data);
-      } catch (err) {
-        toast.error(
-          "Error loading profile: " +
-            (err.response?.data?.message || err.message),
-        );
-      }
-    };
-
-    loadProfileData();
-  }, []);
 
   // Open popover
   const handleOpen = (event) => {

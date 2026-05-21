@@ -5,6 +5,7 @@ import EventData from "./Components/EventData";
 import AuthProvider from "./Components/AuthProvider";
 import ForgotPassword from "./Components/UserAuth/ForgotPassword";
 import api from "../lib/api/axios";
+import useProfileData from "./Components/useProfileData";
 
 export const DataContext = createContext();
 
@@ -15,14 +16,13 @@ export default function DataProcessing({ children }) {
   const { auth, setAuth } = AuthProvider();
 
   const { email, setEmail, handleSubmit, sendingOtp } = ForgotPassword(api);
-
+  const { profile, updateProfileImage } = useProfileData();
   return (
     <DataContext.Provider
       value={{
-        api, // make axios instance available everywhere
+        api,
         auth,
         setAuth,
-
         // Events
         runningEvents,
         monthlyEvents,
@@ -35,6 +35,10 @@ export default function DataProcessing({ children }) {
         setEmail,
         handleSubmit,
         sendingOtp,
+
+        // Other data and functions can be added here as needed
+        profile,
+        updateProfileImage,
       }}
     >
       {children}
