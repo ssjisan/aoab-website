@@ -9,10 +9,9 @@ import {
   Typography,
 } from "@mui/material";
 import { Cross } from "../../../assets/Icons";
-
+import axios from "axios";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
-import api from "../../../lib/api/axios";
 
 export default function SignatureUpload({
   open,
@@ -58,10 +57,10 @@ export default function SignatureUpload({
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("signature", imageFile); // use "signature" as key
+    formData.append("signature", imageFile);
 
     try {
-      const response = await api.post("/update-signature", formData, {
+      const response = await z.post("/update-signature", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

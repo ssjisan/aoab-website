@@ -36,6 +36,7 @@ import DocPreview from "../Pages/StudentProfile/DocPreview";
 // Route Guards
 import PrivateRoute from "./PrivateRoute";
 import ProfileLayout from "./ProfileLayout";
+import Maintenance from "../Pages/Maintenance";
 
 export default function MainRoute() {
   return (
@@ -85,6 +86,8 @@ export default function MainRoute() {
           <Route path="/registration" element={<Registration />} />
           <Route path="/verify-otp" element={<OTPVerify />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/maintenance" element={<Maintenance />} />
+
           <Route path="/bypass-login" element={<ByPassLogin />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
