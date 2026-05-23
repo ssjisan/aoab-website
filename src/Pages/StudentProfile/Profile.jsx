@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Grid,
   IconButton,
   Modal,
   Stack,
@@ -120,10 +121,16 @@ export default function Profile() {
           </Stack>
         )}
         <BasicInfo profile={profile} />
-        {profile?.postGraduationDegrees?.[0]?.isCompleted && (
-          <Certificate profile={profile} />
-        )}
-        <Signature profile={profile} />
+        <Grid container spacing={2}>
+          {profile?.graduationDegrees?.[0] && (
+            <Grid item xs={12} md={6}>
+              <Certificate profile={profile} />
+            </Grid>
+          )}
+          <Grid item xs={12} md={6}>
+            <Signature />
+          </Grid>
+        </Grid>
         <AOACourses profile={profile} />
       </Stack>
       <ProfileAlert profile={profile} />

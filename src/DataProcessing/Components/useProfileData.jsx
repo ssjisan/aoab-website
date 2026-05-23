@@ -1,22 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "../../lib/api/axios";
 import toast from "react-hot-toast";
 
 export default function useProfileData() {
   const [profile, setProfile] = useState(null);
-  useEffect(() => {
-    const loadProfileData = async () => {
-      try {
-        const { data } = await api.get("/my-profile-data");
-        setProfile(data);
-      } catch (err) {
-        toast.error("Error loading profile:", err);
-      }
-    };
+  const [profileLoading, setProfileLoading] = useState(false);
 
-    loadProfileData();
+  // ---------------------------------------
+  // FETCH PROFILE (REUSABLE)
+  // ---------------------------------------
+  const fetchProfile = useCallback(async () => {
+    try {
+      setProfileLoading(true);
+
+      const { data } = await api.get("/my-profile-data");
+
+      setProfile({ ...data });
+    } catch (err) {
+      toast.error("Error loading profile");
+    } finally {
+      setProfileLoading(false);
+    }
   }, []);
 
+  // ---------------------------------------
+  // INITIAL LOAD
+  // ---------------------------------------
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  // ---------------------------------------
+  // UPDATE PROFILE IMAGE ONLY
+  // ---------------------------------------
   const updateProfileImage = (url) => {
     setProfile((prev) => ({
       ...prev,
@@ -28,6 +44,9 @@ export default function useProfileData() {
 
   return {
     profile,
+    setProfile,
+    profileLoading,
+    refetchProfile: fetchProfile, // 👈 IMPORTANT
     updateProfileImage,
   };
 }

@@ -1,9 +1,11 @@
 import { Button, CircularProgress, Stack, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SignatureUpload from "./SignatureUpload";
 import PropTypes from "prop-types";
+import { DataContext } from "../../../DataProcessing/DataProcessing";
 
-export default function Signature({ profile }) {
+export default function Signature() {
+  const { profile } = useContext(DataContext);
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(true);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -54,10 +56,7 @@ export default function Signature({ profile }) {
       alignItems={{ xs: "center", sm: "center" }}
     >
       <Stack gap="8px" sx={{ width: "360px" }}>
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: "700" }}
-        >
+        <Typography variant="h5" sx={{ fontWeight: "700" }}>
           Your Signature
         </Typography>
 
@@ -68,7 +67,7 @@ export default function Signature({ profile }) {
             borderRadius: "12px",
             height: "120px",
             width: "240px",
-            background: imageUrl ? "transparent" :"#f1f1f1",
+            background: imageUrl ? "transparent" : "#f1f1f1",
           }}
           justifyContent="center"
           alignItems="center"
@@ -128,7 +127,7 @@ Signature.propTypes = {
       PropTypes.shape({
         url: PropTypes.string,
         public_id: PropTypes.string,
-      })
+      }),
     ),
   }).isRequired,
 };

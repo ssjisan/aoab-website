@@ -1,8 +1,11 @@
 import { Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { Certificate } from "../../../../assets/Icons";
+import { useContext } from "react";
+import { DataContext } from "../../../../DataProcessing/DataProcessing";
 
-export default function AcademicInfo({ profile }) {
+export default function AcademicInfo({ onEdit }) {
+  const { profile } = useContext(DataContext);
   const InfoRow = ({ label, value }) => (
     <Stack gap="4px">
       <Typography
@@ -27,14 +30,12 @@ export default function AcademicInfo({ profile }) {
       </Stack>
     </Stack>
   );
+
   InfoRow.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    verification: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.oneOf([null]),
-    ]),
   };
+
   return (
     <Stack
       sx={{
@@ -66,12 +67,13 @@ export default function AcademicInfo({ profile }) {
           >
             <Certificate size="24px" color="#7C66CE" />
           </Stack>
+
           <Typography variant="h6" sx={{ fontWeight: 700, color: "#7C66CE" }}>
             Academic Info
           </Typography>
         </Stack>
 
-        <Button variant="outlined" size="small">
+        <Button variant="outlined" size="small" onClick={onEdit}>
           Edit
         </Button>
       </Stack>
@@ -80,12 +82,12 @@ export default function AcademicInfo({ profile }) {
       <Stack sx={{ p: "16px" }} gap="16px">
         <InfoRow
           label="Year of Post Graduation"
-          value={profile?.postGraduationDegrees?.[0]?.yearOfGraduation || "N/A"}
+          value={profile?.postGraduationDegree?.yearOfGraduation}
         />
 
         <InfoRow
           label="Post-Graduation Degree in Orthopedics"
-          value={profile?.postGraduationDegrees?.[0]?.degreeName || "N/A"}
+          value={profile?.postGraduationDegree?.degreeName}
         />
       </Stack>
     </Stack>
@@ -94,14 +96,16 @@ export default function AcademicInfo({ profile }) {
 
 AcademicInfo.propTypes = {
   profile: PropTypes.shape({
-    postGraduationDegrees: PropTypes.arrayOf(
-      PropTypes.shape({
-        yearOfGraduation: PropTypes.oneOfType([
-          PropTypes.string,
-          PropTypes.number,
-        ]),
-        degreeName: PropTypes.string,
-      }),
-    ),
+    postGraduationDegree: PropTypes.shape({
+      yearOfGraduation: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
+
+      degreeName: PropTypes.string,
+
+      isCompleted: PropTypes.bool,
+    }),
   }),
+  onEdit: PropTypes.func.isRequired,
 };

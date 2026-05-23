@@ -1,147 +1,234 @@
-import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
-import PropTypes from "prop-types"; // Import PropTypes for prop validation
-import { useState } from "react";
-import BasicInfoDrawer from "./BasicInfoDrawer";
+import { Grid, Stack } from "@mui/material";
+import PropTypes from "prop-types";
+import { useContext, useState } from "react";
+
 import Basic from "./Basic/Basic";
 import ProfessionalInfo from "./ProfessionalInfo/ProfessionalInfo";
 import AcademicInfo from "./AcademicInfo/AcademicInfo";
 
-export default function BasicInfo({ profile }) {
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const toggleDrawer = (open) => () => {
-    setOpenDrawer(open);
+import { DataContext } from "../../../DataProcessing/DataProcessing";
+import ProfileEditModal from "./ProfileEditModal";
+
+export default function BasicInfo() {
+  const { profile, refetchProfile } = useContext(DataContext);
+
+  // --------------------------------------------------
+  // MODAL STATE
+  // --------------------------------------------------
+
+  const [open, setOpen] = useState(false);
+
+  const [modalConfig, setModalConfig] = useState({
+    title: "",
+    fields: [],
+    initialValues: {},
+  });
+
+  // --------------------------------------------------
+  // OPEN MODAL FUNCTION
+  // --------------------------------------------------
+
+  const handleOpenModal = (type) => {
+    // ----------------------------------------------
+    // BASIC INFO
+    // ----------------------------------------------
+
+    if (type === "basic") {
+      setModalConfig({
+        title: "Edit Basic Information",
+
+        initialValues: {
+          name: profile?.name || "",
+
+          email: profile?.email || "",
+
+          bmdcNo: profile?.bmdcNo || "",
+
+          contactNumber: profile?.contactNumber || "",
+        },
+
+        fields: [
+          {
+            name: "name",
+            label: "Full Name",
+            disabled: true,
+          },
+
+          {
+            name: "email",
+            label: "Email Address",
+            disabled: true,
+          },
+
+          {
+            name: "bmdcNo",
+            label: "BMDC Registration Number",
+            disabled: true,
+          },
+
+          {
+            name: "contactNumber",
+            label: "Contact Number",
+          },
+        ],
+      });
+
+      setOpen(true);
+
+      return;
+    }
+
+    // ----------------------------------------------
+    // PROFESSIONAL INFO
+    // ----------------------------------------------
+
+    if (type === "professional") {
+      setModalConfig({
+        title: "Edit Professional Information",
+
+        initialValues: {
+          currentWorkingPlace: {
+            name: profile?.currentWorkingPlace?.name || "",
+
+            designation: profile?.currentWorkingPlace?.designation || "",
+          },
+        },
+
+        fields: [
+          {
+            name: "currentWorkingPlace.name",
+            label: "Current Working Place",
+          },
+
+          {
+            name: "currentWorkingPlace.designation",
+
+            label: "Current Designation",
+          },
+        ],
+      });
+
+      setOpen(true);
+
+      return;
+    }
+
+    // ----------------------------------------------
+    // ACADEMIC INFO
+    // ----------------------------------------------
+
+    if (type === "academic") {
+      setModalConfig({
+        title: "Edit Academic Information",
+
+        initialValues: {
+          postGraduationDegree: {
+            degreeName: profile?.postGraduationDegree?.degreeName || "",
+
+            yearOfGraduation:
+              profile?.postGraduationDegree?.yearOfGraduation || "",
+
+            isCompleted: profile?.postGraduationDegree?.isCompleted || false,
+          },
+        },
+
+        fields: [
+          {
+            name: "postGraduationDegree.degreeName",
+
+            label: "Post Graduation Degree",
+          },
+
+          {
+            name: "postGraduationDegree.yearOfGraduation",
+
+            label: "Year Of Graduation",
+          },
+
+          {
+            name: "postGraduationDegree.isCompleted",
+
+            label: "I Have Completed This Degree",
+
+            type: "checkbox",
+          },
+        ],
+      });
+
+      setOpen(true);
+    }
   };
 
+  // --------------------------------------------------
+  // RENDER
+  // --------------------------------------------------
+
   return (
-    <Stack>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={6} lg={4}>
-          <Basic profile={profile} />
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={4}>
-          <ProfessionalInfo profile={profile} />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={4}>
-          <AcademicInfo profile={profile} />
-        </Grid>
-      </Grid>
+    <>
+      <Stack>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={6} lg={4}>
+            <Basic onEdit={() => handleOpenModal("basic")} />
+          </Grid>
 
-      <Stack
-        sx={{ p: "8px" }}
-        flexDirection="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Typography variant="h5" sx={{ fontWeight: "700" }}>
-          Basic Info
-        </Typography>
-        <Button variant="soft" onClick={toggleDrawer(true)}>
-          Edit
-        </Button>
+          <Grid item xs={12} sm={6} md={6} lg={4}>
+            <ProfessionalInfo onEdit={() => handleOpenModal("professional")} />
+          </Grid>
+
+          <Grid item xs={12} sm={12} md={12} lg={4}>
+            <AcademicInfo onEdit={() => handleOpenModal("academic")} />
+          </Grid>
+        </Grid>
       </Stack>
 
-      <Stack
-        flexDirection={{ xs: "column", sm: "column", md: "row", lg: "row" }}
-        gap={{ xs: "16px ", sm: "16px", md: "32px", lg: "32px" }}
-      >
-        <Stack gap="8px" sx={{ width: { sm: "100%", lg: "calc(50% - 32px)" } }}>
-          <Typography
-            variant="body1"
-            sx={{ fontWeight: "600" }}
-            color="text.secondary"
-          >
-            Current Working Place
-          </Typography>
-          <TextField
-            sx={{
-              width: "100%", // Takes full width of its container (50% of the parent)
-            }}
-            variant="outlined"
-            size="small"
-            value={profile?.currentWorkingPlace?.[0]?.name || "N/A"}
-            disabled
-          />
-        </Stack>
-        <Stack gap="8px" sx={{ width: { sm: "100%", lg: "calc(50% - 32px)" } }}>
-          <Typography
-            variant="body1"
-            sx={{ fontWeight: "600" }}
-            color="text.secondary"
-          >
-            Current Designation
-          </Typography>
-          <TextField
-            sx={{
-              width: "100%", // Takes full width of its container (50% of the parent)
-            }}
-            variant="outlined"
-            size="small"
-            value={profile?.currentWorkingPlace?.[0]?.designation || "N/A"}
-            disabled
-          />
-        </Stack>
-      </Stack>
-      <Stack
-        flexDirection={{ xs: "column", sm: "column", md: "row", lg: "row" }} // Column on small screens, row on larger screens
-        gap={{ xs: "16px ", sm: "16px", md: "32px", lg: "32px" }}
-      >
-        <Stack gap="8px" sx={{ width: { sm: "100%", lg: "calc(50% - 32px)" } }}>
-          <Typography
-            variant="body1"
-            sx={{ fontWeight: "600" }}
-            color="text.secondary"
-          >
-            Post-Graduation Degree in Orthopedics
-          </Typography>
-          <TextField
-            sx={{
-              width: "100%", // Takes full width of its container (50% of the parent)
-            }}
-            variant="outlined"
-            size="small"
-            value={profile?.postGraduationDegrees?.[0]?.degreeName || "N/A"}
-            disabled
-          />
-        </Stack>
-        <Stack gap="8px" sx={{ width: { sm: "100%", lg: "calc(50% - 32px)" } }}>
-          <Typography
-            variant="body1"
-            sx={{ fontWeight: "600" }}
-            color="text.secondary"
-          >
-            Year of Post Graduation
-          </Typography>
-          <TextField
-            sx={{
-              width: "100%", // Takes full width of its container (50% of the parent)
-            }}
-            variant="outlined"
-            size="small"
-            value={
-              profile?.postGraduationDegrees?.[0]?.yearOfGraduation || "N/A"
-            }
-            disabled
-          />
-        </Stack>
-      </Stack>
-      <BasicInfoDrawer
-        open={openDrawer}
-        toggleDrawer={toggleDrawer}
-        profile={profile}
+      {/* ------------------------------------------------ */}
+      {/* REUSABLE MODAL */}
+      {/* ------------------------------------------------ */}
+
+      <ProfileEditModal
+        open={open}
+        onClose={() => setOpen(false)}
+        title={modalConfig.title}
+        fields={modalConfig.fields}
+        initialValues={modalConfig.initialValues}
+        endpoint="/update-basic-info"
+        onSuccess={async () => {
+          await refetchProfile();
+        }}
       />
-    </Stack>
+    </>
   );
 }
 
 BasicInfo.propTypes = {
   profile: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    isEmailVerified: PropTypes.string.isRequired,
-    bmdcNo: PropTypes.string.isRequired,
-    isBmdcVerified: PropTypes.string,
-    contactNumber: PropTypes.string.isRequired,
-    currentWorkingPlace: PropTypes.array,
-    postGraduationDegrees: PropTypes.array,
-  }).isRequired,
+    name: PropTypes.string,
+
+    email: PropTypes.string,
+
+    isEmailVerified: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+
+    bmdcNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+    isBmdcVerified: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+
+    contactNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+    currentWorkingPlace: PropTypes.shape({
+      name: PropTypes.string,
+
+      designation: PropTypes.string,
+    }),
+
+    postGraduationDegree: PropTypes.shape({
+      degreeName: PropTypes.string,
+
+      yearOfGraduation: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
+
+      isCompleted: PropTypes.bool,
+    }),
+  }),
 };

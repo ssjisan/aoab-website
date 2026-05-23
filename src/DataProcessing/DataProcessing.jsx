@@ -16,7 +16,13 @@ export default function DataProcessing({ children }) {
   const { auth, setAuth } = AuthProvider();
 
   const { email, setEmail, handleSubmit, sendingOtp } = ForgotPassword(api);
-  const { profile, updateProfileImage } = useProfileData();
+  const {
+    profile,
+    updateProfileImage,
+    setProfile,
+    profileLoading,
+    refetchProfile,
+  } = useProfileData();
   return (
     <DataContext.Provider
       value={{
@@ -39,6 +45,9 @@ export default function DataProcessing({ children }) {
         // Other data and functions can be added here as needed
         profile,
         updateProfileImage,
+        setProfile,
+        profileLoading,
+        refetchProfile,
       }}
     >
       {children}

@@ -1,8 +1,11 @@
 import { Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { BasicInfo } from "../../../../assets/Icons";
+import { DataContext } from "../../../../DataProcessing/DataProcessing";
+import { useContext } from "react";
 
-export default function Basic({ profile }) {
+export default function Basic({ onEdit }) {
+  const { profile } = useContext(DataContext);
   const getVerificationIcon = (status) => {
     if (status === null) return "🔄";
     if (status === true) return "✅";
@@ -55,6 +58,7 @@ export default function Basic({ profile }) {
       PropTypes.oneOf([null]),
     ]),
   };
+
   return (
     <Stack
       sx={{
@@ -90,7 +94,7 @@ export default function Basic({ profile }) {
           </Typography>
         </Stack>
 
-        <Button variant="outlined" size="small">
+        <Button variant="outlined" size="small" onClick={onEdit}>
           Edit
         </Button>
       </Stack>
@@ -132,4 +136,5 @@ Basic.propTypes = {
     isEmailVerified: PropTypes.bool,
     contactNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
+  onEdit: PropTypes.func.isRequired,
 };

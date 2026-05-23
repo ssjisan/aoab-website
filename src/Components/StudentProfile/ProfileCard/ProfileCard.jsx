@@ -7,6 +7,7 @@ import { DataContext } from "../../../DataProcessing/DataProcessing";
 export default function ProfileCard() {
   const { profile } = useContext(DataContext);
   const [openDrawer, setOpenDrawer] = useState(false);
+  console.log(profile);
 
   const [currentImage, setCurrentImage] = useState(profile?.picture?.url ?? "");
   const toggleDrawer = (open) => () => {

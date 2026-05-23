@@ -1,7 +1,11 @@
 import { Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
+import { useContext } from "react";
+import { DataContext } from "../../../../DataProcessing/DataProcessing";
+import { Job } from "../../../../assets/Icons";
+export default function ProfessionalInfo({ onEdit }) {
+  const { profile } = useContext(DataContext);
 
-export default function ProfessionalInfo({ profile }) {
   const InfoRow = ({ label, value }) => (
     <Stack gap="4px">
       <Typography
@@ -60,13 +64,17 @@ export default function ProfessionalInfo({ profile }) {
               background: "#e6eeff",
               borderRadius: "8px",
             }}
-          />
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Job size="24px" color="#163F9E" />
+          </Stack>
           <Typography variant="h6" sx={{ fontWeight: 700, color: "#163F9E" }}>
             Professional Info
           </Typography>
         </Stack>
 
-        <Button variant="outlined" size="small">
+        <Button variant="outlined" size="small" onClick={onEdit}>
           Edit
         </Button>
       </Stack>
@@ -75,12 +83,12 @@ export default function ProfessionalInfo({ profile }) {
       <Stack sx={{ p: "16px" }} gap="16px">
         <InfoRow
           label="Current Working Place"
-          value={profile?.currentWorkingPlace?.[0]?.name || "N/A"}
+          value={profile?.currentWorkingPlace?.name || "N/A"}
         />
 
         <InfoRow
           label="Current Designation"
-          value={profile?.currentWorkingPlace?.[0]?.designation || "N/A"}
+          value={profile?.currentWorkingPlace?.designation || "N/A"}
         />
       </Stack>
     </Stack>
@@ -95,4 +103,5 @@ ProfessionalInfo.propTypes = {
       }),
     ),
   }),
+  onEdit: PropTypes.func.isRequired,
 };
