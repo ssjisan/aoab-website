@@ -2,10 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_API,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: false, // Set to true if using cookies
+  withCredentials: false,
 });
 
 // Optional request interceptor

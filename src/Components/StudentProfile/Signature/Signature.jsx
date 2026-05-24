@@ -10,13 +10,8 @@ export default function Signature() {
   const [loading, setLoading] = useState(true);
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const toggleDrawer = (open) => () => {
-    setOpenDrawer(open);
-  };
-
-  // Load signature on mount or profile change
   useEffect(() => {
-    const signature = profile?.signature?.[0]?.url;
+    const signature = profile?.signature?.url;
     if (signature) {
       setLoading(true);
       const img = new Image();
@@ -48,18 +43,31 @@ export default function Signature() {
         border: "1px solid #05060f08",
         boxShadow:
           "0px 0px 2px rgba(145, 158, 171, 0.2), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
-        p: "16px",
       }}
-      flexDirection={{ sm: "column", md: "row", lg: "row" }}
       gap="16px"
       justifyContent="space-between"
-      alignItems={{ xs: "center", sm: "center" }}
     >
-      <Stack gap="8px" sx={{ width: "360px" }}>
-        <Typography variant="h5" sx={{ fontWeight: "700" }}>
-          Your Signature
-        </Typography>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ p: "12px 16px", borderBottom: "1px solid #F3F4F6" }}
+      >
+        <Stack direction="row" alignItems="center" gap="8px">
+          <Typography variant="h6" sx={{ fontWeight: 700, color: "#4F985C" }}>
+            Your Signature
+          </Typography>
+        </Stack>
 
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => setOpenDrawer(true)}
+        >
+          Upload Signature
+        </Button>
+      </Stack>
+      <Stack gap="8px" sx={{ width: "360px", p: "12px 16px" }}>
         <Stack
           sx={{
             p: 2,
@@ -99,17 +107,9 @@ export default function Signature() {
         </Typography>
       </Stack>
 
-      <Button
-        sx={{ width: "180px" }}
-        variant="soft"
-        onClick={toggleDrawer(true)}
-      >
-        Upload Signature
-      </Button>
-
       <SignatureUpload
         open={openDrawer}
-        toggleDrawer={toggleDrawer}
+        onClose={() => setOpenDrawer(false)}
         currentImage={imageUrl}
         onSuccess={handleSignatureUpdate}
       />

@@ -122,11 +122,9 @@ export default function Profile() {
         )}
         <BasicInfo profile={profile} />
         <Grid container spacing={2}>
-          {profile?.graduationDegrees?.[0] && (
-            <Grid item xs={12} md={6}>
-              <Certificate profile={profile} />
-            </Grid>
-          )}
+          <Grid item xs={12} md={6}>
+            <Certificate />
+          </Grid>
           <Grid item xs={12} md={6}>
             <Signature />
           </Grid>

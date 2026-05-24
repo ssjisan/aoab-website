@@ -13,100 +13,89 @@ import Upload from "../../../assets/Upload";
 import PDF from "../../../assets/PDF";
 import { Cross } from "../../../assets/Icons";
 import api from "../../../lib/api/axios";
+
 export default function CertificateUpload({
   open,
   onClose,
-  certificates,
+  certificate,
   onUploadSuccess,
 }) {
-  const [existingCertificates, setExistingCertificates] = useState([]);
-  const [newFiles, setNewFiles] = useState([]);
+  const [existingFile, setExistingFile] = useState(null);
+  const [newFile, setNewFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [removedIds, setRemovedIds] = useState([]);
 
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    if (open && certificates) {
-      setExistingCertificates(certificates); // ✅ use live certificates
-      setNewFiles([]);
-      setRemovedIds([]);
+    if (open) {
+      setExistingFile(certificate || null);
+      setNewFile(null);
     }
-  }, [open, certificates]);
+  }, [open, certificate]);
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    const validFiles = [];
+    const file = e.target.files?.[0];
 
-    for (let file of files) {
-      if (file.type !== "application/pdf") {
-        toast.error("Only PDF files are allowed.");
-        continue;
-      }
+    if (!file) return;
 
-      if (file.size > 1024 * 1024) {
-        toast.error(`${file.name} is too large. Max 1MB.`);
-        continue;
-      }
-
-      validFiles.push(file);
-    }
-
-    const total =
-      existingCertificates.length +
-      newFiles.length +
-      validFiles.length -
-      removedIds.length;
-
-    if (total > 2) {
-      toast.error("You can upload a maximum of 2 certificates.");
+    if (file.type !== "application/pdf") {
+      toast.error("Only PDF files are allowed.");
       return;
     }
 
-    setNewFiles((prev) => [...prev, ...validFiles]);
+    if (file.size > 1024 * 1024 * 5) {
+      toast.error("File is too large. Max 5MB allowed.");
+      return;
+    }
+
+    setNewFile(file);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
-  const handleRemoveExisting = (index) => {
-    const cert = existingCertificates[index];
-    setRemovedIds((prev) => [...prev, cert.public_id]);
-    setExistingCertificates((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleRemoveNew = (index) => {
-    setNewFiles((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveNew = () => {
+    setNewFile(null);
   };
 
   const handleSubmit = async () => {
-    const toastId = toast.loading("Updating certificates...");
+    console.log("NEW FILE:", newFile);
+    console.log("TYPE:", typeof newFile);
+    console.log("IS FILE:", newFile instanceof File);
+    if (!newFile) {
+      toast.error("Please select a PDF file first.");
+      return;
+    }
+
+    const toastId = toast.loading("Uploading certificate...");
 
     try {
       setIsUploading(true);
+
       const formData = new FormData();
+      formData.append("certificate", newFile);
 
-      newFiles.forEach((file) => {
-        formData.append("postGradCertificate", file);
+      const { data } = await api.post("/postgrad-certificate", formData);
+
+      toast.success("Certificate updated successfully", {
+        id: toastId,
       });
 
-      removedIds.forEach((id) => {
-        formData.append("removeCertificateIds", id);
-      });
+      setExistingFile(data.postGraduationCertificates);
 
-      const { data } = await api.post("/upload-postgrad-certificate", formData);
-
-      toast.success("Certificate updated successfully", { id: toastId });
+      setNewFile(null);
 
       if (typeof onUploadSuccess === "function") {
-        onUploadSuccess(data.postGraduationCertificates); // ✅ pass updated list
+        onUploadSuccess(data.postGraduationCertificates);
       }
 
       onClose();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update certificates.", { id: toastId });
+      toast.error("Failed to upload certificate", {
+        id: toastId,
+      });
     } finally {
       setIsUploading(false);
     }
@@ -115,15 +104,20 @@ export default function CertificateUpload({
   return (
     <Drawer open={open} onClose={onClose} anchor="right">
       <Stack sx={{ width: 380, maxWidth: "100%" }}>
+        {/* HEADER */}
         <Stack
           direction="row"
           justifyContent="space-between"
           alignItems="center"
-          sx={{ p: 2, borderBottom: "1px solid rgba(145, 142, 175, 0.24)" }}
+          sx={{
+            p: 2,
+            borderBottom: "1px solid rgba(145, 142, 175, 0.24)",
+          }}
         >
           <Typography variant="h6" fontWeight={600}>
-            Manage Certificates
+            Manage Certificate
           </Typography>
+
           <IconButton onClick={onClose}>
             <Cross color="black" size="20px" />
           </IconButton>
@@ -131,9 +125,10 @@ export default function CertificateUpload({
 
         <Stack sx={{ p: 2 }} gap={2}>
           <Typography fontWeight={600}>
-            Upload your Post Graduation Certificate (Max 2, PDF only)
+            Upload Post Graduation Certificate (PDF only)
           </Typography>
 
+          {/* UPLOAD BOX */}
           <Stack
             component="label"
             sx={{
@@ -147,75 +142,95 @@ export default function CertificateUpload({
             }}
           >
             <Upload />
+
             <Stack>
               <Typography>Select file</Typography>
               <Typography variant="caption" color="text.secondary">
-                PDF format, max 1MB
+                PDF format, max 5MB
               </Typography>
             </Stack>
+
             <input
               type="file"
               accept="application/pdf"
               hidden
               ref={fileInputRef}
-              multiple
               onChange={handleFileChange}
             />
           </Stack>
 
-          {/* New Files */}
-          {newFiles.map((file, index) => (
+          {/* EXISTING FILE */}
+          {existingFile?.url && !newFile && (
             <Stack
-              key={index}
               direction="row"
               gap={2}
               alignItems="center"
-              sx={{ p: 1 }}
+              sx={{
+                p: 1,
+                border: "1px solid rgba(0,0,0,0.08)",
+                borderRadius: 1,
+              }}
             >
               <PDF />
+
               <Stack sx={{ flexGrow: 1 }}>
                 <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
-                  {file.name}
+                  {existingFile.name || "Current Certificate"}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {(file.size / (1024 * 1024)).toFixed(2)} MB
-                </Typography>
+
+                {existingFile.size && (
+                  <Typography variant="caption" color="text.secondary">
+                    {(existingFile.size / (1024 * 1024)).toFixed(2)} MB
+                  </Typography>
+                )}
               </Stack>
-              <IconButton onClick={() => handleRemoveNew(index)}>
+
+              <IconButton onClick={() => setExistingFile(null)}>
                 <Cross color="black" size="20px" />
               </IconButton>
             </Stack>
-          ))}
+          )}
 
-          {/* Existing Files */}
-          {existingCertificates.map((file, index) => (
+          {/* NEW FILE */}
+          {newFile && (
             <Stack
-              key={index}
               direction="row"
               gap={2}
               alignItems="center"
-              sx={{ p: 1 }}
+              sx={{
+                p: 1,
+                border: "1px solid rgba(0,0,0,0.08)",
+                borderRadius: 1,
+              }}
             >
               <PDF />
+
               <Stack sx={{ flexGrow: 1 }}>
                 <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
-                  {file.name || file.url?.split("/").pop()}
+                  {newFile.name}
                 </Typography>
+
                 <Typography variant="caption" color="text.secondary">
-                  {(file.size / (1024 * 1024)).toFixed(2)} MB
+                  {(newFile.size / (1024 * 1024)).toFixed(2)} MB
                 </Typography>
               </Stack>
-              <IconButton onClick={() => handleRemoveExisting(index)}>
+
+              <IconButton onClick={handleRemoveNew}>
                 <Cross color="black" size="20px" />
               </IconButton>
             </Stack>
-          ))}
+          )}
 
+          {/* SAVE BUTTON */}
           <Button
             variant="contained"
-            sx={{ mt: 2, backgroundColor: "#111827", color: "#fff" }}
+            sx={{
+              mt: 2,
+              backgroundColor: "#111827",
+              color: "#fff",
+            }}
             onClick={handleSubmit}
-            disabled={isUploading}
+            disabled={isUploading || !newFile}
           >
             {isUploading ? (
               <CircularProgress size={24} sx={{ color: "#fff" }} />
@@ -232,12 +247,13 @@ export default function CertificateUpload({
 CertificateUpload.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  certificates: PropTypes.arrayOf(
-    PropTypes.shape({
-      url: PropTypes.string,
-      public_id: PropTypes.string,
-      name: PropTypes.string,
-    }),
-  ).isRequired,
+
+  // now SINGLE object instead of array
+  certificate: PropTypes.shape({
+    url: PropTypes.string,
+    name: PropTypes.string,
+    size: PropTypes.number,
+  }),
+
   onUploadSuccess: PropTypes.func,
 };
