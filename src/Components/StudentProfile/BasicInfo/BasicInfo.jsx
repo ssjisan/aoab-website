@@ -135,21 +135,23 @@ export default function BasicInfo() {
         fields: [
           {
             name: "postGraduationDegree.degreeName",
-
             label: "Post Graduation Degree",
+            disableWhen: {
+              field: "postGraduationDegree.isCompleted",
+              value: false,
+            },
           },
-
           {
             name: "postGraduationDegree.yearOfGraduation",
-
             label: "Year Of Graduation",
+            disableWhen: {
+              field: "postGraduationDegree.isCompleted",
+              value: false,
+            },
           },
-
           {
             name: "postGraduationDegree.isCompleted",
-
             label: "I Have Completed This Degree",
-
             type: "checkbox",
           },
         ],

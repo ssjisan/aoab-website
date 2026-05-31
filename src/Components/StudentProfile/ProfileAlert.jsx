@@ -22,45 +22,38 @@ export default function ProfileAlert({ profile }) {
 
     const missing = [];
 
-    // ✅ Profile picture
-    const hasPicture = !!profile?.picture?.url;
-    if (!hasPicture) missing.push("Profile picture");
+    // Profile picture
+    if (!profile?.picture?.url) {
+      missing.push("Profile picture");
+    }
 
-    // ✅ Current working place
-    const workingPlace = profile.currentWorkingPlace?.[0];
-
-    if (!workingPlace?.name) {
+    // Working place
+    if (!profile?.currentWorkingPlace?.name) {
       missing.push("Current working place");
     }
 
-    if (!workingPlace?.designation) {
+    if (!profile?.currentWorkingPlace?.designation) {
       missing.push("Current designation");
     }
 
-    // ✅ Post graduation
-    const pg = profile.postGraduationDegrees;
+    // Post graduation
+    const pg = profile?.postGraduationDegree;
 
-    if (!pg?.degreeName) {
-      missing.push("Post-graduation degree");
-    }
+    if (pg?.isCompleted) {
+      // Only validate when completed = true
 
-    if (!pg?.yearOfGraduation) {
-      missing.push("Year of graduation");
-    }
+      if (!pg?.degreeName) {
+        missing.push("Post-graduation degree");
+      }
 
-    // ✅ Certificate check
-    const isPGComplete = pg?.isCompleted === true;
+      if (!pg?.yearOfGraduation) {
+        missing.push("Year of graduation");
+      }
 
-    if (isPGComplete) {
-      const hasCertificates =
-        Array.isArray(profile.postGraduationCertificates) &&
-        profile.postGraduationCertificates.length > 0;
-
-      if (!hasCertificates) {
+      if (!profile?.postGraduationCertificates?.url) {
         missing.push("Post-graduation certificate");
       }
     }
-
     if (missing.length > 0) {
       setMissingItems(missing);
       setOpen(true);
@@ -272,24 +265,24 @@ ProfileAlert.propTypes = {
       url: PropTypes.string,
     }),
 
-    currentWorkingPlace: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        designation: PropTypes.string,
-      }),
-    ),
+    currentWorkingPlace: PropTypes.shape({
+      name: PropTypes.string,
+      designation: PropTypes.string,
+    }),
 
-    postGraduationDegrees: PropTypes.arrayOf(
-      PropTypes.shape({
-        degreeName: PropTypes.string,
-        yearOfGraduation: PropTypes.oneOfType([
-          PropTypes.string,
-          PropTypes.number,
-        ]),
-        isCompleted: PropTypes.bool,
-      }),
-    ),
+    postGraduationDegree: PropTypes.shape({
+      degreeName: PropTypes.string,
+      yearOfGraduation: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
+      isCompleted: PropTypes.bool,
+    }),
 
-    postGraduationCertificates: PropTypes.arrayOf(PropTypes.string),
+    postGraduationCertificates: PropTypes.shape({
+      url: PropTypes.string,
+      name: PropTypes.string,
+      size: PropTypes.number,
+    }),
   }),
 };

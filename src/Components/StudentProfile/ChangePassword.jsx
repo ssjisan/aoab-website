@@ -65,7 +65,7 @@ export default function ChangePassword() {
     <Stack gap="24px">
       <Stack gap="16px">
         <Stack gap="8px">
-          <Typography sx={{ fontWeight: "600" }}>Confirm Password</Typography>
+          <Typography sx={{ fontWeight: "600" }}>Old Password</Typography>
           <FormControl
             sx={{ width: "100%", maxWidth: "320px" }}
             variant="outlined"

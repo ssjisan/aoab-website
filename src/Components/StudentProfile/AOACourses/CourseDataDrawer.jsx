@@ -28,32 +28,32 @@ export default function CourseDataDrawer({
   existingCourseData,
 }) {
   const [existingFiles, setExistingFiles] = useState([]);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(false); // BOOLEAN
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [completionYear, setCompletionYear] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [removedFiles, setRemovedFiles] = useState([]);
 
-  // const isValidYearFormat =
-  //   /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec),\s\d{4}$/.test(
-  //     completionYear
-  //   );
+  const fileInputRef = useRef(null);
 
+  // FIX: convert string -> boolean safely
   const handleRadioChange = (event) => {
-    setSelectedAnswer(event.target.value);
+    setSelectedAnswer(event.target.value === "true");
   };
 
   useEffect(() => {
     if (open && selectedCourseCategory) {
       if (existingCourseData) {
-        setSelectedAnswer(existingCourseData.status);
+        setSelectedAnswer(!!existingCourseData.status);
         setCompletionYear(existingCourseData.completionYear || "");
         setExistingFiles(existingCourseData.documents || []);
         setSelectedFiles([]);
       } else {
-        setSelectedAnswer(null);
+        setSelectedAnswer(false);
         setSelectedFiles([]);
         setCompletionYear("");
+        setExistingFiles([]);
+        setRemovedFiles([]);
       }
     }
   }, [open, selectedCourseCategory, existingCourseData]);
@@ -62,7 +62,6 @@ export default function CourseDataDrawer({
     (cat) => cat._id === selectedCourseCategory?._id,
   )?.typeOfParticipation;
 
-  const fileInputRef = useRef(null);
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     const validFiles = [];
@@ -98,7 +97,6 @@ export default function CourseDataDrawer({
       selectedTypeOfParticipation === 0 ? validFiles : [...prev, ...validFiles],
     );
 
-    // ✅ Clear file input value so same file can be reselected later
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -106,26 +104,21 @@ export default function CourseDataDrawer({
 
   const handleRemoveExistingFile = (index) => {
     const fileToRemove = existingFiles[index];
-    setRemovedFiles((prev) => [...prev, fileToRemove._id || fileToRemove.id]);
-    setExistingFiles((prev) => prev.filter((_, i) => i !== index));
-  };
 
-  const handleSubmit = async () => {
-    if (selectedAnswer === null) {
-      toast.error("Please select if you have attended the course.");
+    if (!fileToRemove?._id) {
       return;
     }
 
-    if (selectedAnswer === "yes") {
+    setRemovedFiles((prev) => [...prev, fileToRemove._id.toString()]);
+
+    setExistingFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+  const handleSubmit = async () => {
+    if (selectedAnswer === true) {
       if (!completionYear.trim()) {
         toast.error("Please enter the year of completion.");
         return;
       }
-
-      // if (!isValidYearFormat) {
-      //   toast.error("Please enter the date in the format 'MMM, YYYY'.");
-      //   return;
-      // }
 
       if (selectedFiles.length === 0 && existingFiles.length === 0) {
         toast.error("Please upload at least one file.");
@@ -139,21 +132,18 @@ export default function CourseDataDrawer({
       setIsUploading(true);
 
       const formData = new FormData();
+
       formData.append("courseCategoryId", selectedCourseCategory._id);
-      formData.append("status", selectedAnswer);
+      formData.append("status", selectedAnswer); // BOOLEAN
       formData.append("completionYear", completionYear);
 
-      // Append new documents
       selectedFiles.forEach((file) => {
         formData.append("documents", file);
       });
 
-      // Append removed file IDs if any
-      if (removedFiles.length > 0) {
-        removedFiles.forEach((fileId) => {
-          formData.append("removedFiles", fileId); // This assumes backend expects `removedFiles[]`
-        });
-      }
+      removedFiles.forEach((fileId) => {
+        formData.append("removedFiles", fileId);
+      });
 
       const isUpdate = existingCourseData && existingCourseData._id;
 
@@ -163,11 +153,11 @@ export default function CourseDataDrawer({
       } else {
         await api.post("/course_document", formData);
       }
-      window.location.reload();
+
       toast.success("Saved successfully!", { id: toastId });
+      window.location.reload();
       onClose();
     } catch (error) {
-      console.error(error);
       toast.error(
         error?.response?.data?.error || "Failed to save course data.",
         { id: toastId },
@@ -195,6 +185,7 @@ export default function CourseDataDrawer({
         </Stack>
 
         <Stack sx={{ p: 2 }}>
+          {/* YES / NO */}
           <Stack gap="8px" sx={{ mb: "24px" }}>
             <Typography sx={{ fontWeight: 700 }} variant="h6">
               {selectedCourseCategory
@@ -202,15 +193,23 @@ export default function CourseDataDrawer({
                 : ""}
             </Typography>
             <RadioGroup
-              value={selectedAnswer}
+              value={String(selectedAnswer)}
               onChange={handleRadioChange}
               sx={{ display: "flex", flexDirection: "row" }}
             >
-              <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-              <FormControlLabel value="no" control={<Radio />} label="No" />
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+
+              <FormControlLabel
+                value="false"
+                control={<Radio />}
+                label="No"
+                disabled={existingCourseData?.status === true}
+              />
             </RadioGroup>
           </Stack>
-          {selectedAnswer === "yes" && (
+
+          {/* YES SECTION */}
+          {selectedAnswer === true && (
             <>
               <Stack gap="8px" sx={{ mb: "16px" }}>
                 <Typography
@@ -220,6 +219,7 @@ export default function CourseDataDrawer({
                 >
                   Year of Completion (Month, Year)
                 </Typography>
+
                 <TextField
                   variant="outlined"
                   value={completionYear}
@@ -229,6 +229,7 @@ export default function CourseDataDrawer({
                   size="small"
                 />
               </Stack>
+
               <Stack
                 sx={{
                   p: "8px 16px",
@@ -242,16 +243,16 @@ export default function CourseDataDrawer({
                 component="label"
               >
                 <Upload />
-                <Stack gap="0px">
+                <Stack>
                   <Typography>Select file</Typography>
                   <Typography color="text.secondary">
                     Click to browse your files
                   </Typography>
                 </Stack>
+
                 <input
                   ref={fileInputRef}
                   type="file"
-                  name="pdfFile"
                   accept="application/pdf"
                   hidden
                   onChange={handleFileChange}
@@ -259,30 +260,28 @@ export default function CourseDataDrawer({
                 />
               </Stack>
 
+              {/* NEW FILES */}
               {selectedFiles.length > 0 && (
                 <Stack>
                   {selectedFiles.map((file, index) => (
                     <Stack
+                      key={index}
                       sx={{ p: "8px 16px", mt: "16px" }}
                       flexDirection="row"
                       justifyContent="space-between"
                       gap="16px"
-                      key={index}
                     >
                       <PDF />
                       <Stack sx={{ width: "60%" }}>
-                        <Typography
-                          variant="body2"
-                          sx={{ wordBreak: "break-all" }}
-                        >
+                        <Typography sx={{ wordBreak: "break-all" }}>
                           {file.name}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography color="text.secondary">
                           {(file.size / (1024 * 1024)).toFixed(2)} MB
                         </Typography>
                       </Stack>
+
                       <IconButton
-                        sx={{ width: "40px", height: "40px" }}
                         onClick={() =>
                           setSelectedFiles((prev) =>
                             prev.filter((_, i) => i !== index),
@@ -295,32 +294,29 @@ export default function CourseDataDrawer({
                   ))}
                 </Stack>
               )}
+
+              {/* EXISTING FILES */}
               {existingFiles.length > 0 && (
                 <Stack>
                   {existingFiles.map((file, index) => (
                     <Stack
+                      key={index}
                       sx={{ p: "8px 16px", mt: "16px" }}
                       flexDirection="row"
                       justifyContent="space-between"
                       gap="16px"
-                      key={`existing-${index}`}
                     >
                       <PDF />
                       <Stack sx={{ width: "60%" }}>
-                        <Typography
-                          variant="body2"
-                          sx={{ wordBreak: "break-all" }}
-                        >
-                          {/* Show file name or url */}
+                        <Typography sx={{ wordBreak: "break-all" }}>
                           {file.name || file.url.split("/").pop()}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {/* Size in MB */}
+                        <Typography color="text.secondary">
                           {(file.size / (1024 * 1024)).toFixed(2)} MB
                         </Typography>
                       </Stack>
+
                       <IconButton
-                        sx={{ width: "40px", height: "40px" }}
                         onClick={() => handleRemoveExistingFile(index)}
                       >
                         <Cross color="black" size="20px" />
@@ -332,6 +328,7 @@ export default function CourseDataDrawer({
             </>
           )}
 
+          {/* SAVE */}
           <Button
             variant="contained"
             sx={{ mt: 2, backgroundColor: "#111827", color: "#fff" }}
@@ -349,32 +346,3 @@ export default function CourseDataDrawer({
     </Drawer>
   );
 }
-CourseDataDrawer.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  selectedCourseCategory: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    courseName: PropTypes.string.isRequired,
-    typeOfParticipation: PropTypes.number.isRequired,
-  }),
-  courseCategories: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      courseName: PropTypes.string,
-      typeOfParticipation: PropTypes.number,
-    }),
-  ),
-  existingCourseData: PropTypes.shape({
-    _id: PropTypes.string,
-    status: PropTypes.string,
-    completionYear: PropTypes.string,
-    documents: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string,
-        name: PropTypes.string,
-        url: PropTypes.string,
-        size: PropTypes.number,
-      }),
-    ),
-  }),
-};

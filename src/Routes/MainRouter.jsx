@@ -37,6 +37,7 @@ import DocPreview from "../Pages/StudentProfile/DocPreview";
 import PrivateRoute from "./PrivateRoute";
 import ProfileLayout from "./ProfileLayout";
 import Maintenance from "../Pages/Maintenance";
+import AuthLayout from "../Pages/UserAuth/AuthLayout";
 
 export default function MainRoute() {
   return (
@@ -83,24 +84,25 @@ export default function MainRoute() {
           <Route path="/links&forms/forms" element={<Forms />} />
           <Route path="/links&forms/links" element={<Links />} />
           <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/registration" element={<Registration />} />
-          <Route path="/verify-otp" element={<OTPVerify />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/maintenance" element={<Maintenance />} />
-
-          <Route path="/bypass-login" element={<ByPassLogin />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/videos" element={<Videos />} />
+          </Route>
+        </Route>
+        {/* ========================================
+           Authentication Routes (No Main Layout, uses AuthLayout)
+        ======================================== */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/registration" element={<Registration />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-otp" element={<OTPVerify />} />
           <Route
             path="/verify-for-reset"
             element={<OTPVerifyForRestPassword />}
           />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/admin-access" element={<AdminLoginAsStudent />} />
-          <Route element={<PrivateRoute />}>
-            <Route path="/videos" element={<Videos />} />
-          </Route>
         </Route>
-
         {/* ========================================
             PROTECTED PROFILE ROUTES
             (Uses ProfileLayout instead of Layout)

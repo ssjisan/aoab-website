@@ -91,7 +91,7 @@ export default function Form() {
   return (
     <Container sx={{ display: "flex", justifyContent: "center" }}>
       <Stack
-        sx={{ pt: "120px", width: "480px", maxWidth: "100%", pb: "48px" }}
+        sx={{ pt: "40px", width: "480px", maxWidth: "100%", pb: "48px" }}
         alignItems="center"
         gap="48px"
         component="form"

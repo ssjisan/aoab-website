@@ -22,13 +22,21 @@ export default function DataProcessing({ children }) {
     setProfile,
     profileLoading,
     refetchProfile,
-  } = useProfileData();
+  } = useProfileData(auth);
+
+  const logout = () => {
+    localStorage.removeItem("auth");
+    setAuth({ user: null, token: "" });
+    setProfile(null);
+  };
+
   return (
     <DataContext.Provider
       value={{
         api,
         auth,
         setAuth,
+        logout,
         // Events
         runningEvents,
         monthlyEvents,

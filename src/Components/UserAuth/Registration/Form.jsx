@@ -73,7 +73,7 @@ export default function Form() {
     >
       <Stack
         sx={{
-          pt: "80px",
+          pt: "24px",
           width: "480px",
           maxWidth: "100%",
           pb: "48px",

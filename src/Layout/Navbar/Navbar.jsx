@@ -88,7 +88,7 @@ export default function Navbar() {
             ) : (
               <Button
                 component={Link}
-                to="/maintenance"
+                to="/login"
                 rel="noopener noreferrer"
                 sx={{
                   backgroundColor:
@@ -312,7 +312,7 @@ export default function Navbar() {
                     : null,
               }}
               component="a"
-              href="/maintenance"
+              href="/login"
               rel="noopener noreferrer"
             >
               Login

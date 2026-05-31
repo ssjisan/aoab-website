@@ -79,7 +79,7 @@ export default function Form() {
     <Container sx={{ display: "flex", justifyContent: "center" }}>
       <Stack
         sx={{
-          pt: "120px",
+          pt: "40px",
           width: "480px",
           maxWidth: "100%",
           pb: "48px",

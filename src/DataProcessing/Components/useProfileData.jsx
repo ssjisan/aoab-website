@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import api from "../../lib/api/axios";
 import toast from "react-hot-toast";
 
-export default function useProfileData() {
+export default function useProfileData(auth) {
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
 
@@ -10,18 +10,25 @@ export default function useProfileData() {
   // FETCH PROFILE (REUSABLE)
   // ---------------------------------------
   const fetchProfile = useCallback(async () => {
+    if (!auth?.token) {
+      setProfile(null);
+      return;
+    }
+
     try {
       setProfileLoading(true);
-
       const { data } = await api.get("/my-profile-data");
-
-      setProfile({ ...data });
+      setProfile(data);
     } catch (err) {
-      toast.error("Error loading profile");
+      setProfile(null);
+
+      if (err?.response?.status !== 401) {
+        toast.error("Error loading profile");
+      }
     } finally {
       setProfileLoading(false);
     }
-  }, []);
+  }, [auth?.token]);
 
   // ---------------------------------------
   // INITIAL LOAD
@@ -46,7 +53,7 @@ export default function useProfileData() {
     profile,
     setProfile,
     profileLoading,
-    refetchProfile: fetchProfile, // 👈 IMPORTANT
+    refetchProfile: fetchProfile,
     updateProfileImage,
   };
 }

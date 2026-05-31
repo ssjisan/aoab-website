@@ -136,7 +136,6 @@ export default function ProfileEditModal({
 
             <Typography
               sx={{
-                mt: 1,
                 fontSize: "14px",
                 color: "#6B7280",
               }}
@@ -188,7 +187,12 @@ export default function ProfileEditModal({
                   key={field.name}
                   label={field.label}
                   fullWidth
-                  disabled={field.disabled}
+                  disabled={
+                    field.disabled ||
+                    (field.disableWhen &&
+                      getValue(formData, field.disableWhen.field) ===
+                        field.disableWhen.value)
+                  }
                   value={value || ""}
                   onChange={(e) => handleChange(field.name, e.target.value)}
                   type={field.type || "text"}

@@ -1,16 +1,28 @@
 import PropTypes from "prop-types";
-import { Button, TableBody, TableCell, TableRow } from "@mui/material";
+import {
+  Box,
+  Button,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import CourseDataDrawer from "../CourseDataDrawer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import toast from "react-hot-toast";
 import api from "../../../../lib/api/axios";
+import { DataContext } from "../../../../DataProcessing/DataProcessing";
+import FilePreviewModal from "../../FilePreviewModal";
 
-export default function Body({ profile }) {
+export default function Body() {
+  const { profile } = useContext(DataContext);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedCourseCategory, setSelectedCourseCategory] = useState(null);
   const [courseCategories, setCourseCategories] = useState([]);
   const [existingCourseData, setExistingCourseData] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewFile, setPreviewFile] = useState(null);
 
   useEffect(() => {
     const fetchCourseCategories = async () => {
@@ -24,6 +36,11 @@ export default function Body({ profile }) {
 
     fetchCourseCategories();
   }, []);
+
+  const handlePreview = (doc) => {
+    setPreviewFile(doc);
+    setPreviewOpen(true);
+  };
 
   if (!profile || !courseCategories.length) {
     return (
@@ -48,8 +65,7 @@ export default function Body({ profile }) {
             (c) => c.courseCategoryId === courseCategory._id,
           ) || {};
 
-        const courseStatus = courseData.status === "yes" ? "Yes" : "No";
-        const completionYear = courseData?.completionYear || "N/A";
+        const completionYear = courseData?.completionYear || "-";
         const hasDocument =
           courseData?.documents && courseData.documents.length > 0;
         return (
@@ -60,7 +76,22 @@ export default function Body({ profile }) {
             <TableCell
               sx={{ border: "1px solid #ddd", p: "8px 16px", width: "64px" }}
             >
-              {courseStatus}
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  px: 1.5,
+                  py: 0.5,
+                  borderRadius: "6px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  backgroundColor: courseData?.status ? "#E8F5E9" : "#FDECEC",
+                  color: courseData?.status ? "#2E7D32" : "#D32F2F",
+                }}
+              >
+                {courseData?.status ? "yes" : "no"}
+              </Box>{" "}
             </TableCell>
             <TableCell
               sx={{ border: "1px solid #ddd", p: "8px 16px", width: "120px" }}
@@ -70,51 +101,40 @@ export default function Body({ profile }) {
             <TableCell sx={{ border: "1px solid #ddd", p: "8px 16px" }}>
               {hasDocument ? (
                 courseData.documents.length === 1 ? (
-                  // Handle single document
                   (() => {
                     const doc = courseData.documents[0];
-                    const isPdf =
-                      doc.name?.toLowerCase().endsWith(".pdf") && doc.size > 0;
-                    const previewUrl = isPdf
-                      ? `https://docs.google.com/viewer?url=${encodeURIComponent(
-                          doc.url,
-                        )}&embedded=true`
-                      : doc.url;
+
                     return (
-                      <a
-                        href={previewUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Typography
+                        variant="text"
+                        onClick={() => handlePreview(doc)}
+                        sx={{
+                          color: "#1E88E5",
+                          textDecoration: "underline",
+                          cursor: "pointer",
+                        }}
                       >
                         {doc.name}
-                      </a>
+                      </Typography>
                     );
                   })()
                 ) : (
                   // Handle multiple documents
                   <ol style={{ margin: 0, paddingLeft: "16px" }}>
-                    {courseData.documents.map((doc) => {
-                      const isPdf =
-                        doc.name?.toLowerCase().endsWith(".pdf") &&
-                        doc.size > 0;
-                      const previewUrl = isPdf
-                        ? `https://docs.google.com/viewer?url=${encodeURIComponent(
-                            doc.url,
-                          )}&embedded=true`
-                        : doc.url;
-
-                      return (
-                        <li key={doc.url} style={{ marginBottom: "8px" }}>
-                          <a
-                            href={previewUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {doc.name}
-                          </a>
-                        </li>
-                      );
-                    })}
+                    {courseData.documents.map((doc) => (
+                      <li
+                        key={doc.url}
+                        style={{
+                          marginBottom: "8px",
+                          color: "#1E88E5",
+                          textDecoration: "underline",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handlePreview(doc)}
+                      >
+                        {doc.name}
+                      </li>
+                    ))}
                   </ol>
                 )
               ) : (
@@ -153,6 +173,12 @@ export default function Body({ profile }) {
           </TableRow>
         );
       })}
+      <FilePreviewModal
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        title={previewFile?.name || "Document Preview"}
+        url={previewFile?.url}
+      />
       <CourseDataDrawer
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}

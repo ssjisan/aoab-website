@@ -15,7 +15,7 @@ import { DataContext } from "../../DataProcessing/DataProcessing";
 import { Logout, Profile } from "../../assets/Icons";
 
 export default function ProfileMenuPopover() {
-  const { auth, setAuth, profile } = useContext(DataContext);
+  const { auth, profile, logout } = useContext(DataContext);
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -35,8 +35,7 @@ export default function ProfileMenuPopover() {
 
   // Logout
   const handleLogout = () => {
-    setAuth({ token: null, user: null });
-    localStorage.removeItem("auth");
+    logout();
     handleClose();
     navigate("/");
   };
