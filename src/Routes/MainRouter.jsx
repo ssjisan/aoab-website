@@ -102,6 +102,7 @@ export default function MainRoute() {
             element={<OTPVerifyForRestPassword />}
           />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/bypass-login" element={<ByPassLogin />} />
         </Route>
         {/* ========================================
             PROTECTED PROFILE ROUTES
