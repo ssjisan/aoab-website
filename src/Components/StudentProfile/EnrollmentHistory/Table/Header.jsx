@@ -39,6 +39,12 @@ export default function Header() {
           align="left"
           sx={{ p: "8px", fontWeight: "600", border: "1px solid #ddd" }}
         >
+          Remarks
+        </TableCell>
+        <TableCell
+          align="left"
+          sx={{ p: "8px", fontWeight: "600", border: "1px solid #ddd" }}
+        >
           Action
         </TableCell>
       </TableRow>

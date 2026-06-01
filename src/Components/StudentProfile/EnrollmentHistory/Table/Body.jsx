@@ -18,51 +18,98 @@ import api from "../../../../lib/api/axios";
 export default function Body({
   loading,
   enrollmentDetails,
-  handleEnrollments,
+  handleEnrollments, // Call this function to refresh list after updates finish
   courseMap,
 }) {
   const fileInputRefs = useRef({});
   const { auth } = useContext(DataContext);
-  const [selectedFileNameMap, setSelectedFileNameMap] = useState({});
-
   const studentId = auth?.user?._id;
 
-  const handleUploadClick = (enrollmentId) => {
-    fileInputRefs.current[enrollmentId]?.click();
+  // Track specific uploading states and names matching unique item keys
+  const [selectedFileNameMap, setSelectedFileNameMap] = useState({});
+  const [uploadingId, setUploadingId] = useState(null);
+
+  // Trigger click event on hidden file inputs
+  const triggerFileInput = (id) => {
+    if (fileInputRefs.current[id]) {
+      fileInputRefs.current[id].click();
+    }
   };
 
-  const handleFileChange = async (e, enrollmentId) => {
+  // Handle stage when file selection is confirmed
+  const handleFileChange = (e, data, recordKey) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    setSelectedFileNameMap((prev) => ({ ...prev, [enrollmentId]: file.name }));
+    // Save selected filename reference into local tracker state
+    setSelectedFileNameMap((prev) => ({
+      ...prev,
+      [recordKey]: file.name,
+    }));
+
+    // Trigger API dispatch sequence directly
+    uploadFileSubmit(file, data, recordKey);
+  };
+
+  // Perform API Upload
+  const uploadFileSubmit = async (file, data, recordKey) => {
+    const course = courseMap?.[data.courseId];
+
+    // 1. Fallbacks if dates or titles are missing
+    const dateObj = course?.startDate ? new Date(course.startDate) : new Date();
+    const courseTitle = course?.title || data.courseTitle || "unknown-course";
+
+    // 2. Extract separate Year and Month strings
+    const year = dateObj.getFullYear().toString(); // e.g. "2026"
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // e.g. "06"
+
+    // 3. Format "AOA Basic" into "aoa_basic"
+    const formattedCourseName = courseTitle
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-_]/g, "") // Remove special symbols safely
+      .replace(/\s+/g, "_"); // Replace all spaces with a single underscore
 
     const formData = new FormData();
-    formData.append("paymentProof", file);
-    formData.append("studentId", studentId); // optional but useful for extra validation
-    formData.append("enrollmentId", enrollmentId);
 
-    const toastId = toast.loading("Uploading...");
+    // 4. ADD TEXT FIELDS FIRST (Multer reads these sequentially)
+    formData.append("courseId", data.courseId);
+    formData.append("studentId", studentId || data.studentId);
+    formData.append("year", year);
+    formData.append("month", month);
+    formData.append("courseFolder", formattedCourseName);
+
+    // 5. ADD THE FILE LAST
+    formData.append("paymentProof", file);
+
+    setUploadingId(recordKey);
+    const toastId = toast.loading("Uploading payment proof...");
 
     try {
-      await api.post("/enrollment/upload-payment-proof", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const response = await api.post(
+        "/enrollment/upload-payment-proof",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
         },
-      });
+      );
 
-      toast.success("Upload successful!", { id: toastId });
-      setSelectedFileNameMap((prev) => ({ ...prev, [enrollmentId]: "" }));
-      if (typeof handleEnrollments === "function") {
-        await handleEnrollments(); // ✅ refresh data
+      if (response.data.success) {
+        toast.success("File uploaded successfully!", { id: toastId });
+        if (handleEnrollments) handleEnrollments();
+      } else {
+        toast.error(response.data.message || "Failed to process receipt file", {
+          id: toastId,
+        });
       }
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        "Something went wrong.";
-      toast.error(`Upload failed: ${errorMessage}`, { id: toastId });
-      setSelectedFileNameMap((prev) => ({ ...prev, [enrollmentId]: "" }));
+      console.error(err);
+      toast.error(
+        err.response?.data?.message || "Error connecting to server.",
+        { id: toastId },
+      );
+    } finally {
+      setUploadingId(null);
     }
   };
 
@@ -70,141 +117,132 @@ export default function Body({
     <TableBody>
       {loading ? (
         <TableRow>
-          <TableCell colSpan={9} align="center" sx={{ height: 200 }}>
+          <TableCell colSpan={7} align="center">
             <CircularProgress />
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mt: 2, fontWeight: 600 }}
-            >
-              Loading...
-            </Typography>
           </TableCell>
         </TableRow>
       ) : enrollmentDetails.length === 0 ? (
         <TableRow>
-          <TableCell colSpan={9} align="center" sx={{ height: 200 }}>
-            <Stack
-              justifyContent="center"
-              alignItems="center"
-              spacing={2}
-              sx={{ width: "100%" }}
-            >
+          <TableCell colSpan={7} align="center">
+            <Stack alignItems="center" spacing={2}>
               <NoEnrollment />
-              <Typography variant="h5" color="text.secondary">
-                No Enrollment History!
-              </Typography>
+              <Typography>No Enrollment History</Typography>
             </Stack>
           </TableCell>
         </TableRow>
       ) : (
         enrollmentDetails.map((data) => {
-          const courseId = data.courseId;
-          if (!fileInputRefs.current[courseId]) {
-            fileInputRefs.current[courseId] = createRef();
+          // Fallback parsing key mapping adjustments
+          const finalStudentId = studentId || data.studentId;
+          const recordUniqueKey = `${data.courseId}-${finalStudentId}`;
+
+          if (!fileInputRefs.current[recordUniqueKey]) {
+            fileInputRefs.current[recordUniqueKey] = createRef();
           }
 
-          // 🟢 Dynamic expired logic
-          const course = courseMap?.[courseId];
-          let finalStatus = data.enrollment.status;
+          const course = courseMap?.[data.courseId];
+          let finalStatus = data.status;
           const now = new Date();
 
           if (course) {
             const eventEnd = new Date(course.endDate);
             const paymentDeadline = new Date(course.paymentReceiveEndDate);
-            const registrationEnd = new Date(course.registrationEndDate);
-            console.log("paymentDeadline", paymentDeadline);
-            console.log("eventEnd", eventEnd);
-            console.log("registrationEnd", registrationEnd);
 
-            if (now > eventEnd) {
-              finalStatus = "expired";
-            } else if (
+            if (now > eventEnd) finalStatus = "expired";
+            else if (
               now > paymentDeadline &&
-              data.enrollment.paymentReceived !== "approved"
+              data.paymentReceived !== "approved"
             ) {
               finalStatus = "expired";
             }
-            // else if (now > registrationEnd) {
-            //   finalStatus = "expired";
-            // }
           }
 
-          // Upload button logic uses the same dynamic status
           const canUpload =
-            data.enrollment.paymentReceived !== "approved" &&
+            data.paymentReceived !== "approved" &&
             !["waitlist", "confirmed", "expired"].includes(finalStatus);
 
           return (
-            <TableRow key={data._id}>
-              <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
-                {data.title}
+            <TableRow key={recordUniqueKey}>
+              <TableCell>{data.courseTitle}</TableCell>
+
+              <TableCell>
+                {data.enrolledAt
+                  ? new Date(data.enrolledAt).toLocaleString()
+                  : "-"}
               </TableCell>
 
-              <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
-                {new Date(data.enrollment.enrolledAt).toLocaleDateString(
-                  "en-US",
-                  {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  },
-                )}
-              </TableCell>
-
-              {/* Badge showing dynamic status */}
-              <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
+              <TableCell>
                 <Badge label={finalStatus} />
               </TableCell>
 
-              <TableCell align="left" sx={{ border: "1px solid #ddd" }}>
-                <Badge label={data.enrollment.paymentReceived} />
+              <TableCell>
+                <Badge label={data.paymentReceived} />
               </TableCell>
 
-              {/* 🆕 File Preview Cell */}
-              <TableCell
-                align="center"
-                sx={{ border: "1px solid #ddd", width: 160 }}
-              >
-                {data.enrollment.paymentProof?.url ? (
+              <TableCell>
+                {data.paymentProof?.url ? (
                   <a
-                    href={data.enrollment.paymentProof.url}
+                    href={data.paymentProof.url}
                     target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: "#1976d2", textDecoration: "underline" }}
+                    rel="noreferrer"
+                    style={{ color: "#1677ff", textDecoration: "underline" }}
                   >
-                    View Uploaded File
+                    View File
                   </a>
                 ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    No File
-                  </Typography>
+                  "No File"
                 )}
               </TableCell>
 
-              {/* 🆙 Upload Button Cell */}
-              <TableCell align="center" sx={{ border: "1px solid #ddd" }}>
+              <TableCell>
+                {data.remark ? (
+                  <span style={{ color: "#a8071a" }}>{data.remark}</span>
+                ) : (
+                  "-"
+                )}
+              </TableCell>
+
+              <TableCell>
                 {canUpload && (
-                  <button
-                    onClick={() => handleUploadClick(data.enrollment._id)}
-                  >
-                    {selectedFileNameMap[data.enrollment._id]
-                      ? "Uploading..."
-                      : "Upload"}
-                  </button>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <button
+                      type="button"
+                      disabled={uploadingId === recordUniqueKey}
+                      onClick={() => triggerFileInput(recordUniqueKey)}
+                      style={{
+                        padding: "6px 12px",
+                        cursor:
+                          uploadingId === recordUniqueKey
+                            ? "not-allowed"
+                            : "pointer",
+                        backgroundColor: "#1677ff",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      {uploadingId === recordUniqueKey
+                        ? "Processing..."
+                        : "Upload Proof"}
+                    </button>
+                    {selectedFileNameMap[recordUniqueKey] && (
+                      <Typography
+                        variant="caption"
+                        noWrap
+                        sx={{ maxWidth: 100 }}
+                      >
+                        {selectedFileNameMap[recordUniqueKey]}
+                      </Typography>
+                    )}
+                  </Stack>
                 )}
 
                 <input
                   type="file"
-                  accept="image/*"
-                  ref={(ref) =>
-                    (fileInputRefs.current[data.enrollment._id] = ref)
-                  }
+                  accept="image/*,.pdf"
+                  ref={(el) => (fileInputRefs.current[recordUniqueKey] = el)}
+                  onChange={(e) => handleFileChange(e, data, recordUniqueKey)}
                   style={{ display: "none" }}
-                  onChange={(e) => handleFileChange(e, data.enrollment._id)}
                 />
               </TableCell>
             </TableRow>
@@ -217,7 +255,7 @@ export default function Body({
 
 Body.propTypes = {
   enrollmentDetails: PropTypes.array.isRequired,
-  loading: PropTypes.string,
-  handleEnrollments: PropTypes.string,
+  loading: PropTypes.bool,
+  handleEnrollments: PropTypes.func,
   courseMap: PropTypes.object,
 };

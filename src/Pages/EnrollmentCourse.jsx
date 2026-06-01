@@ -16,7 +16,7 @@ export default function EnrollmentCourse() {
   const [modalMessage, setModalMessage] = useState("");
   const [course, setCourse] = useState(null);
   const studentId = auth?.user?._id;
-  const [enrollmentSuccess, setEnrollmentSuccess] = useState(null); // null, true, or false
+  const [enrollmentSuccess, setEnrollmentSuccess] = useState(null);
 
   // ✅ Load course details on mount
   useEffect(() => {

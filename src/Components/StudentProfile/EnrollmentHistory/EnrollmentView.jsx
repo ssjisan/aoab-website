@@ -1,5 +1,5 @@
 import { Box, Table, TableContainer } from "@mui/material";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 
 import toast from "react-hot-toast";
 import Body from "./Table/Body";
@@ -14,28 +14,31 @@ export default function EnrollmentView() {
 
   const { auth } = useContext(DataContext);
   const studentId = auth?.user?._id;
+
   const loadStudentEnrollments = async () => {
-    if (loading) return;
+    if (loading || !studentId) return;
+
     try {
       setLoading(true);
       const res = await api.get(`/enrollment-history/student/${studentId}`);
-      setEnrollments(res.data);
+      console.log("ENROLLMENT API RESPONSE:", res.data);
+      setEnrollments(res.data || []);
     } catch (err) {
-      toast.error("Failed to load student's enrollment history", err);
+      toast.error("Failed to load student's enrollment history");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (studentId) {
-      loadStudentEnrollments();
-    }
+    if (studentId) loadStudentEnrollments();
   }, [studentId]);
 
   const loadCoursesByIds = async () => {
     try {
-      const ids = [...new Set(enrollments.map((e) => e.courseId))];
+      const ids = [
+        ...new Set(enrollments.map((e) => e.courseId).filter(Boolean)),
+      ];
 
       const responses = await Promise.all(
         ids.map((id) => api.get(`/courses_events/${id}`)),
@@ -43,12 +46,12 @@ export default function EnrollmentView() {
 
       const map = {};
       responses.forEach((res, i) => {
-        map[ids[i]] = res.data; // courseEvent data
+        map[ids[i]] = res.data;
       });
 
       setCourseMap(map);
     } catch (err) {
-      toast.error("Failed to load course details", err.message);
+      toast.error("Failed to load course details");
     }
   };
 
@@ -58,39 +61,31 @@ export default function EnrollmentView() {
     }
   }, [enrollments]);
 
-  return (
-    <Box
-      sx={{
-        p: 2,
-      }}
-    >
-      {enrollments
-        ?.filter((item) => item.enrollment.remark)
-        .map((item) => (
-          <Box
-            key={item._id}
-            sx={{
-              backgroundColor: "#ffe5e5",
-              color: "#a8071a",
-              borderRadius: "8px",
-              p: 2,
-              mb: 2,
-              fontSize: "14px",
-            }}
-          >
-            <strong>
-              Payment for <em>{item?.title}</em> was rejected.
-            </strong>
-            <br />
-            Reason: {item.enrollment.remark}
-          </Box>
-        ))}
+  // ✅ SAFE FLATTENING
+  const flattenedRows = useMemo(() => {
+    return enrollments.map((course) => ({
+      _id: course._id,
+      courseId: course.courseId,
+      categoryId: course.categoryId,
+      courseTitle: course.title,
 
+      studentId: course.enrollment?.studentId,
+      status: course.enrollment?.status,
+      paymentReceived: course.enrollment?.paymentReceived,
+      paymentProof: course.enrollment?.paymentProof,
+      isAttend: course.enrollment?.isAttend,
+      remark: course.enrollment?.remark,
+      enrolledAt: course.enrollment?.enrolledAt,
+    }));
+  }, [enrollments]);
+
+  return (
+    <Box sx={{ p: 2 }}>
       <TableContainer>
         <Table>
           <Header />
           <Body
-            enrollmentDetails={enrollments}
+            enrollmentDetails={flattenedRows}
             loading={loading}
             handleEnrollments={loadStudentEnrollments}
             courseMap={courseMap}

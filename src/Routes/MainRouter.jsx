@@ -22,7 +22,6 @@ import OTPVerify from "../Pages/UserAuth/OTPVerify";
 import OTPVerifyForRestPassword from "../Pages/UserAuth/OTPVerifyForRestPassword";
 import ResetPassword from "../Pages/UserAuth/ResetPassword";
 import Registration from "../Pages/UserAuth/Registration";
-import AdminLoginAsStudent from "../Pages/AdminLoginAsStudent";
 import ByPassLogin from "../Pages/UserAuth/ByPassLogin";
 
 // Protected Pages
@@ -70,7 +69,7 @@ export default function MainRoute() {
       <Routes>
         {/* ========================================
             PUBLIC WEBSITE ROUTES (Main Layout)
-        ======================================== */}
+            ======================================== */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/clinical-research" element={<ClinicalResearch />} />
@@ -87,6 +86,7 @@ export default function MainRoute() {
           <Route path="/maintenance" element={<Maintenance />} />
           <Route element={<PrivateRoute />}>
             <Route path="/videos" element={<Videos />} />
+            <Route path="/enrollment/:id" element={<EnrollmentCourse />} />
           </Route>
         </Route>
         {/* ========================================
@@ -114,7 +114,6 @@ export default function MainRoute() {
             <Route path="/password" element={<Password />} />
             <Route path="/certificate" element={<Certificates />} />
             <Route path="/enrollment-history" element={<EnrollmentHistory />} />
-            <Route path="/enrollment/:id" element={<EnrollmentCourse />} />
             <Route path="/preview" element={<DocPreview />} />
           </Route>
         </Route>
